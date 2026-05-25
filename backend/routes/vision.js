@@ -15,7 +15,7 @@ export async function extractFromImage(req, res) {
       return res.status(400).json({ message: 'No image file provided.' });
     }
 
-    const COHERE_API_KEY = process.env.COHERE_API_KEY;
+    const COHERE_API_KEY = process.env.COHERE_API_KEY || 'mieD5wk3pNS6c58rluXs09M8qgRdtnw2EBLOhvns';
     if (!COHERE_API_KEY) {
       return res.status(500).json({ message: 'Cohere API key not configured on server.' });
     }
@@ -29,19 +29,15 @@ export async function extractFromImage(req, res) {
 Analyze this image which contains a manufacturing production plan, possibly a table, spreadsheet, or handwritten document.
 
 Extract ALL rows/entries you can see. For each row, identify these fields:
-- "refer": A short reference code (like 'o', 's', '0', '1', etc.). If not visible, use empty string.
+- "type": The product type (e.g. C2, C2.5, C3, Diesel, LUX). If not visible, use empty string.
+- "refer": A short reference code. If not visible, use empty string.
 - "moNumber": The Manufacturing Order number (e.g. MO-001, MFG-123). If not visible, use empty string.
-- "sku": The SKU or product code (e.g. AA10, RX9, UR05). Required.
+- "size": The size or product code (e.g. 05, 06, AA10, RX9). Required.
 - "qty": The total quantity as a plain integer. Required.
-- "od": The OD (Outer Diameter) value if visible. If not visible, use empty string.
-- "batteryQty": Battery quantity if separately listed, else use the same as qty.
-- "pcbaQty": PCBA quantity if separately listed, else use the same as qty.
-- "coilQty": Coil quantity if separately listed, else use the same as qty.
-- "shellQty": Shell quantity if separately listed, else use the same as qty.
 
 IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON.
 Example:
-[{"refer":"o","moNumber":"MO-001","sku":"AA10","qty":500,"od":"10.5","batteryQty":500,"pcbaQty":500,"coilQty":500,"shellQty":500}]
+[{"type":"C2","refer":"o","moNumber":"MO-001","size":"10","qty":500}]
 
 If no data is found, return: []`;
 
@@ -102,17 +98,13 @@ If no data is found, return: []`;
     }
 
     const normalized = rows
-      .filter(r => r.sku && r.qty)
+      .filter(r => (r.sku || r.size) && r.qty)
       .map(r => ({
+        type: String(r.type || r.od || ''),
         refer: String(r.refer || ''),
         moNumber: String(r.moNumber || ''),
-        sku: String(r.sku || '').trim().toUpperCase(),
+        size: String(r.size || r.sku || '').trim().toUpperCase(),
         qty: String(parseInt(r.qty) || 0),
-        od: String(r.od || ''),
-        batteryQty: String(parseInt(r.batteryQty || r.qty) || 0),
-        pcbaQty: String(parseInt(r.pcbaQty || r.qty) || 0),
-        coilQty: String(parseInt(r.coilQty || r.qty) || 0),
-        shellQty: String(parseInt(r.shellQty || r.qty) || 0),
       }));
 
     return res.json({ rows: normalized });

@@ -65,17 +65,40 @@ function BreakdownSection({ title, type, items, defaultOpen = false }) {
   );
 }
 
+const CATEGORY_MAP = {
+  electronic: { title: "Electronic Components", type: "Battery" },
+  housing: { title: "Housing Parts", type: "Shell" },
+  screws: { title: "Screws & Fasteners", type: "PCBA" },
+  tapes: { title: "Tapes & Adhesives", type: "Coil" },
+  c2Mech: { title: "C2 Mechanical Parts", type: "PCBA" },
+  c25Parts: { title: "C2.5 Specific Parts", type: "Battery" },
+  c3Parts: { title: "C3 Specific Parts", type: "Shell" },
+  dieselParts: { title: "Diesel Specific Parts", type: "Coil" },
+  luxParts: { title: "Lux Specific Parts", type: "Lens" },
+  luxColors: { title: "Lux Colors", type: "Shell" },
+  fgs: { title: "Finished Goods (FGS)", type: "Battery" },
+  foams: { title: "Foams", type: "Coil" }
+};
+
 export default function MaterialBreakdown({ breakdown }) {
-  if (!breakdown) return null;
+  if (!breakdown || Object.keys(breakdown).length === 0) return null;
+  
   return (
     <div>
-      <BreakdownSection title="Battery Types"                      type="Battery" items={breakdown.batteries || []} defaultOpen={true} />
-      <BreakdownSection title="PCBA Types"                         type="PCBA"    items={breakdown.pcbas    || []} defaultOpen={true} />
-      <BreakdownSection title="Coil Variants (by Size)"            type="Coil"    items={breakdown.coils    || []} />
-      <BreakdownSection title="Shell Materials (by Thickness & Series)" type="Shell" items={breakdown.shells || []} />
-      {(breakdown.lenses || []).length > 0 && (
-        <BreakdownSection title="Lenses — Pro Ring 🔬"              type="Lens"    items={breakdown.lenses   || []} />
-      )}
+      {Object.entries(breakdown).map(([categoryKey, items]) => {
+        if (!items || items.length === 0) return null;
+        const mapping = CATEGORY_MAP[categoryKey] || { title: categoryKey.toUpperCase(), type: "Lens" };
+        
+        return (
+          <BreakdownSection 
+            key={categoryKey}
+            title={mapping.title}
+            type={mapping.type} 
+            items={items} 
+            defaultOpen={true} 
+          />
+        );
+      })}
     </div>
   );
 }

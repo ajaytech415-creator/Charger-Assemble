@@ -82,15 +82,11 @@ export default function DatabaseManager() {
 
   const handleExportCSV = () => {
     if (filtered.length === 0) return alert('No data to export.');
-    const headers = ['ID', 'MO Number', 'SKU', 'Status', 'Date', 'Total QTY', 'Completed', 'Battery (Comp/Total)', 'PCBA (Comp/Total)', 'Coil (Comp/Total)', 'Shell (Comp/Total)', 'Lens (Comp/Total)'];
+    const headers = ['ID', 'MO Number', 'SKU / Type', 'Status', 'Date', 'Total QTY', 'Completed', 'Components (Comp/Total)'];
     const rows = filtered.map(m => [
-      m.id, m.moNumber || '', m.sku || '', m.status || '', m.date || m.createdAt?.split('T')[0] || '',
+      m.id, m.moNumber || '', (m.size || m.sku || '') + (m.type ? ' ' + m.type : ''), m.status || '', m.date || m.createdAt?.split('T')[0] || '',
       m.qty || 0, m.completedQty || 0,
-      `${m.batteryComp || 0}/${m.batteryQty || 0}`,
-      `${m.pcbaComp || 0}/${m.pcbaQty || 0}`,
-      `${m.coilComp || 0}/${m.coilQty || 0}`,
-      `${m.shellComp || 0}/${m.shellQty || 0}`,
-      m.isProRing ? `${m.lensComp || 0}/${m.lensQty || 0}` : 'N/A',
+      (m.components || []).map(c => `${c.category}:${c.completedQty}/${c.collectedQty}`).join(' | ')
     ]);
     const csvContent = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -120,25 +116,17 @@ export default function DatabaseManager() {
   };
 
   const handleEditClick = (mo) => {
-    // Normalize refer: old records may have '' or undefined — treat as 'o' (0.2mm default)
-    const normalizedRefer = ['s'].includes((mo.refer || '').toLowerCase().trim()) ? 's' : 'o';
-    setEditingMO({ ...mo, refer: normalizedRefer });
+    setEditingMO(JSON.parse(JSON.stringify(mo)));
     setEditModal(true);
   };
 
   const handleSaveEdit = async () => {
     try {
-      const safeRefer = editingMO.refer === 's' ? 's' : 'o';
       await api.updateMO(editingMO.id, {
         status: editingMO.status,
         completedQty: parseInt(editingMO.completedQty || 0),
-        batteryComp: parseInt(editingMO.batteryComp || 0),
-        pcbaComp:    parseInt(editingMO.pcbaComp    || 0),
-        coilComp:    parseInt(editingMO.coilComp    || 0),
-        shellComp:   parseInt(editingMO.shellComp   || 0),
-        lensComp:    parseInt(editingMO.lensComp    || 0),
+        components: editingMO.components,
         planDate: editingMO.planDate || '',
-        refer: safeRefer,
         submittedBy: 'Admin'
       });
       setEditModal(false);
@@ -222,10 +210,7 @@ export default function DatabaseManager() {
                   MO Number {sortConfig.key === 'moNumber' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
                 </th>
                 <th onClick={() => handleSort('sku')} style={{ cursor: 'pointer', userSelect: 'none' }}>
-                  SKU {sortConfig.key === 'sku' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
-                </th>
-                <th onClick={() => handleSort('refer')} style={{ cursor: 'pointer', userSelect: 'none' }}>
-                  OD {sortConfig.key === 'refer' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
+                  SKU / Type {sortConfig.key === 'sku' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
                 </th>
                 <th onClick={() => handleSort('date')} style={{ cursor: 'pointer', userSelect: 'none' }}>
                   Created Date {sortConfig.key === 'date' ? (sortConfig.direction === 'asc' ? '↑' : '↓') : '↕'}
@@ -256,19 +241,7 @@ export default function DatabaseManager() {
                 sortedFiltered.map(mo => (
                   <tr key={mo.id}>
                     <td style={{ fontWeight: 600, color: '#111827' }}>{mo.moNumber || '—'}</td>
-                    <td><span className="badge badge-primary">{mo.sku}</span></td>
-                    <td>
-                      <span style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 4,
-                        fontSize: 12, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
-                        background: ['o','0'].includes((mo.refer||'').toLowerCase()) ? '#eff6ff' : '#fffbeb',
-                        color:     ['o','0'].includes((mo.refer||'').toLowerCase()) ? '#2563eb'  : '#d97706',
-                        border:    `1px solid ${['o','0'].includes((mo.refer||'').toLowerCase()) ? '#bfdbfe' : '#fcd34d'}`,
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {['o','0'].includes((mo.refer||'').toLowerCase()) ? '⬜ O (0.2mm)' : '🟨 S (0.3mm)'}
-                      </span>
-                    </td>
+                    <td><span className="badge badge-primary">{mo.size || mo.sku}</span> {mo.type && <span className="badge" style={{background:'#f3f4f6'}}>{mo.type}</span>}</td>
                     <td className="text-sm">{mo.date || mo.createdAt?.split('T')[0]}</td>
                     <td>
                       <span style={{ fontSize: 12, fontWeight: 600, color: '#2563eb', background: '#eff6ff', padding: '2px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>
@@ -288,13 +261,12 @@ export default function DatabaseManager() {
                             {mo.completedQty || 0} / {mo.qty}
                           </span>
                         </div>
-                        <div style={{ display: 'flex', gap: 4 }}>
-                          <div style={{ flex: 1, padding: '4px 8px', border: '1px solid #e5e7eb', borderRadius: 4 }}>
-                            <span className="text-muted">Battery:</span> <span style={{ color: mo.batteryComp >= mo.batteryQty ? '#16a34a' : '#2563eb', fontWeight: 600 }}>{mo.batteryComp || 0} / {mo.batteryQty}</span>
-                          </div>
-                          <div style={{ flex: 1, padding: '4px 8px', border: '1px solid #e5e7eb', borderRadius: 4 }}>
-                            <span className="text-muted">PCBA:</span> <span style={{ color: mo.pcbaComp >= mo.pcbaQty ? '#16a34a' : '#2563eb', fontWeight: 600 }}>{mo.pcbaComp || 0} / {mo.pcbaQty}</span>
-                          </div>
+                        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                          {mo.components?.map(c => (
+                            <div key={c.name} style={{ flex: '1 1 45%', padding: '4px 8px', border: '1px solid #e5e7eb', borderRadius: 4 }}>
+                              <span className="text-muted">{c.category}:</span> <span style={{ color: c.completedQty >= c.targetQty ? '#16a34a' : '#2563eb', fontWeight: 600 }}>{c.completedQty} / {c.collectedQty}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </td>
@@ -329,89 +301,7 @@ export default function DatabaseManager() {
                 <button className="btn-icon" onClick={() => setEditModal(false)}>✕</button>
               </div>
 
-              {/* OD Selector — two clickable cards */}
-              <div className="form-group" style={{ marginBottom: 16 }}>
-                <label style={{ fontWeight: 700, fontSize: 13, color: '#374151', marginBottom: 8, display: 'block' }}>
-                  OD — Shell Thickness
-                </label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                  {/* O card */}
-                  <button
-                    type="button"
-                    onClick={() => setEditingMO({ ...editingMO, refer: 'o' })}
-                    style={{
-                      padding: '16px 12px',
-                      borderRadius: 10,
-                      border: editingMO.refer === 'o' ? '2.5px solid #2563eb' : '2px solid #e5e7eb',
-                      background: editingMO.refer === 'o' ? 'linear-gradient(135deg, #eff6ff, #dbeafe)' : '#f9fafb',
-                      cursor: 'pointer',
-                      transition: 'all 0.18s',
-                      textAlign: 'left',
-                      boxShadow: editingMO.refer === 'o' ? '0 4px 12px rgba(37,99,235,0.15)' : 'none',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                      <div style={{
-                        width: 28, height: 28, borderRadius: '50%',
-                        background: editingMO.refer === 'o' ? '#2563eb' : '#d1d5db',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0
-                      }}>O</div>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: editingMO.refer === 'o' ? '#1e40af' : '#4b5563' }}>0.2mm Shell</span>
-                      {editingMO.refer === 'o' && <span style={{ marginLeft: 'auto', fontSize: 11, background: '#2563eb', color: '#fff', padding: '2px 7px', borderRadius: 999, fontWeight: 700 }}>✓ Selected</span>}
-                    </div>
-                    <p style={{ fontSize: 11, color: editingMO.refer === 'o' ? '#3b82f6' : '#9ca3af', margin: 0 }}>
-                      Thinner shell — shell name gets <strong>0.2mm</strong> prefix
-                    </p>
-                  </button>
 
-                  {/* S card */}
-                  <button
-                    type="button"
-                    onClick={() => setEditingMO({ ...editingMO, refer: 's' })}
-                    style={{
-                      padding: '16px 12px',
-                      borderRadius: 10,
-                      border: editingMO.refer === 's' ? '2.5px solid #d97706' : '2px solid #e5e7eb',
-                      background: editingMO.refer === 's' ? 'linear-gradient(135deg, #fffbeb, #fef3c7)' : '#f9fafb',
-                      cursor: 'pointer',
-                      transition: 'all 0.18s',
-                      textAlign: 'left',
-                      boxShadow: editingMO.refer === 's' ? '0 4px 12px rgba(217,119,6,0.15)' : 'none',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                      <div style={{
-                        width: 28, height: 28, borderRadius: '50%',
-                        background: editingMO.refer === 's' ? '#d97706' : '#d1d5db',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: '#fff', fontWeight: 800, fontSize: 14, flexShrink: 0
-                      }}>S</div>
-                      <span style={{ fontWeight: 700, fontSize: 14, color: editingMO.refer === 's' ? '#92400e' : '#4b5563' }}>Standard Shell</span>
-                      {editingMO.refer === 's' && <span style={{ marginLeft: 'auto', fontSize: 11, background: '#d97706', color: '#fff', padding: '2px 7px', borderRadius: 999, fontWeight: 700 }}>✓ Selected</span>}
-                    </div>
-                    <p style={{ fontSize: 11, color: editingMO.refer === 's' ? '#d97706' : '#9ca3af', margin: 0 }}>
-                      Standard shell — shell name uses <strong>no prefix</strong>
-                    </p>
-                  </button>
-                </div>
-                <p className="text-xs text-muted" style={{ marginTop: 8 }}>
-                  Changing OD updates shell name and cascades to User Dashboard &amp; WIP Report.
-                </p>
-              </div>
-
-              {/* Shell preview */}
-              <div style={{ marginBottom: 16, padding: '10px 16px', background: '#f0fdf4', border: '1.5px solid #bbf7d0', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#15803d', whiteSpace: 'nowrap' }}><GlassIcon name="refresh" size={14} color="#15803d" /> Shell Preview:</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: '#16a34a' }}>
-                  {getShellPreview(editingMO.sku, editingMO.refer)}
-                </span>
-                {getShellPreview(editingMO.sku, editingMO.refer) !== editingMO.shell && (
-                  <span style={{ fontSize: 11, color: '#dc2626', fontWeight: 600, marginLeft: 4 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}><GlassIcon name="warning" size={14} color="#b45309" /> Will change from: "{editingMO.shell}"</div>
-                  </span>
-                )}
-              </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                 <div className="form-group">
@@ -442,30 +332,16 @@ export default function DatabaseManager() {
               <div style={{ padding: 16, background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: 8, marginBottom: 16 }}>
                 <h4 style={{ marginBottom: 12, color: '#374151' }}>Component Completed Quantities</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label>Battery</label>
-                    <input type="number" min="0" value={editingMO.batteryComp} onChange={e => setEditingMO({...editingMO, batteryComp: e.target.value})} />
-                  </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label>PCBA</label>
-                    <input type="number" min="0" value={editingMO.pcbaComp} onChange={e => setEditingMO({...editingMO, pcbaComp: e.target.value})} />
-                  </div>
-                  {!editingMO.isProRing && (
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label>Coil</label>
-                      <input type="number" min="0" value={editingMO.coilComp} onChange={e => setEditingMO({...editingMO, coilComp: e.target.value})} />
+                  {editingMO.components?.map((c, i) => (
+                    <div className="form-group" style={{ marginBottom: 0 }} key={i}>
+                      <label>{c.category}</label>
+                      <input type="number" min="0" value={c.completedQty} onChange={e => {
+                        const newComps = [...editingMO.components];
+                        newComps[i].completedQty = e.target.value;
+                        setEditingMO({...editingMO, components: newComps});
+                      }} />
                     </div>
-                  )}
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label>Shell</label>
-                    <input type="number" min="0" value={editingMO.shellComp} onChange={e => setEditingMO({...editingMO, shellComp: e.target.value})} />
-                  </div>
-                  {editingMO.isProRing && (
-                    <div className="form-group" style={{ marginBottom: 0 }}>
-                      <label style={{ color: '#e67e22', fontWeight: 700 }}>🔬 Lens <span style={{ fontSize: 11, color: '#9ca3af' }}>(Pro Ring)</span></label>
-                      <input type="number" min="0" value={editingMO.lensComp || 0} onChange={e => setEditingMO({...editingMO, lensComp: e.target.value})} style={{ borderColor: '#e67e22' }} />
-                    </div>
-                  )}
+                  ))}
                 </div>
               </div>
 

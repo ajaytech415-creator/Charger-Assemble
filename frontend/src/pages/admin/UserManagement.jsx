@@ -155,7 +155,7 @@ export default function UserManagement() {
                       <button className="btn-icon" onClick={() => handleToggleStatus(u)} title={u.status === 'Active' ? 'Deactivate' : 'Activate'}>
                         <GlassIcon name={u.status === 'Active' ? 'history' : 'dashboard'} size={18} color="#6b7280" />
                       </button>
-                      {u.employeeId !== 'UltraAss' && (
+                      {u.employeeId !== 'UltraCharger' && (
                         <button className="btn-icon danger" onClick={() => handleDelete(u.id, u.fullName)} title="Delete">
                           <GlassIcon name="delete" size={18} color="#dc2626" />
                         </button>

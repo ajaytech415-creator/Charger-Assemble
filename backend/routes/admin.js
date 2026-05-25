@@ -7,12 +7,13 @@ export const getConfig = (req, res) => {
 
 // POST /api/admin/config
 export const updateConfig = async (req, res) => {
-  const { fixedBattery, fixedPCBA, autoMode } = req.body;
+  const { fixedBattery, fixedPCBA, autoMode, bomMode } = req.body;
   if (fixedBattery !== undefined) db.data.config.fixedBattery = fixedBattery;
   if (fixedPCBA !== undefined) db.data.config.fixedPCBA = fixedPCBA;
   if (autoMode !== undefined) db.data.config.autoMode = autoMode;
+  if (bomMode !== undefined) db.data.config.bomMode = bomMode;
   
-  const modeLabel = db.data.config.autoMode ? 'AUTO-BATTERY MODE' : 'FIXED MODE';
+  const modeLabel = db.data.config.bomMode ? 'BOM MODE' : (db.data.config.autoMode ? 'AUTO-BATTERY MODE' : 'FIXED MODE');
   db.data.auditLogs.unshift({
     id: randomUUID(),
     action: `Config updated: Battery=${db.data.config.fixedBattery}, PCBA=${db.data.config.fixedPCBA}, Mode=${modeLabel}`,
@@ -76,30 +77,27 @@ export const getComponents = (req, res) => {
 export const manageComponents = async (req, res) => {
   const { category, action, id, name, status } = req.body;
   
-  // Ensure all categories exist
-  if (!db.data.components.lenses) db.data.components.lenses = [];
-  if (!db.data.components[category]) return res.status(400).json({ message: 'Invalid category' });
   const now = new Date().toISOString().split('T')[0];
 
-  if (category === 'shells') {
-    if (action === 'add') {
-      db.data.components.shells.push(name);
-    } else if (action === 'edit') {
-      const idx = parseInt(id.replace('S-', ''), 10);
-      if (idx >= 0 && idx < db.data.components.shells.length) {
-        db.data.components.shells[idx] = name;
-      }
-    } else if (action === 'delete') {
-      const idx = parseInt(id.replace('S-', ''), 10);
-      if (idx >= 0 && idx < db.data.components.shells.length) {
-        db.data.components.shells.splice(idx, 1);
-      }
+  if (action === 'addCategory') {
+    if (!db.data.components[category]) {
+      db.data.components[category] = [];
     }
-  } else {
-    // batteries, pcbas, coils, lenses — all use the same object structure
-    const arr = db.data.components[category];
-    if (action === 'add') {
-      arr.push({ id: randomUUID().split('-')[0], name, status: status || 'Active', updatedAt: now });
+    db.data.auditLogs.unshift({
+      id: randomUUID(),
+      action: `Category created: [${category}]`,
+      user: 'Admin',
+      time: new Date().toISOString()
+    });
+    await db.write();
+    return res.json({ success: true, components: db.data.components });
+  }
+
+  if (!db.data.components[category]) return res.status(400).json({ message: 'Invalid category' });
+
+  const arr = db.data.components[category];
+  if (action === 'add') {
+    arr.push({ id: randomUUID().split('-')[0], name, status: status || 'Active', updatedAt: now });
     } else if (action === 'edit') {
       const item = arr.find(x => x.id === id);
       if (item) {
@@ -111,7 +109,6 @@ export const manageComponents = async (req, res) => {
       const idx = arr.findIndex(x => x.id === id);
       if (idx !== -1) arr.splice(idx, 1);
     }
-  }
 
   db.data.auditLogs.unshift({
     id: randomUUID(),

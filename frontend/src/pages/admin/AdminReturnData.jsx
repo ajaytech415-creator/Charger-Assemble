@@ -28,13 +28,15 @@ export default function AdminReturnData() {
 
   const fullMOs   = entries.filter(e => e.isFullMO);
   const compRets  = entries.filter(e => !e.isFullMO);
-  const compBreak = ['Battery','PCBA','Coil','Shell'].reduce((acc, c) => {
+  const categories = [...new Set(compRets.map(e => e.component).filter(Boolean))];
+  const compBreak = categories.reduce((acc, c) => {
     const ces = compRets.filter(e => e.component === c);
     acc[c] = { count: ces.length, totalQty: ces.reduce((s, e) => s + (e.componentQty || 0), 0) };
     return acc;
   }, {});
 
-  const COMP_COLORS = { Battery:'#2563eb', PCBA:'#16a34a', Coil:'#7c3aed', Shell:'#d97706' };
+  const palette = ['#2563eb', '#16a34a', '#7c3aed', '#d97706', '#e67e22', '#059669', '#dc2626', '#0891b2'];
+  const getCatColor = (idx) => palette[idx % palette.length];
 
   return (
     <div>
@@ -54,10 +56,10 @@ export default function AdminReturnData() {
           <div style={{ fontSize: 28, fontWeight: 800, color: '#dc2626' }}>{fullMOs.length}</div>
           <div style={{ fontSize: 11, color: '#9ca3af' }}>MOs fully returned</div>
         </div>
-        {['Battery','PCBA','Coil','Shell'].map(c => (
+        {categories.map((c, idx) => (
           <div key={c} className="card" style={{ padding: '14px 16px' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: COMP_COLORS[c], marginBottom: 6 }}>{c} Returns</div>
-            <div style={{ fontSize: 22, fontWeight: 800, color: COMP_COLORS[c] }}>{compBreak[c].count}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: getCatColor(idx), marginBottom: 6 }}>{c} Returns</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: getCatColor(idx) }}>{compBreak[c].count}</div>
             <div style={{ fontSize: 10, color: '#9ca3af' }}>QTY: {compBreak[c].totalQty.toLocaleString()}</div>
           </div>
         ))}
@@ -133,23 +135,21 @@ export default function AdminReturnData() {
                         {e.returnType}
                       </span>
                     </td>
-                    <td style={{ fontWeight: 600, color: COMP_COLORS[e.component] || '#374151', fontSize: 13 }}>
+                    <td style={{ fontWeight: 600, color: '#374151', fontSize: 13 }}>
                       {e.isFullMO ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 500, color: '#4b5563', whiteSpace: 'nowrap' }}>
-                          <div><span style={{color: COMP_COLORS.Battery}}>Battery:</span> {e.moDetails?.battery || '—'}</div>
-                          <div><span style={{color: COMP_COLORS.PCBA}}>PCBA:</span> {e.moDetails?.pcba || '—'}</div>
-                          <div><span style={{color: COMP_COLORS.Coil}}>Coil:</span> {e.moDetails?.coil || '—'}</div>
-                          <div><span style={{color: COMP_COLORS.Shell}}>Shell:</span> {e.moDetails?.shell || '—'}</div>
+                          {(e.moDetails?.components || []).map((comp, i) => (
+                            <div key={i}><span style={{color: getCatColor(i)}}>{comp.category}:</span> {comp.name}</div>
+                          ))}
                         </div>
                       ) : e.component || '—'}
                     </td>
                     <td style={{ fontWeight: 700 }}>
                       {e.isFullMO ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 600, whiteSpace: 'nowrap' }}>
-                          <div style={{ color: COMP_COLORS.Battery }}>× {e.moDetails?.batteryQty ?? e.moDetails?.qty ?? '—'}</div>
-                          <div style={{ color: COMP_COLORS.PCBA }}>× {e.moDetails?.pcbaQty ?? e.moDetails?.qty ?? '—'}</div>
-                          <div style={{ color: COMP_COLORS.Coil }}>× {e.moDetails?.coilQty ?? e.moDetails?.qty ?? '—'}</div>
-                          <div style={{ color: COMP_COLORS.Shell }}>× {e.moDetails?.shellQty ?? e.moDetails?.qty ?? '—'}</div>
+                          {(e.moDetails?.components || []).map((comp, i) => (
+                            <div key={i} style={{ color: getCatColor(i) }}>× {comp.collectedQty ?? e.moDetails?.qty ?? '—'}</div>
+                          ))}
                         </div>
                       ) : (e.componentQty || 0).toLocaleString()}
                     </td>

@@ -10,16 +10,15 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
   const [error, setError] = useState('');
 
   const totalQty = rows.reduce((s, r) => s + parseInt(r.qty || 0), 0);
-  const uniqueSKUs = new Set(rows.map(r => r.sku)).size;
+  const uniqueSKUs = new Set(rows.map(r => r.size || r.sku)).size;
 
   const handleSubmit = async () => {
     if (!confirmed) return;
     setLoading(true);
     setError('');
     try {
-      for (const row of rows) {
-        await api.createMO({ ...row, batchId, submittedBy: user?.fullName });
-      }
+      const bulkPayload = rows.map(row => ({ ...row, batchId, submittedBy: user?.fullName }));
+      await api.createMOBulk(bulkPayload);
       onSubmit();
     } catch (err) {
       setError(err.message || 'Failed to submit. Please try again.');
@@ -30,7 +29,6 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
 
   return (
     <div style={{ minHeight: '100vh', background: 'transparent' }}>
-      {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
@@ -53,9 +51,8 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
         </div>
       </nav>
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: 1000, margin: '0 auto', padding: '40px 24px' }}>
         <div className="card animate-fade" style={{ padding: 0, overflow: 'hidden' }}>
-          {/* Header */}
           <div style={{ padding: '24px 28px', borderBottom: '1px solid #f3f4f6', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
               <div style={{ width: 44, height: 44, background: '#eff6ff', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -69,7 +66,6 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
             <span className="badge badge-primary">Batch ID: #{batchId?.split('-')[1] || 'N/A'}-P</span>
           </div>
 
-          {/* Stats row */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', padding: '20px 28px', gap: 0, borderBottom: '1px solid #f3f4f6' }}>
             {[
               { icon: 'database', label: 'TOTAL ROWS', value: rows.length },
@@ -85,19 +81,16 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
             ))}
           </div>
 
-          {/* Table */}
-          <div className="table-wrapper" style={{ margin: '0 0' }}>
-            <table>
+          <div className="table-wrapper" style={{ margin: '0 0', overflowX: 'auto' }}>
+            <table style={{ minWidth: 900 }}>
               <thead>
                 <tr>
                   <th>Plan Date</th>
                   <th>MO Number</th>
-                  <th>SKU</th>
+                  <th>Type</th>
+                  <th>Size / SKU</th>
                   <th>QTY</th>
-                  <th>Battery</th>
-                  <th>PCBA</th>
-                  <th>Coil</th>
-                  <th>Shell</th>
+                  <th>Components</th>
                 </tr>
               </thead>
               <tbody>
@@ -109,12 +102,18 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
                       </span>
                     </td>
                     <td style={{ color: '#2563eb', fontWeight: 600 }}>{row.moNumber || '—'}</td>
-                    <td><span className="badge badge-primary">{row.sku}</span></td>
+                    <td>{row.type}</td>
+                    <td><span className="badge badge-primary">{row.size || row.sku}</span></td>
                     <td style={{ fontWeight: 600 }}>{parseInt(row.qty).toLocaleString()}</td>
-                    <td className="text-sm">{row.battery} <strong style={{color:'#2563eb'}}>(Collected: {row.batteryQty})</strong></td>
-                    <td className="text-sm">{row.pcba} <strong style={{color:'#7c3aed'}}>(Collected: {row.pcbaQty})</strong></td>
-                    <td className="text-sm">{row.coil} <strong style={{color:'#059669'}}>(Collected: {row.coilQty})</strong></td>
-                    <td className="text-sm">{row.shell} <strong style={{color:'#d97706'}}>(Collected: {row.shellQty})</strong></td>
+                    <td>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        {row.components?.map(c => (
+                          <span key={c.name} style={{ fontSize: 11, background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, border: '1px solid #e2e8f0', color: '#334155' }}>
+                            {c.name}: <strong>{c.collectedQty}</strong>
+                          </span>
+                        ))}
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -122,7 +121,6 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
           </div>
 
           <div style={{ padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Warning */}
             <div className="alert alert-warning" style={{ display: 'flex', gap: 12 }}>
               <GlassIcon name="security" size={20} color="#d97706" />
               <div><strong>Review derived components carefully.</strong> Once submitted, this plan will be locked for production and can only be modified by an administrator. Ensure SKU parsing was correctly interpreted for all {rows.length} rows.</div>
@@ -130,7 +128,6 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
 
             {error && <div className="alert alert-danger" style={{ display: 'flex', gap: 12 }}><GlassIcon name="delete" size={20} color="#dc2626" /> {error}</div>}
 
-            {/* Confirm checkbox */}
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '16px', border: '1px solid #e5e7eb', borderRadius: 8 }}>
               <input
                 type="checkbox" id="confirmCheck"
@@ -146,7 +143,6 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
               </div>
             </div>
 
-            {/* Actions */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <button className="btn btn-secondary" onClick={onBack}>← Back to Edit</button>
               <div style={{ display: 'flex', gap: 10 }}>

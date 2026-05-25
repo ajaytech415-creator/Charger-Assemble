@@ -2,7 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { login } from './routes/auth.js';
-import { getMOs, createMO, updateMO, deleteMO, parseSKUPreview } from './routes/mos.js';
+import { getMOs, createMO, createMOBulk, updateMO, deleteMO, parseSKUPreview } from './routes/mos.js';
 import { getConfig, updateConfig, getUsers, createUser, updateUser, deleteUser, getComponents, manageComponents, getAuditLogs, deleteAuditLogs, backupDatabase, handleDbAction, getTrash, handleTrashAction, wipeAllData } from './routes/admin.js';
 import { getStats, getReport } from './routes/stats.js';
 import { downloadWipExcel } from './routes/wipReport.js';
@@ -10,6 +10,7 @@ import { getScrapEntries, createScrapEntry, updateScrapEntry, deleteScrapEntry, 
 import { getReturnEntries, createReturnEntry, deleteReturnEntry, replenishReturnEntry } from './routes/returns.js';
 import { getReworkEntries, createReworkEntry, updateReworkEntry, deleteReworkEntry, exportReworkExcel } from './routes/rework.js';
 import { getRndProducts, createRndProduct, updateRndProduct, deleteRndProduct, getRndEntries, createRndEntry, updateRndEntry, deleteRndEntry, exportRndExcel } from './routes/rnd.js';
+import { getBoms, createBom, updateBom, deleteBom } from './routes/boms.js';
 import { visionUpload, extractFromImage } from './routes/vision.js';
 import { mkdirSync } from 'fs';
 
@@ -31,6 +32,7 @@ app.post('/api/auth/login', login);
 // --- MOs ---
 app.get('/api/mos', getMOs);
 app.post('/api/mos', createMO);
+app.post('/api/mos/bulk', createMOBulk);
 app.put('/api/mos/:id', updateMO);
 app.delete('/api/mos/:id', deleteMO);
 app.post('/api/mos/parse-sku', parseSKUPreview);
@@ -65,6 +67,12 @@ app.post('/api/rnd/entries', createRndEntry);
 app.put('/api/rnd/entries/:id', updateRndEntry);
 app.delete('/api/rnd/entries/:id', deleteRndEntry);
 app.get('/api/rnd/export', exportRndExcel);
+
+// --- BOMs ---
+app.get('/api/boms', getBoms);
+app.post('/api/boms', createBom);
+app.put('/api/boms/:id', updateBom);
+app.delete('/api/boms/:id', deleteBom);
 
 // --- Admin: Config ---
 app.get('/api/admin/config', getConfig);

@@ -50,27 +50,24 @@ export const downloadWipExcel = (req, res) => {
   //
   // WIP = (IN + RC) − (RJ + OUT)  [IN is already net of Returns because the backend physically subtracts RT from mo qty fields]
   const calcStats = (name, category, mos, scrap, returns, reworks) => {
-    const nameField = { batteries: 'battery', pcbas: 'pcba', coils: 'coil', shells: 'shell', lenses: 'lens'      }[category];
-    const qtyField  = { batteries: 'batteryQty', pcbas: 'pcbaQty', coils: 'coilQty', shells: 'shellQty', lenses: 'lensQty'  }[category];
-    const compField = { batteries: 'batteryComp',pcbas: 'pcbaComp',coils: 'coilComp',shells: 'shellComp', lenses: 'lensComp' }[category];
-    const compType  = { batteries: 'Battery',    pcbas: 'PCBA',    coils: 'Coil',    shells: 'Shell',    lenses: 'Lens'      }[category];
-
     let IN = 0, RC = 0, RJ = 0, RT = 0, OUT = 0;
 
     // IN & OUT from MO entries
     mos.forEach(e => {
-      if (e[nameField] === name) {
-        // Use per-component qty if stored, otherwise fall back to plan qty
-        IN += e[qtyField] !== undefined ? (e[qtyField] || 0) : (e.qty || 0);
-        if (e.status === 'Completed') {
-          OUT += e[compField] || 0;
+      if (e.components) {
+        const c = e.components.find(comp => comp.category === category && comp.name === name);
+        if (c) {
+          IN += c.collectedQty || 0;
+          if (e.status === 'Completed') {
+            OUT += c.completedQty || 0;
+          }
         }
       }
     });
 
     // RC & RJ from scrap entries
     scrap.forEach(e => {
-      if (e.component === compType && e.componentName === name) {
+      if (e.component === category && e.componentName === name) {
         RC += e.receive || 0;
         RJ += e.reject  || 0;
       }
@@ -78,7 +75,7 @@ export const downloadWipExcel = (req, res) => {
 
     // RC & RJ from rework entries (same formula — rework is logged as RC/RJ)
     (reworks || []).forEach(e => {
-      if (e.component === compType && e.componentName === name) {
+      if (e.component === category && e.componentName === name) {
         RC += e.receive || 0;
         RJ += e.reject  || 0;
       }
@@ -86,17 +83,15 @@ export const downloadWipExcel = (req, res) => {
 
     // RT from return entries
     returns.forEach(e => {
-      if (e.isFullMO) {
-        // Full MO return: look up the MO and take its per-component qty
-        const mo = allMOs.find(m => m.id === e.moId);
-        if (mo && mo[nameField] === name) {
-          RT += mo[qtyField] !== undefined ? (mo[qtyField] || 0) : (mo.qty || 0);
-        }
-      } else if (e.component === compType) {
-        // Single-component return: only count if the MO used this named component
-        const mo = allMOs.find(m => m.id === e.moId);
-        if (mo && mo[nameField] === name) {
-          RT += e.componentQty || 0;
+      const mo = allMOs.find(m => m.id === e.moId);
+      if (mo && mo.components) {
+        const c = mo.components.find(comp => comp.category === category && comp.name === name);
+        if (c) {
+          if (e.isFullMO) {
+            RT += c.collectedQty || 0; // The returned amount of this component
+          } else if (e.component === category) {
+            RT += e.componentQty || 0;
+          }
         }
       }
     });
@@ -108,13 +103,7 @@ export const downloadWipExcel = (req, res) => {
 
 
   // ─── Category definitions ──────────────────────────────────────────────────
-  const categories = [
-    { key: 'pcbas',     label: 'PCBA'    },
-    { key: 'batteries', label: 'Battery' },
-    { key: 'coils',     label: 'Coil'    },
-    { key: 'shells',    label: 'Shell'   },
-    { key: 'lenses',    label: 'Lens'    },
-  ];
+  const categories = Object.keys(comps).map(cat => ({ key: cat, label: cat }));
 
   const hasPeriod   = !!(startDate && endDate);
   const fmtDT = (s) => s ? s.replace('T', ' ') : '';

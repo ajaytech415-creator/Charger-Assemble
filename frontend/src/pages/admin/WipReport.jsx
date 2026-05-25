@@ -69,14 +69,13 @@ export default function WipReport() {
   const wip = stats?.wip || {};
 
   /* ── Per-category rows from report ── */
-  const cats = report
-    ? [
-        { label: 'PCBA',    key: 'pcbas',     color: '#16a34a' },
-        { label: 'Battery', key: 'batteries', color: '#2563eb' },
-        { label: 'Coil',    key: 'coils',     color: '#7c3aed' },
-        { label: 'Shell',   key: 'shells',    color: '#d97706' },
-        { label: 'Lens',    key: 'lenses',    color: '#e67e22' },
-      ]
+  const palette = ['#16a34a', '#2563eb', '#7c3aed', '#d97706', '#e67e22', '#059669', '#dc2626', '#0891b2', '#db2777', '#4f46e5'];
+  const cats = report && report.detailed
+    ? Object.keys(report.detailed).map((cat, i) => ({
+        label: cat,
+        key: cat,
+        color: palette[i % palette.length]
+      }))
     : [];
 
   return (

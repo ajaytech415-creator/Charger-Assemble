@@ -37,8 +37,8 @@ echo   Frontend : http://localhost:5173
 echo   Backend  : http://localhost:5000
 echo.
 echo   CREDENTIALS:
-echo   Admin  ID: UltraAss   Pass: Human@2026
-echo   User   ID: Ajay       Pass: 1219
+echo   Admin  ID: UltraCharger   Pass: Human@2026
+echo   User   ID: Rajesh         Pass: 1122
 echo  ==========================================
 echo.
 echo  This window will close automatically.

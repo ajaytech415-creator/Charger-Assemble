@@ -63,10 +63,10 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Default Credentials
 
-| Role  | Employee ID | Password    |
+| Role  | ID          | Password    |
 |-------|-------------|-------------|
-| Admin | UltraAss    | Human@2026  |
-| User  | Ajay        | 1219        |
+| Admin | UltraCharger| Human@2026  |
+| User  | Rajesh      | 1122        |
 
 ## Tech Stack
 

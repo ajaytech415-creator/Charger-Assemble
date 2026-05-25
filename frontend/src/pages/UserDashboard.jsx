@@ -17,18 +17,7 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
   
   const [closingMO, setClosingMO] = useState(null);
   const [closeQty, setCloseQty] = useState('');
-  // xyzComp = assembled/completed (WIP OUT)
-  const [bClose, setBClose] = useState('');
-  const [pClose, setPClose] = useState('');
-  const [cClose, setCClose] = useState('');
-  const [sClose, setSClose] = useState('');
-  const [lClose, setLClose] = useState('');
-  // xyzQty = collected qty (WIP IN)
-  const [bCollected, setBCollected] = useState('');
-  const [pCollected, setPCollected] = useState('');
-  const [cCollected, setCCollected] = useState('');
-  const [sCollected, setSCollected] = useState('');
-  const [lCollected, setLCollected] = useState('');
+  const [moComponents, setMoComponents] = useState([]);
   const [editPlanDate, setEditPlanDate] = useState('');
 
   // Return feature
@@ -120,64 +109,31 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
   };
 
   const getReturnableQty = (mo, type) => {
-    if (!mo) return 0;
-    const comps = type === 'FullMO' 
-      ? ['Battery', 'PCBA', 'Shell', ...(mo.isProRing ? ['Lens'] : ['Coil'])] 
-      : [type];
+    if (!mo || !mo.components) return 0;
+    
+    let comps = type === 'FullMO' ? mo.components : mo.components.filter(c => c.category === type);
     
     let minReturnable = Infinity;
     
-    comps.forEach(compType => {
-      // 1. Collected Qty (WIP IN)
-      const qtyMap = { Battery: 'batteryQty', PCBA: 'pcbaQty', Coil: 'coilQty', Shell: 'shellQty', Lens: 'lensQty' };
-      const collected = mo[qtyMap[compType]] !== undefined ? mo[qtyMap[compType]] : (mo.qty || 0);
-      
-      // 2. Assembled Qty (WIP OUT)
-      const compMap = { Battery: 'batteryComp', PCBA: 'pcbaComp', Coil: 'coilComp', Shell: 'shellComp', Lens: 'lensComp' };
-      const assembled = mo[compMap[compType]] || 0;
-
-      // 3. Scrap
+    comps.forEach(comp => {
       let scrapReject = 0;
       let scrapReceive = 0;
       scrapEntries.forEach(s => {
-        if (s.moId === mo.id && s.component === compType) {
+        if (s.moId === mo.id && s.component === comp.category) {
           scrapReject += (s.reject || 0);
           scrapReceive += (s.receive || 0);
         }
       });
 
-      // 4. Already Returned
-      let alreadyReturned = 0;
-      returnHistory.forEach(r => {
-        if (r.status !== 'Replenished' && r.moId === mo.id) {
-          if (r.isFullMO) {
-            alreadyReturned += (r.componentQty || 0);
-          } else if (r.component === compType) {
-            alreadyReturned += (r.componentQty || 0);
-          }
-        }
-      });
-
-      // Max returnable = Collected - Assembled - ScrapReject + ScrapReceive - AlreadyReturned
-      // Note: If components were already returned, the backend might have already reduced `batteryQty`.
-      // If the backend physically reduces `batteryQty`, then `alreadyReturned` should NOT be subtracted here 
-      // because `collected` is ALREADY smaller! 
-      // Since we are changing the backend to physically reduce the MO qty, we ONLY subtract Assembled and Scrap.
-      let returnable = collected - assembled - scrapReject + scrapReceive;
+      let returnable = comp.collectedQty - comp.completedQty - scrapReject + scrapReceive;
       if (returnable < 0) returnable = 0;
-      
       if (returnable < minReturnable) minReturnable = returnable;
     });
 
     return minReturnable === Infinity ? 0 : minReturnable;
   };
 
-  const getCompQty = (mo, type) => {
-    if (!mo || type === 'FullMO') return mo?.qty || 0;
-    const map = { Battery: 'batteryComp', PCBA: 'pcbaComp', Coil: 'coilComp', Shell: 'shellComp', Lens: 'lensComp' };
-    const val = mo[map[type]];
-    return val !== undefined ? val : mo.qty;
-  };
+
 
   const submitReturn = async () => {
     if (!returnSelMO) { setReturnError('Select an MO first.'); return; }
@@ -225,16 +181,7 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
   const handleUpdateQty = async (mo) => {
     setClosingMO(mo);
     setCloseQty(String(mo.completedQty || 0));
-    setBClose(String(mo.batteryComp || 0));
-    setPClose(String(mo.pcbaComp || 0));
-    setCClose(String(mo.coilComp || 0));
-    setSClose(String(mo.shellComp || 0));
-    setLClose(String(mo.lensComp || 0));
-    setBCollected(String(mo.batteryQty !== undefined ? mo.batteryQty : mo.qty));
-    setPCollected(String(mo.pcbaQty    !== undefined ? mo.pcbaQty    : mo.qty));
-    setCCollected(String(mo.coilQty    !== undefined ? mo.coilQty    : mo.qty));
-    setSCollected(String(mo.shellQty   !== undefined ? mo.shellQty   : mo.qty));
-    setLCollected(String(mo.lensQty    !== undefined ? mo.lensQty    : 0));
+    setMoComponents(mo.components ? JSON.parse(JSON.stringify(mo.components)) : []);
     setEditPlanDate(mo.planDate || '');
   };
 
@@ -243,26 +190,14 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
     setUpdatingId(closingMO.id);
     try {
       const newCompleted = parseInt(closeQty || 0);
-      const bComp = parseInt(bClose || 0);
-      const pComp = parseInt(pClose || 0);
-      const cComp = parseInt(cClose || 0);
-      const sComp = parseInt(sClose || 0);
-      const lComp = parseInt(lClose || 0);
-      const bQty = parseInt(bCollected || 0);
-      const pQty = parseInt(pCollected || 0);
-      const cQty = parseInt(cCollected || 0);
-      const sQty = parseInt(sCollected || 0);
-      const lQty = parseInt(lCollected || 0);
-
       await api.updateMO(closingMO.id, {
         completedQty: newCompleted,
-        batteryComp: bComp, pcbaComp: pComp, coilComp: cComp, shellComp: sComp, lensComp: lComp,
-        batteryQty:  bQty,  pcbaQty:  pQty,  coilQty:  cQty,  shellQty:  sQty,  lensQty:  lQty,
+        components: moComponents,
         planDate: editPlanDate,
       });
-      setClosingMO(null); setCloseQty('');
-      setBClose(''); setPClose(''); setCClose(''); setSClose(''); setLClose('');
-      setBCollected(''); setPCollected(''); setCCollected(''); setSCollected(''); setLCollected('');
+      setClosingMO(null); 
+      setCloseQty('');
+      setMoComponents([]);
       setEditPlanDate('');
       load(false);
     } catch (e) { console.error(e); }
@@ -306,17 +241,12 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
   // Find MOs with low component collection
   const pendingMOsList = mos.filter(m => m.status !== 'Completed');
   const lowComponentMOs = pendingMOsList.filter(mo => {
+    if (!mo.components) return false;
     const targetQ = parseInt(mo.qty || 0);
-    const bQ = parseInt(mo.batteryQty || 0);
-    const pQ = parseInt(mo.pcbaQty || 0);
-    const cQ = mo.isProRing ? null : parseInt(mo.coilQty || 0);
-    const sQ = parseInt(mo.shellQty || 0);
-    const lQ = mo.isProRing ? parseInt(mo.lensQty || 0) : null;
-    const relevant = [bQ, pQ, sQ, ...(cQ !== null ? [cQ] : []), ...(lQ !== null ? [lQ] : [])];
-    const maxQ = Math.max(...relevant);
-    
-    // Alert if any component is below Target Qty or below Max Collected (mismatch)
-    return relevant.some(q => q < targetQ || q < maxQ);
+    const collectedValues = mo.components.map(c => c.collectedQty);
+    if (collectedValues.length === 0) return false;
+    const maxQ = Math.max(...collectedValues);
+    return mo.components.some(c => c.collectedQty < c.targetQty || c.collectedQty < maxQ);
   });
 
   return (
@@ -750,13 +680,9 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                       />
                     </th>
                     <th>MO Number</th>
-                    <th>SKU</th>
+                    <th>SKU / Type</th>
                     <th>Plan Date</th>
-                    <th>Battery</th>
-                    <th>PCBA</th>
-                    <th>Coil</th>
-                    <th>Shell</th>
-                    <th style={{color:'#e67e22'}}>Lens</th>
+                    <th>Components (Collected / Plan)</th>
                     <th>Total QTY</th>
                     <th>Completed</th>
                     <th>Status</th>
@@ -782,17 +708,27 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                           )}
                         </td>
                         <td style={{ color: '#2563eb', fontWeight: 600 }}>{mo.moNumber || '—'}</td>
-                        <td><span className="badge badge-primary">{mo.sku}</span></td>
+                        <td><span className="badge badge-primary">{mo.size || mo.sku}</span> {mo.type && <span className="badge" style={{background:'#f3f4f6'}}>{mo.type}</span>}</td>
                         <td>
                             <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600, color: '#2563eb', background: '#eff6ff', padding: '2px 8px', borderRadius: 6, whiteSpace: 'nowrap' }}>
                               <GlassIcon name="history" size={12} color="#2563eb" /> {mo.planDate || '—'}
                           </span>
                         </td>
-                        <td>{renderComponentProgress(mo.battery, mo.batteryQty, mo.batteryComp)}</td>
-                        <td>{renderComponentProgress(mo.pcba, mo.pcbaQty, mo.pcbaComp)}</td>
-                        <td>{mo.isProRing ? <span style={{color:'#9ca3af',fontSize:11}}>N/A</span> : renderComponentProgress(mo.coil, mo.coilQty, mo.coilComp)}</td>
-                        <td>{renderComponentProgress(mo.shell, mo.shellQty, mo.shellComp)}</td>
-                        <td>{mo.isProRing ? renderComponentProgress(mo.lens, mo.lensQty, mo.lensComp) : <span style={{color:'#9ca3af',fontSize:11}}>N/A</span>}</td>
+                        <td>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, maxWidth: 300 }}>
+                            {mo.components?.map(c => {
+                              const isDone = c.completedQty >= c.targetQty;
+                              return (
+                                <div key={c.name} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', padding: '2px 6px', borderRadius: 6, fontSize: 11, color: '#334155' }}>
+                                  <div style={{ fontWeight: 600, marginBottom: 2 }}>{c.category}</div>
+                                  <div style={{ color: isDone ? '#16a34a' : '#2563eb', fontWeight: 700 }}>
+                                    {c.collectedQty} / {c.targetQty}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </td>
                         <td style={{ fontWeight: 600 }}>{mo.qty?.toLocaleString()}</td>
                         <td style={{ color: '#16a34a', fontWeight: 600 }}>{(mo.completedQty || 0).toLocaleString()}</td>
                         <td>
@@ -876,26 +812,8 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                           <td>
                             {r.isFullMO ? <span className="badge badge-danger">Full MO</span> : <span className="badge badge-primary">Component</span>}
                           </td>
-                          <td>
-                            {r.isFullMO ? (
-                              <div style={{ fontSize: 11, lineHeight: 1.8 }}>
-                                <div><span style={{ fontWeight: 700, color: '#2563eb' }}>Battery:</span> {r.moDetails?.battery || '—'}</div>
-                                <div><span style={{ fontWeight: 700, color: '#16a34a' }}>PCBA:</span> {r.moDetails?.pcba || '—'}</div>
-                                <div><span style={{ fontWeight: 700, color: '#7c3aed' }}>Coil:</span> {r.moDetails?.coil || '—'}</div>
-                                <div><span style={{ fontWeight: 700, color: '#d97706' }}>Shell:</span> {r.moDetails?.shell || '—'}</div>
-                              </div>
-                            ) : r.component || '—'}
-                          </td>
-                          <td style={{ fontWeight: 700 }}>
-                            {r.isFullMO ? (
-                              <div style={{ fontSize: 11, lineHeight: 1.8 }}>
-                                <div style={{ color: '#2563eb' }}>× {r.moDetails?.batteryQty ?? r.moDetails?.qty ?? '—'}</div>
-                                <div style={{ color: '#16a34a' }}>× {r.moDetails?.pcbaQty ?? r.moDetails?.qty ?? '—'}</div>
-                                <div style={{ color: '#7c3aed' }}>× {r.moDetails?.coilQty ?? r.moDetails?.qty ?? '—'}</div>
-                                <div style={{ color: '#d97706' }}>× {r.moDetails?.shellQty ?? r.moDetails?.qty ?? '—'}</div>
-                              </div>
-                            ) : r.componentQty}
-                          </td>
+                          <td>{r.isFullMO ? 'All Components' : (r.component || '—')}</td>
+                          <td style={{ fontWeight: 700 }}>{r.componentQty}</td>
                           <td style={{ fontSize: 12, color: '#6b7280' }}>{new Date(r.returnedAt).toLocaleString()}</td>
                           <td>
                             {r.status === 'Replenished' ? (
@@ -935,7 +853,7 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
               </div>
 
               {/* Warning if any component has 0 collected */}
-              {(parseInt(bCollected||0)===0 || parseInt(pCollected||0)===0 || parseInt(cCollected||0)===0 || parseInt(sCollected||0)===0) && (
+              {moComponents.some(c => parseInt(c.collectedQty || 0) === 0) && (
                 <div style={{ margin: '0 0 12px 0', padding: '10px 16px', background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 8, fontSize: 13, color: '#92400e', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <GlassIcon name="alert" size={16} color="#92400e" /> <strong>One or more components have 0 collected qty.</strong> Update the Collected Qty below to reflect what was physically received.
                 </div>
@@ -957,23 +875,21 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                 <div style={{ fontWeight: 700, color: '#1e40af', fontSize: 13, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <GlassIcon name="inbox" size={14} /> Collected Quantity <span style={{ fontWeight: 400, color: '#3b82f6', fontSize: 11 }}>(WIP IN — physically received for this MO)</span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: closingMO.isProRing ? 'repeat(4, 1fr)' : 'repeat(4, 1fr)', gap: 12 }}>
-                  {[
-                    { label: 'Battery', val: bCollected, set: setBCollected, color: '#2563eb' },
-                    { label: 'PCBA',    val: pCollected, set: setPCollected, color: '#7c3aed' },
-                    ...(!closingMO.isProRing ? [{ label: 'Coil',  val: cCollected, set: setCCollected, color: '#059669' }] : []),
-                    { label: 'Shell',   val: sCollected, set: setSCollected, color: '#d97706' },
-                    ...(closingMO.isProRing ? [{ label: 'Lens 🔬', val: lCollected, set: setLCollected, color: '#e67e22' }] : []),
-                  ].map(f => (
-                    <div className="form-group" style={{ marginBottom: 0 }} key={f.label}>
-                      <label style={{ color: f.color, fontWeight: 700 }}>{f.label}</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+                  {moComponents.map((c, i) => (
+                    <div className="form-group" style={{ marginBottom: 0 }} key={i}>
+                      <label style={{ color: '#2563eb', fontWeight: 700, fontSize: 11 }}>{c.category}</label>
                       <input
                         type="number" min="0"
-                        value={f.val}
-                        onChange={e => f.set(e.target.value)}
-                        style={{ borderColor: parseInt(f.val||0) === 0 ? '#fca5a5' : '' }}
+                        value={c.collectedQty}
+                        onChange={e => {
+                          const newComps = [...moComponents];
+                          newComps[i].collectedQty = e.target.value;
+                          setMoComponents(newComps);
+                        }}
+                        style={{ borderColor: parseInt(c.collectedQty||0) === 0 ? '#fca5a5' : '' }}
                       />
-                      <p className="text-xs text-muted" style={{ marginTop: 3 }}>Plan: {closingMO.qty}</p>
+                      <p className="text-xs text-muted" style={{ marginTop: 3 }}>Target: {c.targetQty}</p>
                     </div>
                   ))}
                 </div>
@@ -988,22 +904,19 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                   <button 
                     className="btn btn-sm" 
                     onClick={() => {
-                      setBClose(bCollected);
-                      setPClose(pCollected);
-                      if (!closingMO.isProRing) setCClose(cCollected);
-                      setSClose(sCollected);
-                      if (closingMO.isProRing) setLClose(lCollected);
-                      const vals = [parseInt(bCollected||0), parseInt(pCollected||0), parseInt(sCollected||0)];
-                      if (!closingMO.isProRing) vals.push(parseInt(cCollected||0));
-                      if (closingMO.isProRing) vals.push(parseInt(lCollected||0));
-                      setCloseQty(String(Math.min(...vals)));
+                      const newComps = [...moComponents];
+                      newComps.forEach(c => c.completedQty = c.collectedQty);
+                      setMoComponents(newComps);
+                      
+                      const minVal = Math.min(...newComps.map(c => parseInt(c.collectedQty||0)));
+                      setCloseQty(String(minVal));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
                   >
                     ⚡ Auto Fill Qty
                   </button>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: closingMO.isProRing ? '1fr 1fr 1fr 1fr 1fr' : '1fr 1fr 1fr 1fr 1fr', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12 }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label style={{ fontWeight: 700, color: '#374151' }}>Overall MO</label>
                     <input 
@@ -1012,43 +925,36 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                       value={closeQty} 
                       onChange={e => {
                         let val = e.target.value;
-                        const vals = [parseInt(bCollected||0), parseInt(pCollected||0), parseInt(sCollected||0)];
-                        if (!closingMO.isProRing) vals.push(parseInt(cCollected||0));
-                        if (closingMO.isProRing) vals.push(parseInt(lCollected||0));
-                        const minCollected = Math.min(...vals);
+                        const minCollected = Math.min(...moComponents.map(c => parseInt(c.collectedQty||0)));
                         if (val !== '' && parseInt(val) > minCollected) val = String(minCollected);
                         setCloseQty(val);
                         if (val !== '') {
-                          setBClose(val); setPClose(val); setSClose(val);
-                          if (!closingMO.isProRing) setCClose(val);
-                          if (closingMO.isProRing) setLClose(val);
+                          const newComps = [...moComponents];
+                          newComps.forEach(c => c.completedQty = val);
+                          setMoComponents(newComps);
                         }
                       }} 
                     />
                     <p className="text-xs text-muted" style={{ marginTop: 3 }}>Plan: {closingMO.qty}</p>
                   </div>
-                  {[
-                    { label: 'Battery', val: bClose, set: setBClose, color: '#2563eb', collected: bCollected },
-                    { label: 'PCBA',    val: pClose, set: setPClose, color: '#7c3aed', collected: pCollected },
-                    ...(!closingMO.isProRing ? [{ label: 'Coil', val: cClose, set: setCClose, color: '#059669', collected: cCollected }] : []),
-                    { label: 'Shell',   val: sClose, set: setSClose, color: '#d97706', collected: sCollected },
-                    ...(closingMO.isProRing ? [{ label: 'Lens 🔬', val: lClose, set: setLClose, color: '#e67e22', collected: lCollected }] : []),
-                  ].map(f => (
-                    <div className="form-group" style={{ marginBottom: 0 }} key={f.label}>
-                      <label style={{ color: f.color, fontWeight: 700 }}>{f.label}</label>
+                  {moComponents.map((c, i) => (
+                    <div className="form-group" style={{ marginBottom: 0 }} key={i}>
+                      <label style={{ color: '#16a34a', fontWeight: 700, fontSize: 11 }}>{c.category}</label>
                       <input 
                         type="number" 
                         min="0" 
-                        max={f.collected}
-                        value={f.val} 
+                        max={c.collectedQty}
+                        value={c.completedQty} 
                         onChange={e => {
                           let val = e.target.value;
-                          const maxVal = parseInt(f.collected || 0);
+                          const maxVal = parseInt(c.collectedQty || 0);
                           if (val !== '' && parseInt(val) > maxVal) val = String(maxVal);
-                          f.set(val);
+                          const newComps = [...moComponents];
+                          newComps[i].completedQty = val;
+                          setMoComponents(newComps);
                         }} 
                       />
-                      <p className="text-xs text-muted" style={{ marginTop: 3 }}>Collected: {f.collected}</p>
+                      <p className="text-xs text-muted" style={{ marginTop: 3 }}>Collected: {c.collectedQty}</p>
                     </div>
                   ))}
                 </div>
@@ -1141,14 +1047,10 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                         <label>Return Type</label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
                           {[
-                            'Battery', 'PCBA',
-                            ...(returnSelMO.isProRing ? [] : ['Coil']),
-                            'Shell',
-                            ...(returnSelMO.isProRing ? ['Lens'] : []),
+                            ...(returnSelMO.components?.map(c => c.category) || []),
                             'FullMO'
                           ].map(t => {
-                            const colors = { Battery:'#2563eb', PCBA:'#16a34a', Coil:'#7c3aed', Shell:'#d97706', Lens:'#e67e22', FullMO:'#dc2626' };
-                            const col = colors[t];
+                            const col = t === 'FullMO' ? '#dc2626' : '#2563eb';
                             const availQty = getReturnableQty(returnSelMO, t);
                             const isZero = availQty === 0;
 
@@ -1256,45 +1158,32 @@ export default function UserDashboard({ onBack, onNavigateScrap }) {
                           <th>MO Number</th>
                           <th>Target Qty</th>
                           <th>Max Collected</th>
-                          <th>Battery</th>
-                          <th>PCBA</th>
-                          <th>Coil</th>
-                          <th>Shell</th>
-                          <th>Lens</th>
+                          <th>Components Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {lowComponentMOs.map(mo => {
                           const targetQ = parseInt(mo.qty || 0);
-                          const bQ = parseInt(mo.batteryQty || 0);
-                          const pQ = parseInt(mo.pcbaQty || 0);
-                          const cQ = mo.isProRing ? null : parseInt(mo.coilQty || 0);
-                          const sQ = parseInt(mo.shellQty || 0);
-                          const lQ = mo.isProRing ? parseInt(mo.lensQty || 0) : null;
-                          
-                          const relevant = [bQ, pQ, sQ, ...(cQ !== null ? [cQ] : []), ...(lQ !== null ? [lQ] : [])];
-                          const maxQ = Math.max(...relevant);
-                          
-                          const renderCell = (qty, isRelevant) => {
-                            if (!isRelevant) return <td style={{ color: '#9ca3af' }}>N/A</td>;
-                            const isLow = qty < targetQ || qty < maxQ;
-                            return (
-                              <td style={{ color: isLow ? '#dc2626' : '#16a34a', fontWeight: isLow ? 700 : 400 }}>
-                                {qty}
-                              </td>
-                            );
-                          };
+                          const collectedValues = mo.components?.map(c => c.collectedQty) || [];
+                          const maxQ = collectedValues.length > 0 ? Math.max(...collectedValues) : 0;
                           
                           return (
                             <tr key={mo.id}>
                               <td style={{ fontWeight: 600, color: '#1e40af' }}>{mo.moNumber}</td>
                               <td>{targetQ}</td>
                               <td style={{ fontWeight: 600 }}>{maxQ}</td>
-                              {renderCell(bQ, true)}
-                              {renderCell(pQ, true)}
-                              {renderCell(cQ !== null ? cQ : 0, !mo.isProRing)}
-                              {renderCell(sQ, true)}
-                              {renderCell(lQ !== null ? lQ : 0, !!mo.isProRing)}
+                              <td>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                                  {mo.components?.map(c => {
+                                    const isLow = c.collectedQty < c.targetQty || c.collectedQty < maxQ;
+                                    return (
+                                      <span key={c.name} style={{ fontSize: 11, background: isLow ? '#fef2f2' : '#f0fdf4', color: isLow ? '#dc2626' : '#16a34a', padding: '2px 6px', borderRadius: 4, border: `1px solid ${isLow ? '#fecaca' : '#bbf7d0'}`, fontWeight: isLow ? 700 : 400 }}>
+                                        {c.category}: {c.collectedQty}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </td>
                             </tr>
                           );
                         })}

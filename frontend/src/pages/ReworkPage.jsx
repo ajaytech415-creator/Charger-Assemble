@@ -4,9 +4,6 @@ import { api } from '../services/api';
 import GlassIcon from '../components/GlassIcon';
 import ModalPortal from '../components/ModalPortal';
 
-const COMPONENTS = ['PCBA', 'Battery', 'Coil', 'Shell', 'Lens'];
-const COMP_COLORS = { Battery: '#2563eb', PCBA: '#16a34a', Coil: '#7c3aed', Shell: '#d97706', Lens: '#e67e22' };
-
 export default function ReworkPage({ onBack }) {
   const { user } = useAuth();
 
@@ -76,14 +73,11 @@ export default function ReworkPage({ onBack }) {
     return () => clearTimeout(t);
   }, [reworkSearch, filterDate, filterStart, filterEnd, filterComp, loadRework]);
 
-  // Filtered MO list
   const filteredMOs = mos.filter(mo => {
     if (!moSearch) return true;
     const q = moSearch.toLowerCase();
     const moNum = (mo.moNumber || '').toLowerCase();
-    const last4 = moNum.slice(-4);
-    const last3 = moNum.slice(-3);
-    return moNum.includes(q) || last4.includes(q) || last3.includes(q);
+    return moNum.includes(q) || moNum.slice(-4).includes(q) || moNum.slice(-3).includes(q);
   });
 
   const openEntryModal = (comp, compName, fullMO = false) => {
@@ -108,19 +102,12 @@ export default function ReworkPage({ onBack }) {
     setEntryError('');
     try {
       if (isFullMO) {
-        // Log for all active components (PR: PCBA/Battery/Shell/Lens; others: PCBA/Battery/Coil/Shell)
         await Promise.all(selectedMOs.map(mo => {
-          const comps = [
-            { c: 'Battery', n: mo.battery },
-            { c: 'PCBA',    n: mo.pcba    },
-            ...(mo.isProRing ? [] : [{ c: 'Coil', n: mo.coil }]),
-            { c: 'Shell',   n: mo.shell   },
-            ...(mo.isProRing && mo.lens && mo.lens !== 'N/A' ? [{ c: 'Lens', n: mo.lens }] : []),
-          ];
-          return Promise.all(comps.map(comp =>
+          if (!mo.components) return Promise.resolve();
+          return Promise.all(mo.components.map(comp =>
             api.createRework({
-              moId: mo.id, moNumber: mo.moNumber, sku: mo.sku,
-              component: comp.c, componentName: comp.n || '—',
+              moId: mo.id, moNumber: mo.moNumber, sku: mo.size || mo.sku,
+              component: comp.category, componentName: comp.name || '—',
               receive: rc, reject: rj, isFullMO: true,
               submittedBy: user?.fullName || user?.employeeId || 'User'
             })
@@ -129,7 +116,7 @@ export default function ReworkPage({ onBack }) {
       } else {
         await Promise.all(selectedMOs.map(mo => 
           api.createRework({
-            moId: mo.id, moNumber: mo.moNumber, sku: mo.sku,
+            moId: mo.id, moNumber: mo.moNumber, sku: mo.size || mo.sku,
             component: activeComp, componentName: activeCompName,
             receive: rc, reject: rj, isFullMO: false,
             submittedBy: user?.fullName || user?.employeeId || 'User'
@@ -184,18 +171,19 @@ export default function ReworkPage({ onBack }) {
       }
   }
 
-  // Component card data from selected MO — conditionally show Lens for PR MOs
   const getCompCards = () => {
     if (selectedMOs.length === 0) return [];
     const refMO = selectedMOs[0];
-    const cards = [
-      { comp: 'PCBA',    name: refMO.pcba    || '—', qty: refMO.pcbaComp    || refMO.qty, color: '#16a34a', bg: '#f0fdf4', icon: 'card'     },
-      { comp: 'Battery', name: refMO.battery || '—', qty: refMO.batteryComp || refMO.qty, color: '#2563eb', bg: '#eff6ff', icon: 'database' },
-      ...(!refMO.isProRing ? [{ comp: 'Coil', name: refMO.coil || '—', qty: refMO.coilComp || refMO.qty, color: '#7c3aed', bg: '#fdf4ff', icon: 'shield' }] : []),
-      { comp: 'Shell',   name: refMO.shell   || '—', qty: refMO.shellComp   || refMO.qty, color: '#d97706', bg: '#fffbeb', icon: 'plan'     },
-      ...(refMO.isProRing && refMO.lens && refMO.lens !== 'N/A' ? [{ comp: 'Lens', name: refMO.lens, qty: refMO.lensComp || 0, color: '#e67e22', bg: '#fff7ed', icon: 'shield' }] : []),
-    ];
-    return cards;
+    if (!refMO.components || refMO.components.length === 0) return [];
+
+    return refMO.components.map(c => ({
+      comp: c.category,
+      name: c.name,
+      qty: c.collectedQty,
+      color: '#2563eb',
+      bg: '#eff6ff',
+      icon: 'settings'
+    }));
   };
 
   const handleExport = () => {
@@ -207,8 +195,9 @@ export default function ReworkPage({ onBack }) {
     window.open(api.exportReworkUrl(params), '_blank');
   };
 
-  // Summary totals per component from rework entries
-  const summaryByComp = COMPONENTS.reduce((acc, c) => {
+  const allSummaryComps = Array.from(new Set(reworkEntries.map(e => e.component).filter(Boolean)));
+  
+  const summaryByComp = allSummaryComps.reduce((acc, c) => {
     const entries = reworkEntries.filter(e => e.component === c);
     acc[c] = {
       totalReceive: entries.reduce((s, e) => s + (e.receive || 0), 0),
@@ -218,11 +207,8 @@ export default function ReworkPage({ onBack }) {
     return acc;
   }, {});
 
-  const allSummaryComps = [...new Set(['PCBA', 'Battery', 'Coil', 'Shell', 'Lens', ...reworkEntries.map(e => e.component).filter(Boolean)])];
-
   return (
     <div style={{ minHeight: '100vh', background: 'transparent' }}>
-      {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
@@ -252,7 +238,6 @@ export default function ReworkPage({ onBack }) {
       <div style={{ maxWidth: 1400, margin: '0 auto', padding: '28px 24px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 340px) 1fr', gap: 24, alignItems: 'start' }}>
 
-          {/* LEFT — MO List Panel (COMPLETED MOs) */}
           <div>
             <div className="card" style={{ position: 'sticky', top: 20 }}>
               <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -260,7 +245,6 @@ export default function ReworkPage({ onBack }) {
                 <h3 style={{ margin: 0 }}>Completed MOs</h3>
               </div>
               <div className="card-body">
-                {/* Search */}
                 <div style={{ marginBottom: 12, position: 'relative' }}>
                   <GlassIcon name="search" size={14} color="#9ca3af" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }} />
                   <input
@@ -299,7 +283,7 @@ export default function ReworkPage({ onBack }) {
                           <span className="badge badge-success">Completed</span>
                         </div>
                         <div style={{ fontSize: 12, color: '#6b7280', marginTop: 3 }}>
-                          <span className="badge badge-primary" style={{ fontSize: 11 }}>{mo.sku}</span>
+                          <span className="badge badge-primary" style={{ fontSize: 11 }}>{mo.size || mo.sku}</span>
                           <span style={{ marginLeft: 8 }}>QTY: <strong>{(mo.qty || 0).toLocaleString()}</strong></span>
                         </div>
                       </div>
@@ -310,40 +294,17 @@ export default function ReworkPage({ onBack }) {
             </div>
           </div>
 
-          {/* RIGHT — Main Panel */}
           <div>
-            {/* Global Date Filters */}
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
               <div style={{ display: 'flex', gap: 10, alignItems: 'center', background: '#fff', border: '1px solid #e5e7eb', padding: '6px 12px', borderRadius: 8, boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#4b5563', marginRight: 4 }}>Filter Date:</span>
-                <input 
-                  type="date" 
-                  value={filterDate} 
-                  onChange={e => { setFilterDate(e.target.value); setFilterStart(''); setFilterEnd(''); }} 
-                  style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none', cursor: 'pointer' }} 
-                />
+                <input type="date" value={filterDate} onChange={e => { setFilterDate(e.target.value); setFilterStart(''); setFilterEnd(''); }} style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none' }} />
                 <span style={{ fontSize: 13, color: '#9ca3af', margin: '0 4px' }}>OR</span>
-                <input 
-                  type="date" 
-                  value={filterStart} 
-                  onChange={e => { setFilterStart(e.target.value); setFilterDate(''); }} 
-                  style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none', cursor: 'pointer' }} 
-                />
+                <input type="date" value={filterStart} onChange={e => { setFilterStart(e.target.value); setFilterDate(''); }} style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none' }} />
                 <span style={{ fontSize: 12, color: '#9ca3af' }}>to</span>
-                <input 
-                  type="date" 
-                  value={filterEnd} 
-                  onChange={e => { setFilterEnd(e.target.value); setFilterDate(''); }} 
-                  style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none', cursor: 'pointer' }} 
-                />
+                <input type="date" value={filterEnd} onChange={e => { setFilterEnd(e.target.value); setFilterDate(''); }} style={{ border: 'none', background: '#f9fafb', padding: '4px 8px', borderRadius: 6, fontSize: 13, color: '#4b5563', outline: 'none' }} />
                 {(filterDate || filterStart || filterEnd) && (
-                  <button 
-                    className="btn btn-sm" 
-                    onClick={() => { setFilterDate(''); setFilterStart(''); setFilterEnd(''); }}
-                    style={{ background: '#fee2e2', color: '#991b1b', border: 'none', padding: '4px 8px', marginLeft: 8 }}
-                  >
-                    Clear
-                  </button>
+                  <button className="btn btn-sm" onClick={() => { setFilterDate(''); setFilterStart(''); setFilterEnd(''); }} style={{ background: '#fee2e2', color: '#991b1b', border: 'none', padding: '4px 8px', marginLeft: 8 }}>Clear</button>
                 )}
               </div>
             </div>
@@ -357,7 +318,6 @@ export default function ReworkPage({ onBack }) {
                 </div>
               </div>
             ) : (
-              /* Selected MO Info */
               <div className="card" style={{ marginBottom: 20 }}>
                 <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -368,7 +328,7 @@ export default function ReworkPage({ onBack }) {
                   </div>
                   <button 
                     className="btn btn-primary btn-sm" 
-                    onClick={() => openEntryModal('Full MO', selectedMOs[0].sku, true)}
+                    onClick={() => openEntryModal('Full MO', selectedMOs[0].sku || selectedMOs[0].size, true)}
                     style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', border: 'none' }}
                   >
                     <GlassIcon name="refresh" size={14} color="#fff" /> Full MO Rework
@@ -379,18 +339,12 @@ export default function ReworkPage({ onBack }) {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
                     {getCompCards().map(c => (
                       <div
-                        key={c.comp}
+                        key={c.name}
                         onClick={() => openEntryModal(c.comp, c.name, false)}
-                        style={{
-                          background: c.bg, border: `2px solid ${c.color}30`, borderRadius: 12,
-                          padding: '16px 12px', textAlign: 'center', cursor: 'pointer',
-                          transition: 'all 0.2s',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 6px 20px ${c.color}25`; }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
+                        style={{ background: c.bg, border: `2px solid ${c.color}30`, borderRadius: 12, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
                       >
                         <GlassIcon name={c.icon} size={24} color={c.color} style={{ marginBottom: 8 }} />
-                        <div style={{ fontWeight: 700, color: c.color, fontSize: 13, marginBottom: 4 }}>{c.comp}</div>
+                        <div style={{ fontWeight: 700, color: c.color, fontSize: 13, marginBottom: 4 }}>{c.comp.toUpperCase()}</div>
                         <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, lineHeight: 1.3 }}>{c.name}</div>
                         <div style={{ marginTop: 10 }}>
                           <span style={{ display: 'inline-block', background: '#fff', border: `1.5px solid ${c.color}`, color: c.color, borderRadius: 8, padding: '4px 12px', fontSize: 12, fontWeight: 600 }}>
@@ -404,14 +358,12 @@ export default function ReworkPage({ onBack }) {
               </div>
             )}
 
-            {/* Summary Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 20 }}>
-              {allSummaryComps.filter(c => c && summaryByComp[c]?.count > 0 || ['PCBA','Battery','Coil','Shell'].includes(c)).map(c => {
-                const s = summaryByComp[c] || { totalReceive: 0, totalReject: 0, count: 0 };
-                const col = COMP_COLORS[c] || '#6b7280';
+              {allSummaryComps.map(c => {
+                const s = summaryByComp[c];
                 return (
                   <div key={c} className="card" style={{ padding: '14px 16px' }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: col, marginBottom: 8 }}>{c}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#475569', marginBottom: 8 }}>{c}</div>
                     <div style={{ display: 'flex', gap: 8 }}>
                       <div style={{ flex: 1, textAlign: 'center', background: '#f0fdf4', borderRadius: 8, padding: '6px 4px' }}>
                         <div style={{ fontSize: 18, fontWeight: 700, color: '#16a34a' }}>{s.totalReceive}</div>
@@ -428,7 +380,6 @@ export default function ReworkPage({ onBack }) {
               })}
             </div>
 
-            {/* Rework Records Table */}
             <div className="card">
               <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -438,32 +389,18 @@ export default function ReworkPage({ onBack }) {
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                   <div style={{ position: 'relative', width: 180 }}>
                     <GlassIcon name="search" size={12} color="#9ca3af" style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)' }} />
-                    <input 
-                      placeholder="Search MO..." 
-                      value={reworkSearch} 
-                      onChange={e => setReworkSearch(e.target.value)} 
-                      style={{ paddingLeft: 26, fontSize: 12, width: '100%' }}
-                    />
+                    <input placeholder="Search MO..." value={reworkSearch} onChange={e => setReworkSearch(e.target.value)} style={{ paddingLeft: 26, fontSize: 12, width: '100%' }} />
                   </div>
                   <select value={filterComp} onChange={e => setFilterComp(e.target.value)} style={{ width: 110, fontSize: 12 }}>
                     <option value="">All Parts</option>
-                    {COMPONENTS.map(c => <option key={c} value={c}>{c}</option>)}
+                    {allSummaryComps.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
-                  {filterComp && (
-                    <button className="btn btn-secondary btn-sm" onClick={() => setFilterComp('')}>Clear</button>
-                  )}
-                  <button className="btn btn-secondary btn-sm" onClick={loadRework} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <GlassIcon name="search" size={12} color="#374151" /> Refresh
-                  </button>
                 </div>
               </div>
               {rewLoading ? (
                 <div style={{ textAlign: 'center', padding: 32 }}><span className="spinner" style={{ display: 'inline-block' }} /></div>
               ) : reworkEntries.length === 0 ? (
-                <div className="empty-state">
-                  <div className="icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><GlassIcon name="folder" size={48} color="#9ca3af" /></div>
-                  <p>No rework records found.</p>
-                </div>
+                <div className="empty-state"><p>No rework records found.</p></div>
               ) : (
                 <div className="table-wrapper" style={{ overflowX: 'auto' }}>
                   <table style={{ minWidth: 800 }}>
@@ -471,12 +408,10 @@ export default function ReworkPage({ onBack }) {
                       <tr>
                         <th>MO Number</th>
                         <th>SKU</th>
-                        <th>Component</th>
+                        <th>Category</th>
                         <th>Component Name</th>
                         <th style={{ color: '#16a34a' }}>Receive (RC)</th>
                         <th style={{ color: '#dc2626' }}>Reject (RJ)</th>
-                        <th>Received At</th>
-                        <th>Rejected At</th>
                         <th>Submitted By</th>
                         <th>Actions</th>
                       </tr>
@@ -486,33 +421,15 @@ export default function ReworkPage({ onBack }) {
                         <tr key={e.id}>
                           <td style={{ fontWeight: 700, color: '#1e40af' }}>{e.moNumber}</td>
                           <td><span className="badge badge-primary">{e.sku}</span></td>
-                          <td>
-                            <span style={{ fontWeight: 600, color: COMP_COLORS[e.component] || '#6b7280' }}>
-                              {e.component}
-                            </span>
-                          </td>
-                          <td style={{ fontSize: 12, color: '#374151' }}>{e.componentName}</td>
-                          <td>
-                            <span style={{ fontWeight: 700, color: '#16a34a', background: '#f0fdf4', padding: '2px 10px', borderRadius: 20, fontSize: 13 }}>
-                              {e.receive}
-                            </span>
-                          </td>
-                          <td>
-                            <span style={{ fontWeight: 700, color: '#dc2626', background: '#fff1f2', padding: '2px 10px', borderRadius: 20, fontSize: 13 }}>
-                              {e.reject}
-                            </span>
-                          </td>
-                          <td style={{ fontSize: 11, color: '#6b7280' }}>{e.receivedAt ? new Date(e.receivedAt).toLocaleString() : '—'}</td>
-                          <td style={{ fontSize: 11, color: '#6b7280' }}>{e.rejectedAt ? new Date(e.rejectedAt).toLocaleString() : '—'}</td>
+                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.component}</td>
+                          <td style={{ fontSize: 12 }}>{e.componentName}</td>
+                          <td><span className="badge badge-success" style={{ fontSize: 13 }}>{e.receive}</span></td>
+                          <td><span className="badge badge-danger" style={{ fontSize: 13 }}>{e.reject}</span></td>
                           <td style={{ fontSize: 12 }}>{e.submittedBy}</td>
                           <td>
                             <div className="td-actions">
-                              <button className="btn-icon" title="Edit" onClick={() => openEditModal(e)}>
-                                <GlassIcon name="edit" size={18} color="#2563eb" />
-                              </button>
-                              <button className="btn-icon danger" title="Delete" onClick={() => handleDelete(e.id)}>
-                                <GlassIcon name="delete" size={18} color="#dc2626" />
-                              </button>
+                              <button className="btn-icon" onClick={() => openEditModal(e)}><GlassIcon name="edit" size={18} color="#2563eb" /></button>
+                              <button className="btn-icon danger" onClick={() => handleDelete(e.id)}><GlassIcon name="delete" size={18} color="#dc2626" /></button>
                             </div>
                           </td>
                         </tr>
@@ -526,64 +443,47 @@ export default function ReworkPage({ onBack }) {
         </div>
       </div>
 
-      {/* Entry Modal */}
       {entryModal && (
         <ModalPortal>
           <div className="modal-overlay" onClick={() => setEntryModal(false)}>
             <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
               <div className="modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <GlassIcon name="history" size={20} color="#2563eb" />
-                  <h3 style={{ margin: 0 }}>Rework Entry — {activeComp}</h3>
-                </div>
+                <h3>Rework Entry — {activeComp}</h3>
                 <button className="btn-icon" onClick={() => setEntryModal(false)}>✕</button>
               </div>
               <div style={{ padding: '20px 24px' }}>
                 <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 14px', marginBottom: 20 }}>
                   <div style={{ fontSize: 12, color: '#1e40af', fontWeight: 600 }}>MO: {selectedMOs[0]?.moNumber}</div>
                   <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{activeComp}: <strong>{activeCompName}</strong></div>
-                  {isFullMO && <div style={{ marginTop: 4, display: 'inline-block', background: '#dbeafe', color: '#1d4ed8', fontSize: 11, padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>Will apply to all 4 components</div>}
+                  {isFullMO && <div style={{ marginTop: 4, display: 'inline-block', background: '#dbeafe', color: '#1d4ed8', fontSize: 11, padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>Will apply to all components</div>}
                 </div>
-                {entryError && <div className="alert alert-danger" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><GlassIcon name="alert" size={16} /> {entryError}</div>}
+                {entryError && <div className="alert alert-danger" style={{ marginBottom: 14 }}>{entryError}</div>}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#dc2626', fontWeight: 700 }}><GlassIcon name="close" size={14} color="#dc2626" /> Reject (RJ)</label>
-                    <input type="number" min="0" placeholder="Qty Sent to Rework" value={rejQty} onChange={e => setRejQty(e.target.value)} style={{ borderColor: '#fca5a5' }} />
-                    <p className="text-xs text-muted" style={{ marginTop: 4 }}>Qty sent to rework</p>
+                  <div className="form-group">
+                    <label style={{ color: '#dc2626', fontWeight: 700 }}>Reject (RJ)</label>
+                    <input type="number" min="0" value={rejQty} onChange={e => setRejQty(e.target.value)} />
                   </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#16a34a', fontWeight: 700 }}><GlassIcon name="success" size={14} color="#16a34a" /> Receive (RC)</label>
-                    <input type="number" min="0" placeholder="Qty Received Back" value={recvQty} onChange={e => setRecvQty(e.target.value)} style={{ borderColor: '#86efac' }} />
-                    <p className="text-xs text-muted" style={{ marginTop: 4 }}>Qty received back</p>
+                  <div className="form-group">
+                    <label style={{ color: '#16a34a', fontWeight: 700 }}>Receive (RC)</label>
+                    <input type="number" min="0" value={recvQty} onChange={e => setRecvQty(e.target.value)} />
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setEntryModal(false)}>Cancel</button>
-                <button
-                  className="btn btn-primary"
-                  onClick={submitEntry}
-                  disabled={submitting}
-                  style={{ background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', border: 'none' }}
-                >
-                  {submitting ? 'Saving…' : <><GlassIcon name="success" size={14} color="#fff" /> Submit Rework</>}
-                </button>
+                <button className="btn btn-primary" onClick={submitEntry} disabled={submitting}>Submit Rework</button>
               </div>
             </div>
           </div>
         </ModalPortal>
       )}
 
-      {/* Edit Rework Modal */}
       {editModal && editingRework && (
         <ModalPortal>
           <div className="modal-overlay" onClick={() => setEditModal(false)}>
             <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
               <div className="modal-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <GlassIcon name="edit" size={20} color="#2563eb" />
-                  <h3 style={{ margin: 0 }}>Edit Rework Record</h3>
-                </div>
+                <h3>Edit Rework Record</h3>
                 <button className="btn-icon" onClick={() => setEditModal(false)}>✕</button>
               </div>
               <div style={{ padding: '20px 24px' }}>
@@ -591,23 +491,21 @@ export default function ReworkPage({ onBack }) {
                   <div style={{ fontSize: 12, color: '#1e40af', fontWeight: 600 }}>MO: {editingRework.moNumber}</div>
                   <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{editingRework.component}: <strong>{editingRework.componentName}</strong></div>
                 </div>
-                {entryError && <div className="alert alert-danger" style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}><GlassIcon name="alert" size={16} /> {entryError}</div>}
+                {entryError && <div className="alert alert-danger" style={{ marginBottom: 14 }}>{entryError}</div>}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#dc2626', fontWeight: 700 }}><GlassIcon name="close" size={14} color="#dc2626" /> Reject (RJ)</label>
-                    <input type="number" min="0" placeholder="Qty Sent" value={editRejQty} onChange={e => setEditRejQty(e.target.value)} style={{ borderColor: '#fca5a5' }} />
+                  <div className="form-group">
+                    <label style={{ color: '#dc2626', fontWeight: 700 }}>Reject (RJ)</label>
+                    <input type="number" min="0" value={editRejQty} onChange={e => setEditRejQty(e.target.value)} />
                   </div>
-                  <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#16a34a', fontWeight: 700 }}><GlassIcon name="success" size={14} color="#16a34a" /> Receive (RC)</label>
-                    <input type="number" min="0" placeholder="Qty Received" value={editRecvQty} onChange={e => setEditRecvQty(e.target.value)} style={{ borderColor: '#86efac' }} />
+                  <div className="form-group">
+                    <label style={{ color: '#16a34a', fontWeight: 700 }}>Receive (RC)</label>
+                    <input type="number" min="0" value={editRecvQty} onChange={e => setEditRecvQty(e.target.value)} />
                   </div>
                 </div>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setEditModal(false)}>Cancel</button>
-                <button className="btn btn-primary" onClick={submitEdit} disabled={editSubmitting}>
-                  {editSubmitting ? 'Saving…' : <><GlassIcon name="save" size={14} /> Save Changes</>}
-                </button>
+                <button className="btn btn-primary" onClick={submitEdit} disabled={editSubmitting}>Save Changes</button>
               </div>
             </div>
           </div>

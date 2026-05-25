@@ -103,17 +103,14 @@ export default function AdminDashboard({ onNavigate }) {
 
   const handleDownloadCSV = () => {
     if (exportData.length === 0) return;
-    const headers = ['MO Number', 'SKU', 'Status', 'Entry Date', 'Close Date', 'Total QTY', 'Completed QTY', 'Battery', 'PCBA', 'Coil', 'Shell'];
+    const headers = ['MO Number', 'SKU / Type', 'Status', 'Entry Date', 'Close Date', 'Total QTY', 'Completed QTY', 'Components (Comp/Collected)'];
     const rows = exportData.map(m => {
       const entryDate = m.createdAt ? new Date(m.createdAt).toLocaleString() : '';
       const closeDate = m.completedAt ? new Date(m.completedAt).toLocaleString() : '';
+      const comps = (m.components || []).map(c => `${c.category}:${c.completedQty}/${c.collectedQty}`).join(' | ');
       return [
-        m.moNumber || '', m.sku || '', m.status || '', entryDate, closeDate,
-        m.qty || 0, m.completedQty || 0,
-        `${m.batteryComp || 0}/${m.batteryQty || 0} (${m.battery || '-'})`,
-        `${m.pcbaComp || 0}/${m.pcbaQty || 0} (${m.pcba || '-'})`,
-        `${m.coilComp || 0}/${m.coilQty || 0} (${m.coil || '-'})`,
-        `${m.shellComp || 0}/${m.shellQty || 0} (${m.shell || '-'})`
+        m.moNumber || '', (m.size || m.sku || '') + (m.type ? ' ' + m.type : ''), m.status || '', entryDate, closeDate,
+        m.qty || 0, m.completedQty || 0, comps
       ];
     });
     const csvContent = [headers.join(','), ...rows.map(r => r.map(c => `"${c}"`).join(','))].join('\n');
@@ -152,7 +149,7 @@ export default function AdminDashboard({ onNavigate }) {
     csv += `Summary\nTotal MOs,${summary.totalMOs}\nCompleted MOs,${summary.completedMOs}\nPending MOs,${summary.pendingMOs}\nTotal Qty Planned,${summary.totalQtyPlanned}\nTotal Qty Completed,${summary.totalQtyCompleted}\n\n`;
     
     csv += `Detailed Material Usage\nComponent Type,IN,Received (RC),Reject (RJ),Return (RT),OUT (Completed)\n`;
-    ['batteries', 'pcbas', 'coils', 'shells', 'lenses'].forEach(cat => {
+    Object.keys(detailed).forEach(cat => {
       csv += `${cat.toUpperCase()}\n`;
       (detailed[cat] || []).forEach(c => {
         csv += `"${c.name}",${c.in},${c.received},${c.reject},${c.return},${c.out}\n`;
@@ -507,15 +504,12 @@ export default function AdminDashboard({ onNavigate }) {
 
                     <h3 style={{ marginBottom: 16, color: '#1e293b', borderBottom: '2px solid #f1f5f9', paddingBottom: 8 }}>Detailed Material Breakdown</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-                      {[
-                        { title: 'Batteries', data: reportData.detailed.batteries, color: '#2563eb' },
-                        { title: 'PCBAs',     data: reportData.detailed.pcbas,     color: '#16a34a' },
-                        { title: 'Coils',     data: reportData.detailed.coils,     color: '#7c3aed' },
-                        { title: 'Shells',    data: reportData.detailed.shells,    color: '#d97706' },
-                        ...(reportData.detailed.lenses?.length ? [{ title: 'Lenses (Pro Ring)', data: reportData.detailed.lenses, color: '#e67e22' }] : []),
-                      ].map((cat, idx) => (
+                      {Object.keys(reportData.detailed || {}).map((cat, idx) => {
+                        const palette = ['#2563eb','#16a34a','#7c3aed','#d97706','#e67e22','#059669','#dc2626','#0891b2'];
+                        const catObj = { title: cat.toUpperCase(), data: reportData.detailed[cat], color: palette[idx % palette.length] };
+                        return (
                         <div key={idx}>
-                          <h4 style={{ color: cat.color, marginBottom: 12, fontSize: 14 }}>{cat.title}</h4>
+                          <h4 style={{ color: catObj.color, marginBottom: 12, fontSize: 14 }}>{catObj.title}</h4>
                           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                               <tr>
@@ -528,9 +522,9 @@ export default function AdminDashboard({ onNavigate }) {
                               </tr>
                             </thead>
                             <tbody>
-                              {cat.data.length === 0 ? (
+                              {catObj.data.length === 0 ? (
                                 <tr><td colSpan={6} style={{ padding: 12, textAlign: 'center', color: '#94a3b8', fontSize: 13 }}>No components configured</td></tr>
-                              ) : cat.data.map((item, i) => (
+                              ) : catObj.data.map((item, i) => (
                                 <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
                                   <td style={{ padding: '10px 12px', fontSize: 13, color: '#334155', fontWeight: 500 }}>{item.name}</td>
                                   <td style={{ padding: '10px 12px', fontSize: 13, color: '#2563eb', fontWeight: 600, textAlign: 'right' }}>{item.in.toLocaleString()}</td>
@@ -543,7 +537,8 @@ export default function AdminDashboard({ onNavigate }) {
                             </tbody>
                           </table>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 )}

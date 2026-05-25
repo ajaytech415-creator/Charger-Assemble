@@ -213,20 +213,20 @@ export default function ImageScanModal({ onClose, onRowsExtracted }) {
                       <thead>
                         <tr>
                           <th>MO</th>
-                          <th>SKU</th>
+                          <th>Size</th>
                           <th>QTY</th>
-                          <th>OD</th>
                           <th>Refer</th>
+                          <th>Type</th>
                         </tr>
                       </thead>
                       <tbody>
                         {extractedRows.map((r, i) => (
                           <tr key={i}>
                             <td style={{ color: '#2563eb', fontWeight: 600 }}>{r.moNumber || '—'}</td>
-                            <td><span className="badge badge-primary">{r.sku}</span></td>
+                            <td><span className="badge badge-primary">{r.size}</span></td>
                             <td style={{ fontWeight: 600 }}>{parseInt(r.qty).toLocaleString()}</td>
                             <td className="font-mono">{r.refer || '—'}</td>
-                            <td>{r.od || '—'}</td>
+                            <td>{r.type || '—'}</td>
                           </tr>
                         ))}
                       </tbody>

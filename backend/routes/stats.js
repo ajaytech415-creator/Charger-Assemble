@@ -47,65 +47,51 @@ export const getStats = (req, res) => {
   const totalQtyCompleted = entries.reduce((sum, e) => sum + (e.completedQty || 0), 0);
   const totalUsers = db.data.users.length;
 
-  // WIP Formula — component-wise: WIP = (IN + RC) − (RJ + OUT)
-  // IN is already net of Returns (RT) because returning an MO physically reduces the MO's quantity in the database.
-  // IN  = sum of all 4 component quantities (battery+pcba+coil+shell) per MO
-  // RC  = total scrap received
-  // RJ  = total scrap rejected
-  // RT  = total returned components (Full MO return counts all 4 components)
-  // OUT = sum of all 4 completed component quantities for Completed MOs
   const IN = entries.reduce((s, e) => {
-    const bQty = e.batteryQty !== undefined ? (e.batteryQty || 0) : (e.qty || 0);
-    const pQty = e.pcbaQty   !== undefined ? (e.pcbaQty   || 0) : (e.qty || 0);
-    const cQty = e.coilQty   !== undefined ? (e.coilQty   || 0) : (e.qty || 0);
-    const sQty = e.shellQty  !== undefined ? (e.shellQty  || 0) : (e.qty || 0);
-    const lQty = e.lensQty   !== undefined ? (e.lensQty   || 0) : 0;
-    return s + bQty + pQty + cQty + sQty + lQty;
+    let moIn = 0;
+    if (e.components) e.components.forEach(c => moIn += (c.collectedQty || 0));
+    return s + moIn;
   }, 0);
-  const RC = filteredScrap.reduce((s, e) => s + (e.receive || 0), 0)
-           + filteredRework.reduce((s, e) => s + (e.receive || 0), 0);
-  const RJ = filteredScrap.reduce((s, e) => s + (e.reject  || 0), 0)
-           + filteredRework.reduce((s, e) => s + (e.reject  || 0), 0);
-  // RT: Full MO returns = sum of all components; Component returns = componentQty
+
+  const RC = filteredScrap.reduce((s, e) => s + (e.receive || 0), 0) + filteredRework.reduce((s, e) => s + (e.receive || 0), 0);
+  const RJ = filteredScrap.reduce((s, e) => s + (e.reject  || 0), 0) + filteredRework.reduce((s, e) => s + (e.reject  || 0), 0);
+
   const RT = filteredReturns.reduce((s, e) => {
     if (e.isFullMO) {
       const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
-      if (!mo) return s;
-      const bQty = mo.batteryQty !== undefined ? (mo.batteryQty || 0) : (mo.qty || 0);
-      const pQty = mo.pcbaQty   !== undefined ? (mo.pcbaQty   || 0) : (mo.qty || 0);
-      const cQty = mo.coilQty   !== undefined ? (mo.coilQty   || 0) : (mo.qty || 0);
-      const sQty = mo.shellQty  !== undefined ? (mo.shellQty  || 0) : (mo.qty || 0);
-      const lQty = mo.lensQty   !== undefined ? (mo.lensQty   || 0) : 0;
-      return s + bQty + pQty + cQty + sQty + lQty;
+      if (!mo || !mo.components) return s;
+      let moRt = 0;
+      mo.components.forEach(c => moRt += (c.collectedQty || 0));
+      return s + moRt;
     }
     return s + (e.componentQty || 0);
   }, 0);
+
   const OUT = entries
     .filter(e => e.status === 'Completed')
-    .reduce((s, e) => s + (e.batteryComp || 0) + (e.pcbaComp || 0) + (e.coilComp || 0) + (e.shellComp || 0) + (e.lensComp || 0), 0);
+    .reduce((s, e) => {
+      let moOut = 0;
+      if (e.components) e.components.forEach(c => moOut += (c.completedQty || 0));
+      return s + moOut;
+    }, 0);
+
   const WIP = (IN + RC) - (RJ + OUT);
 
-  const batteryBreakdown = {};
-  const pcbaBreakdown    = {};
-  const coilBreakdown    = {};
-  const shellBreakdown   = {};
-  const lensBreakdown    = {};
-
+  const breakdown = {};
   entries.forEach(e => {
-    const bKey = e.battery || 'Unknown';
-    const pKey = e.pcba    || 'Unknown';
-    const cKey = e.coil    || 'Unknown';
-    const sKey = e.shell   || 'Unknown';
-    const lKey = e.lens    || 'N/A';
-    batteryBreakdown[bKey] = (batteryBreakdown[bKey] || 0) + (e.batteryComp || e.qty || 0);
-    pcbaBreakdown[pKey]    = (pcbaBreakdown[pKey]    || 0) + (e.pcbaComp    || e.qty || 0);
-    coilBreakdown[cKey]    = (coilBreakdown[cKey]    || 0) + (e.coilComp    || e.qty || 0);
-    shellBreakdown[sKey]   = (shellBreakdown[sKey]   || 0) + (e.shellComp   || e.qty || 0);
-    if (lKey !== 'N/A') lensBreakdown[lKey] = (lensBreakdown[lKey] || 0) + (e.lensComp || 0);
+    if (e.components) {
+      e.components.forEach(c => {
+        if (!breakdown[c.category]) breakdown[c.category] = {};
+        breakdown[c.category][c.name] = (breakdown[c.category][c.name] || 0) + (c.completedQty || 0);
+      });
+    }
   });
 
-  const toArray = obj =>
-    Object.entries(obj).map(([name, qty]) => ({ name, qty })).sort((a, b) => b.qty - a.qty);
+  const toArray = obj => Object.entries(obj).map(([name, qty]) => ({ name, qty })).sort((a, b) => b.qty - a.qty);
+  const formattedBreakdown = {};
+  for (const cat in breakdown) {
+    formattedBreakdown[cat] = toArray(breakdown[cat]);
+  }
 
   // Weekly chart (last 7 days — always uses full dataset)
   const allEntries = db.data.moEntries || [];
@@ -136,13 +122,7 @@ export const getStats = (req, res) => {
     // WIP
     wip: { IN, RC, RJ, RT, OUT, WIP },
     // Material breakdown
-    breakdown: {
-      batteries: toArray(batteryBreakdown),
-      pcbas:     toArray(pcbaBreakdown),
-      coils:     toArray(coilBreakdown),
-      shells:    toArray(shellBreakdown),
-      lenses:    toArray(lensBreakdown),
-    },
+    breakdown: formattedBreakdown,
   });
 };
 
@@ -177,21 +157,18 @@ export const getReport = (req, res) => {
 
   // Initialize ALL components
   const comps = db.data.components || {};
-  const initList = (list) => (list || []).map(c => ({
-    name: typeof c === 'string' ? c : c.name,
-    in: 0, received: 0, reject: 0, return: 0, out: 0
-  }));
+  const detailed = {};
   
-  const detailed = {
-    batteries: initList(comps.batteries),
-    pcbas:     initList(comps.pcbas),
-    coils:     initList(comps.coils),
-    shells:    initList(comps.shells),
-    lenses:    initList(comps.lenses),
-  };
+  for (const cat in comps) {
+    detailed[cat] = (comps[cat] || []).map(c => ({
+      name: typeof c === 'string' ? c : c.name,
+      in: 0, received: 0, reject: 0, return: 0, out: 0
+    }));
+  }
 
   const findAndAdd = (cat, name, field, val) => {
-    if (!name) return;
+    if (!name || !cat) return;
+    if (!detailed[cat]) detailed[cat] = [];
     let item = detailed[cat].find(c => c.name === name);
     if (!item) {
       item = { name, in: 0, received: 0, reject: 0, return: 0, out: 0 };
@@ -202,72 +179,46 @@ export const getReport = (req, res) => {
 
   // 1. MO Entries (IN & OUT)
   moEntries.forEach(e => {
-    findAndAdd('batteries', e.battery, 'in', e.batteryQty !== undefined ? e.batteryQty : (e.qty || 0));
-    findAndAdd('pcbas',     e.pcba,    'in', e.pcbaQty    !== undefined ? e.pcbaQty    : (e.qty || 0));
-    findAndAdd('coils',     e.coil,    'in', e.coilQty    !== undefined ? e.coilQty    : (e.qty || 0));
-    findAndAdd('shells',    e.shell,   'in', e.shellQty   !== undefined ? e.shellQty   : (e.qty || 0));
-    if (e.lens && e.lens !== 'N/A') {
-      findAndAdd('lenses',  e.lens,    'in', e.lensQty    !== undefined ? e.lensQty    : (e.qty || 0));
-    }
-
-    if (e.status === 'Completed') {
-      findAndAdd('batteries', e.battery, 'out', e.batteryComp || 0);
-      findAndAdd('pcbas',     e.pcba,    'out', e.pcbaComp    || 0);
-      findAndAdd('coils',     e.coil,    'out', e.coilComp    || 0);
-      findAndAdd('shells',    e.shell,   'out', e.shellComp   || 0);
-      if (e.lens && e.lens !== 'N/A') {
-        findAndAdd('lenses',  e.lens,    'out', e.lensComp    || 0);
-      }
+    if (e.components) {
+      e.components.forEach(c => {
+        findAndAdd(c.category, c.name, 'in', c.collectedQty || 0);
+        if (e.status === 'Completed') {
+          findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
+        }
+      });
     }
   });
 
   // 2. Scrap & Rework Entries (Received & Reject)
-  const typeMap = { 'Battery': 'batteries', 'PCBA': 'pcbas', 'Coil': 'coils', 'Shell': 'shells', 'Lens': 'lenses' };
-  
   scrapEntries.forEach(e => {
-    const cat = typeMap[e.component];
-    if (cat && e.componentName) {
-      findAndAdd(cat, e.componentName, 'received', e.receive || 0);
-      findAndAdd(cat, e.componentName, 'reject',   e.reject  || 0);
+    if (e.component && e.componentName) {
+      findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
+      findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
     }
   });
 
   reworkEntries.forEach(e => {
-    const cat = typeMap[e.component];
-    if (cat && e.componentName) {
-      findAndAdd(cat, e.componentName, 'received', e.receive || 0);
-      findAndAdd(cat, e.componentName, 'reject',   e.reject  || 0);
+    if (e.component && e.componentName) {
+      findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
+      findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
     }
   });
 
-  // 3. Return Entries (Return) — Full MO returns use MO's per-component qty
+  // 3. Return Entries (Return)
   returnEntries.forEach(e => {
-    const typeMap = { 'Battery': 'batteries', 'PCBA': 'pcbas', 'Coil': 'coils', 'Shell': 'shells' };
-    const fieldMap = { 'Battery': 'battery', 'PCBA': 'pcba', 'Coil': 'coil', 'Shell': 'shell' };
-    const qtyMap  = { 'Battery': 'batteryQty', 'PCBA': 'pcbaQty', 'Coil': 'coilQty', 'Shell': 'shellQty' };
-    
-    // Find original MO to determine component names
     const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
+    if (!mo || !mo.components) return;
     
-    if (e.isFullMO && mo) {
-      // Full MO return: all active components returned
-      ['Battery', 'PCBA', 'Coil', 'Shell'].forEach(comp => {
-        const cat = typeMap[comp];
-        const name = mo[fieldMap[comp]];
-        const qty = mo[qtyMap[comp]] !== undefined ? mo[qtyMap[comp]] : (mo.qty || 0);
-        if (cat && name) findAndAdd(cat, name, 'return', qty);
+    if (e.isFullMO) {
+      mo.components.forEach(c => {
+        findAndAdd(c.category, c.name, 'return', c.collectedQty || 0);
       });
-      // Lens return for Pro Ring
-      if (mo.isProRing && mo.lens && mo.lens !== 'N/A') {
-        const lQty = mo.lensQty !== undefined ? mo.lensQty : (mo.qty || 0);
-        findAndAdd('lenses', mo.lens, 'return', lQty);
+    } else if (e.component) {
+      // Find the specific component
+      const c = mo.components.find(c => c.category === e.component);
+      if (c) {
+         findAndAdd(e.component, c.name, 'return', e.componentQty || 0);
       }
-    } else if (e.component && mo) {
-       const cat = typeMap[e.component];
-       const compName = mo[fieldMap[e.component]];
-       if (cat && compName) {
-         findAndAdd(cat, compName, 'return', e.componentQty || 0);
-       }
     }
   });
 
