@@ -29,6 +29,7 @@ const BarChart = ({ data }) => {
 
 export default function AdminDashboard({ onNavigate }) {
   const [stats, setStats] = useState(null);
+  const [reworkStats, setReworkStats] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [loading, setLoading] = useState(true);
@@ -75,10 +76,21 @@ export default function AdminDashboard({ onNavigate }) {
     setLoading(true);
     try {
       const params = { isRework: false };
-      if (startDate) params.startDate = startDate;
-      if (endDate) params.endDate = endDate;
-      const data = await api.getStats(params);
+      const reworkParams = { isRework: true };
+      if (startDate) {
+        params.startDate = startDate;
+        reworkParams.startDate = startDate;
+      }
+      if (endDate) {
+        params.endDate = endDate;
+        reworkParams.endDate = endDate;
+      }
+      const [data, reworkData] = await Promise.all([
+        api.getStats(params),
+        api.getStats(reworkParams)
+      ]);
       setStats(data);
+      setReworkStats(reworkData);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   }, [startDate, endDate]);
@@ -369,6 +381,22 @@ export default function AdminDashboard({ onNavigate }) {
             </div>
             <div className="card-body">
               <MaterialBreakdown breakdown={stats.breakdown} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rework Material Breakdown */}
+      {reworkStats?.breakdown && Object.keys(reworkStats.breakdown).length > 0 && (
+        <div style={{ gridColumn: 'span 4' }}>
+          <div className="card" style={{ marginBottom: 24 }}>
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GlassIcon name="database" size={18} color="#4f46e5" />
+              <h3 style={{ margin: 0 }}>Rework Material Breakdown by Type</h3>
+              <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Component usage across rework MOs</span>
+            </div>
+            <div className="card-body">
+              <MaterialBreakdown breakdown={reworkStats.breakdown} />
             </div>
           </div>
         </div>

@@ -280,20 +280,6 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
 
       <div style={{ maxWidth: 1500, margin: '0 auto', padding: '28px 24px' }}>
       
-      {/* Material Breakdown by Type - Rework only */}
-      {stats?.breakdown && Object.keys(stats.breakdown).length > 0 && (
-        <div className="card" style={{ marginBottom: 24 }}>
-          <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <GlassIcon name="database" size={18} color="#4f46e5" />
-            <h3 style={{ margin: 0 }}>Rework Material Breakdown by Type</h3>
-            <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Component usage across rework MOs</span>
-          </div>
-          <div className="card-body">
-            <MaterialBreakdown breakdown={stats.breakdown} />
-          </div>
-        </div>
-      )}
-
       {/* Mini Dashboard */}
       <div className="stats-grid" style={{ marginBottom: 24, gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {[
