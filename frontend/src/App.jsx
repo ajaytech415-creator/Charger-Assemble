@@ -79,7 +79,7 @@ const AppContent = () => {
     />
   );
   if (view === 'rework-list') return (
-    <ReworkListPage onBack={() => setView('platform')} onNewPlan={() => setView('rework')} />
+    <ReworkListPage onBack={() => setView('platform')} onNewPlan={() => setView('rework')} onDashboard={() => setView('dashboard')} />
   );
   if (view === 'rework-legacy') return (
     <ReworkPage onBack={() => setView('platform')} />

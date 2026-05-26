@@ -139,10 +139,10 @@ export default function AdminReturnData() {
                       {e.isFullMO ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: 11, fontWeight: 500, color: '#4b5563', whiteSpace: 'nowrap' }}>
                           {(e.moDetails?.components || []).map((comp, i) => (
-                            <div key={i}><span style={{color: getCatColor(i)}}>{comp.category}:</span> {comp.name}</div>
+                            <div key={i}><span style={{color: getCatColor(i)}}>{comp.name}</span></div>
                           ))}
                         </div>
-                      ) : e.component || '—'}
+                      ) : e.componentName || e.component || '—'}
                     </td>
                     <td style={{ fontWeight: 700 }}>
                       {e.isFullMO ? (

@@ -19,8 +19,15 @@ export const getReturnEntries = (req, res) => {
   // Attach MO details including per-component quantities
   entries = entries.map(e => {
     const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
+    let compName = e.component;
+    if (mo && mo.components && e.component && !e.isFullMO) {
+        const c = mo.components.find(comp => comp.category === e.component);
+        if (c) compName = c.name;
+    }
     return {
       ...e,
+      componentName: compName,
+      isRework: mo ? mo.isRework : false,
       moDetails: mo ? {
         qty: mo.qty,
         components: mo.components || []

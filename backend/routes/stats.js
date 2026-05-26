@@ -44,8 +44,10 @@ export const getStats = (req, res) => {
       ? rework.filter(e => isSameLocalDay(e.submittedAt, date))
       : rework;
 
-  const incomeToday  = (db.data.moEntries || []).filter(e => isSameLocalDay(e.createdAt, today)).length;
-  const outgoToday   = (db.data.moEntries || []).filter(e => isSameLocalDay(e.completedAt, today)).length;
+  const allMOs = db.data.moEntries || [];
+  const regularMOs = allMOs.filter(e => !e.isRework);
+  const incomeToday  = (isRework === 'true' ? allMOs.filter(e => e.isRework) : regularMOs).filter(e => isSameLocalDay(e.createdAt, today)).length;
+  const outgoToday   = (isRework === 'true' ? allMOs.filter(e => e.isRework) : regularMOs).filter(e => isSameLocalDay(e.completedAt, today)).length;
   const totalMOs     = entries.length;
   const pendingMOs   = entries.filter(e => e.status === 'Pending').length;
   const completedMOs = entries.filter(e => e.status === 'Completed').length;

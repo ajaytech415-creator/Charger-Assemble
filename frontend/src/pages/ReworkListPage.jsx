@@ -5,7 +5,7 @@ import GlassIcon from '../components/GlassIcon';
 import ModalPortal from '../components/ModalPortal';
 import MaterialBreakdown from '../components/MaterialBreakdown';
 
-export default function ReworkListPage({ onBack, onNewPlan }) {
+export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
   const { user } = useAuth();
   const [mos, setMos] = useState([]);
   const [stats, setStats] = useState(null);
@@ -271,12 +271,29 @@ export default function ReworkListPage({ onBack, onNewPlan }) {
               <div className="role">Data Entry</div>
             </div>
           </div>
+          <button className="btn btn-secondary btn-sm" onClick={onDashboard} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <GlassIcon name="dashboard" size={14} color="#374151" /> User Dashboard
+          </button>
           <button className="btn btn-primary btn-sm" onClick={onNewPlan || onBack}>+ New Rework Plan</button>
         </div>
       </nav>
 
       <div style={{ maxWidth: 1500, margin: '0 auto', padding: '28px 24px' }}>
       
+      {/* Material Breakdown by Type - Rework only */}
+      {stats?.breakdown && Object.keys(stats.breakdown).length > 0 && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <GlassIcon name="database" size={18} color="#4f46e5" />
+            <h3 style={{ margin: 0 }}>Rework Material Breakdown by Type</h3>
+            <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Component usage across rework MOs</span>
+          </div>
+          <div className="card-body">
+            <MaterialBreakdown breakdown={stats.breakdown} />
+          </div>
+        </div>
+      )}
+
       {/* Mini Dashboard */}
       <div className="stats-grid" style={{ marginBottom: 24, gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {[

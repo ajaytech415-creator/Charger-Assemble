@@ -264,7 +264,7 @@ export default function AdminReworkData() {
                         <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
                           {mo.components?.map(c => (
                             <div key={c.name} style={{ flex: '1 1 45%', padding: '4px 8px', border: '1px solid #e5e7eb', borderRadius: 4 }}>
-                              <span className="text-muted">{c.category}:</span> <span style={{ color: c.completedQty >= c.targetQty ? '#16a34a' : '#2563eb', fontWeight: 600 }}>{c.completedQty} / {c.collectedQty}</span>
+                              <span className="text-muted" style={{ fontSize: 11 }}>{c.name}:</span> <span style={{ color: c.completedQty >= c.targetQty ? '#16a34a' : '#2563eb', fontWeight: 600 }}>{c.completedQty} / {c.collectedQty}</span>
                             </div>
                           ))}
                         </div>
@@ -334,7 +334,7 @@ export default function AdminReworkData() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   {editingMO.components?.map((c, i) => (
                     <div className="form-group" style={{ marginBottom: 0 }} key={i}>
-                      <label>{c.category}</label>
+                      <label style={{ fontSize: 12 }}>{c.name}</label>
                       <input type="number" min="0" value={c.completedQty} onChange={e => {
                         const newComps = [...editingMO.components];
                         newComps[i].completedQty = e.target.value;
