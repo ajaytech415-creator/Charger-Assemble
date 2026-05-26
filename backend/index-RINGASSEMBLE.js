@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { login } from './routes/auth.js';
 import { getMOs, createMO, updateMO, deleteMO, parseSKUPreview } from './routes/mos.js';
-import { getConfig, updateConfig, getUsers, createUser, updateUser, deleteUser, getComponents, manageComponents, getAuditLogs, deleteAuditLogs, backupDatabase, handleDbAction, getTrash, handleTrashAction } from './routes/admin.js';
+import { getConfig, updateConfig, getUsers, createUser, updateUser, deleteUser, getComponents, manageComponents, getAuditLogs, deleteAuditLogs, backupDatabase, handleDbAction, getTrash, handleTrashAction, wipeAllData } from './routes/admin.js';
 import { getStats, getReport } from './routes/stats.js';
 import { getScrapEntries, createScrapEntry, updateScrapEntry, deleteScrapEntry, exportScrapExcel } from './routes/scrap.js';
 import { getReturnEntries, createReturnEntry, deleteReturnEntry, replenishReturnEntry } from './routes/returns.js';
@@ -76,6 +76,7 @@ app.get('/api/admin/backup', backupDatabase);
 app.post('/api/admin/db/action', handleDbAction);
 app.get('/api/admin/trash', getTrash);
 app.post('/api/admin/trash/action', handleTrashAction);
+app.post('/api/admin/wipe-all', wipeAllData);
 
 // --- Stats ---
 app.get('/api/stats', getStats);
