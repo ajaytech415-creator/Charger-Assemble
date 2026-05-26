@@ -7,6 +7,8 @@ import ConfirmPage from './pages/ConfirmPage';
 import UserDashboard from './pages/UserDashboard';
 import ScrapPage from './pages/ScrapPage';
 import ReworkPage from './pages/ReworkPage';
+import ReworkPlanPage from './pages/ReworkPlanPage';
+import ReworkListPage from './pages/ReworkListPage';
 import RndPage from './pages/RndPage';
 import RndDashboard from './pages/RndDashboard';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -51,12 +53,35 @@ const AppContent = () => {
     />
   );
   if (view === 'dashboard') return (
-    <UserDashboard onBack={() => setView('platform')} onNavigateScrap={() => setView('scrap')} />
+    <UserDashboard onBack={() => setView('platform')} onNavigateScrap={() => setView('scrap')} onNavigateReworkList={() => setView('rework-list')} />
   );
   if (view === 'scrap') return (
     <ScrapPage onBack={() => setView('platform')} />
   );
   if (view === 'rework') return (
+    <ReworkPlanPage
+      initialRows={pendingRows}
+      onBack={() => setView('platform')}
+      onConfirm={(rows, bid) => { setPendingRows(rows); setBatchId(bid); setView('rework-confirm'); }}
+    />
+  );
+  if (view === 'rework-confirm') return (
+    <ConfirmPage
+      rows={pendingRows}
+      batchId={batchId}
+      isRework={true}
+      onBack={() => setView('rework')}
+      onSubmit={() => {
+        setPendingRows([]);
+        setBatchId('');
+        setView('rework-list');
+      }}
+    />
+  );
+  if (view === 'rework-list') return (
+    <ReworkListPage onBack={() => setView('platform')} onNewPlan={() => setView('rework')} />
+  );
+  if (view === 'rework-legacy') return (
     <ReworkPage onBack={() => setView('platform')} />
   );
   if (view === 'rnd') return (

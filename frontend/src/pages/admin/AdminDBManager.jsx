@@ -22,6 +22,8 @@ export default function AdminDBManager() {
         res = await api.getMOs({ status: 'all' });
       } else if (activeTab === 'scrap') {
         res = await api.getScrap();
+      } else if (activeTab === 'rework') {
+        res = await api.getRework();
       } else if (activeTab === 'return') {
         res = await api.getReturns();
       }
@@ -89,7 +91,7 @@ export default function AdminDBManager() {
 
   const handleWipeAll = async () => {
     const first = window.confirm(
-      'NUCLEAR RESET\n\nThis will permanently delete ALL:\n• MO Entries (including Returned)\n• Scrap Entries\n• Return Entries\n• Trash Entries\n\nThis CANNOT be undone. Continue?'
+      'NUCLEAR RESET\n\nThis will permanently delete ALL:\n• MO Entries (including Returned)\n• Scrap Entries\n• Rework Entries\n• Return Entries\n• Trash Entries\n\nThis CANNOT be undone. Continue?'
     );
     if (!first) return;
 
@@ -102,7 +104,7 @@ export default function AdminDBManager() {
     try {
       const result = await api.wipeAll({ confirm: 'WIPE_ALL_CONFIRMED', submittedBy: 'Admin' });
       alert(
-        `Database wiped successfully!\n\nDeleted:\n• ${result.deleted.mo} MOs\n• ${result.deleted.scrap} Scrap entries\n• ${result.deleted.returns} Return entries\n• ${result.deleted.trash} Trash entries`
+        `Database wiped successfully!\n\nDeleted:\n• ${result.deleted.mo} MOs\n• ${result.deleted.scrap} Scrap entries\n• ${result.deleted.rework} Rework entries\n• ${result.deleted.returns} Return entries\n• ${result.deleted.trash} Trash entries`
       );
       await loadData();
     } catch (e) {
@@ -206,6 +208,7 @@ export default function AdminDBManager() {
         {[
           { id: 'mo',     label: 'Plan Data (MOs)', icon: 'plan'    },
           { id: 'scrap',  label: 'Scrap Data',      icon: 'scrap'   },
+          { id: 'rework', label: 'Rework Data',     icon: 'refresh' },
           { id: 'return', label: 'Return Data',     icon: 'history' },
         ].map(t => (
           <button
@@ -320,14 +323,14 @@ export default function AdminDBManager() {
                   <td>
                     {item.sku
                       ? <span className="badge badge-primary">{item.sku}</span>
-                      : <span className="badge badge-secondary">{item.isFullMO ? 'Full MO' : (item.component || 'Component')}</span>
+                      : <span className="badge badge-secondary">{item.isFullMO ? 'Full MO' : (item.componentName || item.component || 'Component')}</span>
                     }
                   </td>
                   <td>
                     {item.status ? (
                       <span className={`badge ${statusBadge(item.status)}`}>{item.status}</span>
                     ) : (
-                      <span className="badge badge-primary">{item.component || '—'}</span>
+                      <span className="badge badge-primary">{item.componentName || item.component || '—'}</span>
                     )}
                   </td>
                   <td style={{ fontWeight: 600 }}>

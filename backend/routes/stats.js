@@ -80,9 +80,15 @@ export const getStats = (req, res) => {
   const breakdown = {};
   entries.forEach(e => {
     if (e.components) {
+      const moQty = e.qty || 1;
       e.components.forEach(c => {
-        if (!breakdown[c.category]) breakdown[c.category] = {};
-        breakdown[c.category][c.name] = (breakdown[c.category][c.name] || 0) + (c.completedQty || 0);
+        const cat = c.category || 'other';
+        if (!breakdown[cat]) breakdown[cat] = {};
+        // Count component qty × MO qty; fall back to planned if completedQty not yet set
+        const amount = (c.completedQty || 0) > 0
+          ? c.completedQty
+          : (c.qty || 1) * moQty;
+        breakdown[cat][c.name] = (breakdown[cat][c.name] || 0) + amount;
       });
     }
   });

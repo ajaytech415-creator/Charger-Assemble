@@ -3,7 +3,7 @@ import { api } from '../../services/api';
 import GlassIcon from '../../components/GlassIcon';
 import ModalPortal from '../../components/ModalPortal';
 
-export default function DatabaseManager() {
+export default function AdminReworkData() {
   const [mos, setMos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [startDate, setStartDate] = useState('');
@@ -23,7 +23,7 @@ export default function DatabaseManager() {
       if (endDate) params.endDate = endDate;
       if (filterPlanDate) params.planDate = filterPlanDate;
       const data = await api.getMOs(params);
-      setMos(data.filter(m => !m.isRework));
+      setMos(data.filter(m => m.isRework));
     } catch (e) {
       console.error(e);
     } finally {
@@ -162,7 +162,7 @@ export default function DatabaseManager() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
         <div>
           <h2 style={{ marginBottom: 4 }}>Database Manager</h2>
-          <p className="text-muted text-sm">Full administrative control over MO database records.</p>
+          <p className="text-muted text-sm">Full administrative control over Rework MO database records.</p>
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <button className="btn btn-secondary btn-sm" onClick={handleBackupDB}><GlassIcon name="database" size={16} color="#64748b" /> Backup Full DB</button>

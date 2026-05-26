@@ -78,7 +78,7 @@ export const getMOs = (req, res) => {
 
 // POST /api/mos
 export const createMO = async (req, res) => {
-  const { type, size, sku, refer, moNumber, qty, od, submittedBy, batchId, planDate, componentsOverrides } = req.body;
+  const { type, size, sku, refer, moNumber, qty, od, submittedBy, batchId, planDate, componentsOverrides, isRework } = req.body;
   if (!qty) return res.status(400).json({ message: 'QTY is required' });
 
   if (moNumber && db.data.moEntries.some(e => e.moNumber === moNumber)) {
@@ -108,6 +108,7 @@ export const createMO = async (req, res) => {
       };
     }),
     isProRing: derived.isProRing || false,
+    isRework: !!isRework,
     status: 'Pending',
     batchId: batchId || `BATCH-${Date.now()}`,
     submittedBy: submittedBy || 'Unknown',
@@ -155,7 +156,7 @@ export const createMOBulk = async (req, res) => {
   };
 
   for (const row of rows) {
-    const { moNumber, planDate, type, size, refer, od, qty, components, overrides } = row;
+    const { moNumber, planDate, type, size, refer, od, qty, components, overrides, isRework } = row;
     if (!moNumber || !planDate || !type || !size || !qty) continue;
 
     const entry = {
@@ -169,6 +170,7 @@ export const createMOBulk = async (req, res) => {
       qty: parseInt(qty),
       components: components || [],
       overrides: overrides || {},
+      isRework: !!isRework,
       status: 'Pending',
       batchId,
       submittedBy,
@@ -199,7 +201,7 @@ export const createMOBulk = async (req, res) => {
 // PUT /api/mos/:id
 export const updateMO = async (req, res) => {
   const { id } = req.params;
-  const { status, components, planDate, type, size, refer, od, qty } = req.body;
+  const { status, components, planDate, type, size, refer, od, qty, completedQty } = req.body;
   const entry = db.data.moEntries.find(e => e.id === id);
   if (!entry) return res.status(404).json({ message: 'MO not found' });
 
@@ -210,6 +212,7 @@ export const updateMO = async (req, res) => {
   if (od !== undefined) entry.od = od;
   if (planDate !== undefined) entry.planDate = planDate;
   if (qty !== undefined) entry.qty = parseInt(qty);
+  if (completedQty !== undefined) entry.completedQty = parseInt(completedQty) || 0;
 
   if (status) {
     entry.status = status;

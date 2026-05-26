@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import GlassIcon from '../components/GlassIcon';
 
-export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
+export default function ConfirmPage({ rows, batchId, onBack, onSubmit, isRework }) {
   const { user } = useAuth();
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit }) {
     setLoading(true);
     setError('');
     try {
-      const bulkPayload = rows.map(row => ({ ...row, batchId, submittedBy: user?.fullName }));
+      const bulkPayload = rows.map(row => ({ ...row, batchId, submittedBy: user?.fullName, isRework: !!isRework }));
       await api.createMOBulk(bulkPayload);
       onSubmit();
     } catch (err) {

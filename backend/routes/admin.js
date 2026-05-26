@@ -165,6 +165,7 @@ export const handleDbAction = async (req, res) => {
     switch (t) {
       case 'mo': return db.data.moEntries;
       case 'scrap': return db.data.scrapEntries;
+      case 'rework': return db.data.reworkEntries;
       case 'return': return db.data.returnEntries;
       default: return null;
     }
@@ -186,6 +187,7 @@ export const handleDbAction = async (req, res) => {
   const newArray = sourceArray.filter(item => !ids.includes(item.id));
   if (type === 'mo') db.data.moEntries = newArray;
   else if (type === 'scrap') db.data.scrapEntries = newArray;
+  else if (type === 'rework') db.data.reworkEntries = newArray;
   else if (type === 'return') db.data.returnEntries = newArray;
 
   db.data.auditLogs.unshift({
@@ -219,6 +221,7 @@ export const handleTrashAction = async (req, res) => {
       
       if (type === 'mo') db.data.moEntries.push(originalItem);
       else if (type === 'scrap') db.data.scrapEntries.push(originalItem);
+      else if (type === 'rework') db.data.reworkEntries.push(originalItem);
       else if (type === 'return') db.data.returnEntries.push(originalItem);
     });
   }
@@ -247,21 +250,23 @@ export const wipeAllData = async (req, res) => {
 
   const moCnt     = (db.data.moEntries     || []).length;
   const scrapCnt  = (db.data.scrapEntries  || []).length;
+  const reworkCnt = (db.data.reworkEntries || []).length;
   const returnCnt = (db.data.returnEntries || []).length;
   const trashCnt  = (db.data.trashEntries  || []).length;
 
   db.data.moEntries     = [];
   db.data.scrapEntries  = [];
+  db.data.reworkEntries = [];
   db.data.returnEntries = [];
   db.data.trashEntries  = [];
 
   db.data.auditLogs.unshift({
     id: randomUUID(),
-    action: `⚠️ FULL DATABASE WIPE: Deleted ${moCnt} MOs, ${scrapCnt} Scrap, ${returnCnt} Returns, ${trashCnt} Trash`,
+    action: `⚠️ FULL DATABASE WIPE: Deleted ${moCnt} MOs, ${scrapCnt} Scrap, ${reworkCnt} Rework, ${returnCnt} Returns, ${trashCnt} Trash`,
     user: req.body.submittedBy || 'Admin',
     time: new Date().toISOString(),
   });
 
   await db.write();
-  res.json({ success: true, deleted: { mo: moCnt, scrap: scrapCnt, returns: returnCnt, trash: trashCnt } });
+  res.json({ success: true, deleted: { mo: moCnt, scrap: scrapCnt, rework: reworkCnt, returns: returnCnt, trash: trashCnt } });
 };

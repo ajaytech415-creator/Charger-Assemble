@@ -103,10 +103,55 @@ export const deleteReturnEntry = async (req, res) => {
   if (!db.data.returnEntries) return res.status(404).json({ message: 'Not found' });
   const idx = db.data.returnEntries.findIndex(e => e.id === id);
   if (idx === -1) return res.status(404).json({ message: 'Return entry not found' });
+
+  const entry = db.data.returnEntries[idx];
+
+  // Restore quantities to MO when return is deleted (reverse the reduction that was applied on create)
+  const mo = db.data.moEntries && db.data.moEntries.find(m => m.id === entry.moId);
+  if (mo) {
+    if (entry.isFullMO) {
+      // Restore full MO qty
+      mo.qty = (mo.qty || 0) + (entry.componentQty || 0);
+      if (mo.components) {
+        mo.components.forEach(c => {
+          c.collectedQty = (c.collectedQty || 0) + (entry.componentQty || 0);
+        });
+      }
+      // If MO was set to 'Returned' status, restore to 'Pending'
+      if (mo.status === 'Returned') {
+        mo.status = 'Pending';
+        mo.returnedAt = null;
+      }
+    } else if (entry.component) {
+      // Restore specific component's collected qty
+      if (mo.components) {
+        const comp = mo.components.find(c => c.category === entry.component || c.name === entry.component);
+        if (comp) {
+          comp.collectedQty = (comp.collectedQty || 0) + (entry.componentQty || 0);
+        }
+      }
+      // Remove from pendingReturns if present
+      if (mo.pendingReturns) {
+        mo.pendingReturns = mo.pendingReturns.filter(pr =>
+          !(pr.component === entry.component && pr.qty === entry.componentQty)
+        );
+      }
+    }
+  }
+
   db.data.returnEntries.splice(idx, 1);
+
+  db.data.auditLogs.unshift({
+    id: randomUUID(),
+    action: `Return DELETED (qty restored): MO ${entry.moNumber} — ${entry.isFullMO ? `Full MO (${entry.componentQty})` : `${entry.component} (${entry.componentQty})`}`,
+    user: req.body?.submittedBy || 'Admin',
+    time: new Date().toISOString(),
+  });
+
   await db.write();
   res.json({ success: true });
 };
+
 
 // PUT /api/returns/:id/replenish
 export const replenishReturnEntry = async (req, res) => {

@@ -404,12 +404,14 @@ export default function ScrapPage({ onBack }) {
                       <tr>
                         <th style={{ width: 40 }}><input type="checkbox" checked={scrapEntries.length > 0 && selectedScrapIds.length === scrapEntries.length} onChange={e => setSelectedScrapIds(e.target.checked ? scrapEntries.map(x => x.id) : [])} /></th>
                         <th>MO Number</th>
-                        <th>SKU</th>
-                        <th>Category</th>
+                        <th>SKU / Type</th>
                         <th>Component Name</th>
                         <th style={{ color: '#16a34a' }}>Receive (RT)</th>
                         <th style={{ color: '#dc2626' }}>Reject (RJ)</th>
                         <th>Submitted By</th>
+                        <th>Received At</th>
+                        <th>Rejected At</th>
+                        <th>Submitted At</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -418,12 +420,20 @@ export default function ScrapPage({ onBack }) {
                         <tr key={e.id} style={{ background: selectedScrapIds.includes(e.id) ? '#fff1f2' : '' }}>
                           <td><input type="checkbox" checked={selectedScrapIds.includes(e.id)} onChange={() => setSelectedScrapIds(prev => prev.includes(e.id) ? prev.filter(id => id !== e.id) : [...prev, e.id])} /></td>
                           <td style={{ fontWeight: 700, color: '#dc2626' }}>{e.moNumber}</td>
-                          <td><span className="badge badge-primary">{e.sku}</span></td>
-                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.component}</td>
-                          <td style={{ fontSize: 12 }}>{e.componentName}</td>
+                          <td><span className="badge badge-primary">{e.type || e.od || e.sku}</span></td>
+                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.componentName}</td>
                           <td><span className="badge badge-success" style={{ fontSize: 13 }}>{e.receive}</span></td>
                           <td><span className="badge badge-danger" style={{ fontSize: 13 }}>{e.reject}</span></td>
                           <td style={{ fontSize: 12 }}>{e.submittedBy}</td>
+                          <td style={{ fontSize: 11, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                            {e.receivedAt ? new Date(e.receivedAt).toLocaleString() : '—'}
+                          </td>
+                          <td style={{ fontSize: 11, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                            {e.rejectedAt ? new Date(e.rejectedAt).toLocaleString() : '—'}
+                          </td>
+                          <td style={{ fontSize: 11, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                            {e.submittedAt ? new Date(e.submittedAt).toLocaleString() : '—'}
+                          </td>
                           <td>
                             <button className="btn-icon" onClick={() => openEditModal(e)}><GlassIcon name="edit" size={18} color="#2563eb" /></button>
                           </td>

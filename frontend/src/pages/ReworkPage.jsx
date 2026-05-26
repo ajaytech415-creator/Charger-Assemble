@@ -195,10 +195,10 @@ export default function ReworkPage({ onBack }) {
     window.open(api.exportReworkUrl(params), '_blank');
   };
 
-  const allSummaryComps = Array.from(new Set(reworkEntries.map(e => e.component).filter(Boolean)));
+  const allSummaryComps = Array.from(new Set(reworkEntries.map(e => e.componentName).filter(Boolean)));
   
   const summaryByComp = allSummaryComps.reduce((acc, c) => {
-    const entries = reworkEntries.filter(e => e.component === c);
+    const entries = reworkEntries.filter(e => e.componentName === c);
     acc[c] = {
       totalReceive: entries.reduce((s, e) => s + (e.receive || 0), 0),
       totalReject:  entries.reduce((s, e) => s + (e.reject  || 0), 0),
@@ -344,8 +344,8 @@ export default function ReworkPage({ onBack }) {
                         style={{ background: c.bg, border: `2px solid ${c.color}30`, borderRadius: 12, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
                       >
                         <GlassIcon name={c.icon} size={24} color={c.color} style={{ marginBottom: 8 }} />
-                        <div style={{ fontWeight: 700, color: c.color, fontSize: 13, marginBottom: 4 }}>{c.comp.toUpperCase()}</div>
-                        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, lineHeight: 1.3 }}>{c.name}</div>
+                        <div style={{ fontWeight: 700, color: c.color, fontSize: 13, marginBottom: 4 }}>{c.name}</div>
+                        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, lineHeight: 1.3 }}>{c.comp.toUpperCase()}</div>
                         <div style={{ marginTop: 10 }}>
                           <span style={{ display: 'inline-block', background: '#fff', border: `1.5px solid ${c.color}`, color: c.color, borderRadius: 8, padding: '4px 12px', fontSize: 12, fontWeight: 600 }}>
                             + Enter Rework
@@ -408,7 +408,6 @@ export default function ReworkPage({ onBack }) {
                       <tr>
                         <th>MO Number</th>
                         <th>SKU</th>
-                        <th>Category</th>
                         <th>Component Name</th>
                         <th style={{ color: '#16a34a' }}>Receive (RC)</th>
                         <th style={{ color: '#dc2626' }}>Reject (RJ)</th>
@@ -421,8 +420,7 @@ export default function ReworkPage({ onBack }) {
                         <tr key={e.id}>
                           <td style={{ fontWeight: 700, color: '#1e40af' }}>{e.moNumber}</td>
                           <td><span className="badge badge-primary">{e.sku}</span></td>
-                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.component}</td>
-                          <td style={{ fontSize: 12 }}>{e.componentName}</td>
+                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.componentName}</td>
                           <td><span className="badge badge-success" style={{ fontSize: 13 }}>{e.receive}</span></td>
                           <td><span className="badge badge-danger" style={{ fontSize: 13 }}>{e.reject}</span></td>
                           <td style={{ fontSize: 12 }}>{e.submittedBy}</td>
@@ -455,6 +453,18 @@ export default function ReworkPage({ onBack }) {
                 <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 14px', marginBottom: 20 }}>
                   <div style={{ fontSize: 12, color: '#1e40af', fontWeight: 600 }}>MO: {selectedMOs[0]?.moNumber}</div>
                   <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{activeComp}: <strong>{activeCompName}</strong></div>
+                  {!isFullMO && (() => {
+                    const compData = selectedMOs[0]?.components?.find(c => c.name === activeCompName);
+                    const prevEntries = reworkEntries.filter(e => e.moId === selectedMOs[0]?.id && e.componentName === activeCompName);
+                    const prevRecv = prevEntries.reduce((s, e) => s + (e.receive || 0), 0);
+                    const prevRej = prevEntries.reduce((s, e) => s + (e.reject || 0), 0);
+                    const remaining = Math.max(0, (compData?.collectedQty || 0) - prevRecv - prevRej);
+                    return (
+                      <div style={{ fontSize: 11, color: '#047857', marginTop: 6, fontWeight: 600 }}>
+                        Max Allowed: {remaining} (Collected: {compData?.collectedQty || 0} - Prev: {prevRecv + prevRej})
+                      </div>
+                    );
+                  })()}
                   {isFullMO && <div style={{ marginTop: 4, display: 'inline-block', background: '#dbeafe', color: '#1d4ed8', fontSize: 11, padding: '2px 8px', borderRadius: 12, fontWeight: 600 }}>Will apply to all components</div>}
                 </div>
                 {entryError && <div className="alert alert-danger" style={{ marginBottom: 14 }}>{entryError}</div>}

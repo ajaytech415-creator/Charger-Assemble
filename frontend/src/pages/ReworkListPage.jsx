@@ -5,10 +5,9 @@ import GlassIcon from '../components/GlassIcon';
 import ModalPortal from '../components/ModalPortal';
 import MaterialBreakdown from '../components/MaterialBreakdown';
 
-export default function UserDashboard({ onBack, onNavigateScrap, onNavigateReworkList }) {
+export default function ReworkListPage({ onBack, onNewPlan }) {
   const { user } = useAuth();
   const [mos, setMos] = useState([]);
-  const [reworkMos, setReworkMos] = useState([]);
   const [stats, setStats] = useState(null);
   const [filterStart, setFilterStart] = useState('');
   const [filterEnd, setFilterEnd] = useState('');
@@ -40,7 +39,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
   // Income / Outgo Today popup
   const [todayModal, setTodayModal] = useState(null); // null | 'income' | 'outgo'
 
-  const [subView, setSubView] = useState('main'); // 'main' | 'mos' | 'returns'
+  const [subView, setSubView] = useState('mos'); // 'mos' | 'returns'
   const [moSearch, setMoSearch] = useState('');
   const [filterPlanDate, setFilterPlanDate] = useState('');
 
@@ -79,8 +78,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
         api.getStats({ startDate: filterStart, endDate: filterEnd }),
         api.getReturns(params) // Fetch all returns to display history
       ]);
-      setMos(mosData.filter(m => !m.isRework));
-      setReworkMos(mosData.filter(m => !!m.isRework));
+      setMos(mosData.filter(m => m.isRework));
       setStats(statsData);
       setReturnHistory(returnsData);
     } catch (e) { console.error(e); }
@@ -259,7 +257,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>
-            <span style={{ fontWeight: 600, color: '#111827' }}>My Dashboard</span>
+            <span style={{ fontWeight: 600, color: '#111827' }}>Rework Dashboard</span>
           </div>
         </div>
         <div className="navbar-right">
@@ -273,312 +271,35 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
               <div className="role">Data Entry</div>
             </div>
           </div>
-          <button className="btn btn-primary btn-sm" onClick={onBack}>+ New Plan</button>
+          <button className="btn btn-primary btn-sm" onClick={onNewPlan || onBack}>+ New Rework Plan</button>
         </div>
       </nav>
 
       <div style={{ maxWidth: 1500, margin: '0 auto', padding: '28px 24px' }}>
-        {subView === 'main' && (
-          <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24, flexWrap: 'wrap', gap: 16 }}>
-              <div>
-                <h2>Production Dashboard</h2>
-                <p className="text-muted text-sm">Track your MO progress and manage plan closures.</p>
-              </div>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', background: '#f9fafb', border: '1px solid #e5e7eb', padding: '6px 12px', borderRadius: 8 }}>
-                {/* Alert Icon */}
-                <div 
-                  onClick={() => setShowAlertModal(true)}
-                  style={{ 
-                    position: 'relative', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    width: 32, height: 32, background: lowComponentMOs.length > 0 ? '#fee2e2' : '#f3f4f6', borderRadius: '50%', marginRight: 8, transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                  title="Collected Quantity Analysis"
-                >
-                  <GlassIcon name="alert" size={16} color={lowComponentMOs.length > 0 ? '#ef4444' : '#9ca3af'} />
-                  {lowComponentMOs.length > 0 && (
-                    <span style={{
-                      position: 'absolute', top: -4, right: -4, background: '#ef4444', color: 'white', 
-                      fontSize: 10, fontWeight: 'bold', width: 16, height: 16, borderRadius: '50%', 
-                      display: 'flex', alignItems: 'center', justifyContent: 'center'
-                    }}>
-                      {lowComponentMOs.length}
-                    </span>
-                  )}
-                </div>
-                
-                <input 
-                  type="date" 
-                  value={filterStart} 
-                  onChange={e => setFilterStart(e.target.value)} 
-                  style={{ border: 'none', background: 'transparent', fontSize: 13, color: '#4b5563', outline: 'none' }} 
-                />
-                <span style={{ fontSize: 12, color: '#9ca3af' }}>to</span>
-                <input 
-                  type="date" 
-                  value={filterEnd} 
-                  onChange={e => setFilterEnd(e.target.value)} 
-                  style={{ border: 'none', background: 'transparent', fontSize: 13, color: '#4b5563', outline: 'none' }} 
-                />
-                {(filterStart || filterEnd) && (
-                  <button 
-                    className="btn btn-sm" 
-                    onClick={() => { setFilterStart(''); setFilterEnd(''); }}
-                    style={{ background: '#fca5a5', color: '#7f1d1d', border: 'none', padding: '4px 8px', marginLeft: 8 }}
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
+      
+      {/* Mini Dashboard */}
+      <div className="stats-grid" style={{ marginBottom: 24, gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        {[
+          { label: 'Total Planned', value: totalPlanned.toLocaleString(), icon: 'document', color: '#2563eb' },
+          { label: 'Completed Rework Qty', value: totalCompleted.toLocaleString(), icon: 'database', color: '#16a34a' },
+          { label: 'Pending Rework Qty', value: totalPending.toLocaleString(), icon: 'audit', color: '#d97706' },
+          { label: 'Total Rework MOs', value: mos.length, icon: 'plan', color: '#4f46e5' },
+        ].map(s => (
+          <div key={s.label} className="card stat-card" style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className="stat-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', fontSize: 13 }}>
+              <GlassIcon name={s.icon} size={20} color={s.color} style={{ marginRight: 8 }} />
+              {s.label}
             </div>
-
-        {/* Stats + Return Box */}
-        <div className="stats-grid" style={{ marginBottom: 24, gridTemplateColumns: 'repeat(5, 1fr)' }}>
-          {[
-            { label: 'Total QTY Planned', value: totalPlanned.toLocaleString(), icon: 'document', color: '#2563eb', onClick: null },
-            { label: 'Completed QTY',     value: totalCompleted.toLocaleString(), icon: 'database', color: '#16a34a', onClick: null },
-            { label: 'Pending Balance',   value: totalPending.toLocaleString(), icon: 'audit', color: '#d97706', onClick: null },
-            { label: 'Income Today',      value: stats?.incomeToday || 0, icon: 'export', color: '#7c3aed', onClick: () => setTodayModal('income') },
-          ].map(s => (
-            <div
-              key={s.label}
-              className="card stat-card"
-              style={{
-                padding: '24px 20px',
-                cursor: s.onClick ? 'pointer' : 'default',
-                transition: 'all 0.2s',
-              }}
-              onClick={s.onClick}
-              onMouseEnter={e => { if (s.onClick) { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.1)'; } }}
-              onMouseLeave={e => { if (s.onClick) { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; } }}
-              title={s.onClick ? `Click to see ${s.label} details` : undefined}
-            >
-              <div className="stat-label">
-                <GlassIcon name={s.icon} size={24} color={s.color} style={{ marginRight: 8 }} />
-                {s.label}
-              </div>
-              <div className="stat-value" style={{ color: s.color, marginTop: 12, fontSize: '2.5rem' }}>{s.value}</div>
-              {s.onClick && <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 4 }}>Click to view list</div>}
-            </div>
-          ))}
-          {/* Return Box */}
-          <div
-            className="card stat-card"
-            style={{ padding: '24px 20px', cursor: 'pointer', border: '2px solid #fca5a5', background: 'linear-gradient(135deg,#fff1f2,#fff)', transition: 'all 0.2s' }}
-            onClick={openReturnModal}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(220,38,38,0.15)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-          >
-            <div className="stat-label">
-              <GlassIcon name="scrap" size={24} color="#dc2626" style={{ marginRight: 8 }} />
-              Return MO
-            </div>
-            <div className="stat-value" style={{ color: '#dc2626', marginTop: 12, fontSize: '1.5rem', fontWeight: 700 }}>↩ Return</div>
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Click to return MO or component</div>
+            <div className="stat-value" style={{ color: s.color, marginTop: 12, fontSize: '2.5rem' }}>{s.value}</div>
           </div>
-        </div>
-
-        {/* Additional Stats Row */}
-        <div className="stats-grid" style={{ marginBottom: 24, gridTemplateColumns: 'repeat(6, 1fr)' }}>
-          <div className="card stat-card" style={{ padding: '24px 20px', gridColumn: 'span 2' }}>
-            <div className="stat-label">
-              <GlassIcon name="plan" size={24} color="#4f46e5" style={{ marginRight: 8 }} />
-              Total MOs
-            </div>
-            <div className="stat-value" style={{ color: '#4f46e5', marginTop: 12, fontSize: '2.5rem' }}>{stats?.totalMOs || mos.length}</div>
-          </div>
-          
-          <div
-            className="card stat-card"
-            style={{ padding: '24px 20px', gridColumn: 'span 2', cursor: 'pointer', transition: 'all 0.2s' }}
-            onClick={() => setTodayModal('outgo')}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(16,185,129,0.15)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-            title="Click to see today's closed MOs"
-          >
-            <div className="stat-label">
-              <GlassIcon name="check" size={24} color="#10b981" style={{ marginRight: 8 }} />
-              Outgo Today (MO Closed)
-            </div>
-            <div className="stat-value" style={{ color: '#10b981', marginTop: 12, fontSize: '2.5rem' }}>{stats?.outgoToday || 0}</div>
-            <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 4 }}>Click to view list</div>
-          </div>
-
-          <div
-            className="card stat-card"
-            style={{ padding: '24px 20px', cursor: 'pointer', border: '2px solid #cbd5e1', background: 'linear-gradient(135deg,#f8fafc,#fff)', transition: 'all 0.2s', gridColumn: 'span 1' }}
-            onClick={onNavigateScrap}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(100,116,139,0.15)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-          >
-            <div className="stat-label">
-              <GlassIcon name="delete" size={24} color="#64748b" style={{ marginRight: 8 }} />
-              Today Scrap
-            </div>
-            <div className="stat-value" style={{ color: '#475569', marginTop: 12, fontSize: '1.5rem', fontWeight: 700 }}>
-              {stats?.scrapToday || 0}
-            </div>
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Click to log scrap</div>
-          </div>
-
-          <div
-            className="card stat-card"
-            style={{ padding: '24px 20px', cursor: 'pointer', border: '2px solid #cbd5e1', background: 'linear-gradient(135deg,#f8fafc,#fff)', transition: 'all 0.2s', gridColumn: 'span 1' }}
-            onClick={onNavigateReworkList}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(100,116,139,0.15)'; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
-          >
-            <div className="stat-label">
-              <GlassIcon name="refresh" size={24} color="#64748b" style={{ marginRight: 8 }} />
-              Rework
-            </div>
-            <div className="stat-value" style={{ color: '#475569', marginTop: 12, fontSize: '1.5rem', fontWeight: 700 }}>
-              {reworkMos.filter(m => (m.date || m.createdAt || '').startsWith(new Date().toISOString().split('T')[0])).length}
-            </div>
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 4 }}>Today's Status</div>
-          </div>
-        </div>
-
-        {/* Progress overview */}
-        {totalPlanned > 0 && (
-          <div className="card" style={{ padding: '20px 24px', marginBottom: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-              <h4>Overall Progress</h4>
-              <span className="text-sm text-muted">{Math.round((totalCompleted / totalPlanned) * 100)}% Complete</span>
-            </div>
-            <div className="progress-bar-wrap">
-              <div className="progress-bar-fill" style={{ width: `${Math.min((totalCompleted / totalPlanned) * 100, 100)}%` }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8 }}>
-              <span className="text-sm text-muted">Completed: <strong style={{ color: '#16a34a' }}>{totalCompleted.toLocaleString()}</strong></span>
-              <span className="text-sm text-muted">Balance: <strong style={{ color: '#d97706' }}>{totalPending.toLocaleString()}</strong></span>
-              <span className="text-sm text-muted">Total: <strong>{totalPlanned.toLocaleString()}</strong></span>
-            </div>
-          </div>
-        )}
-
-        {/* Material Breakdown by Type */}
-        {stats?.breakdown && (
-          <div className="card" style={{ marginBottom: 24 }}>
-            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <GlassIcon name="database" size={18} color="#7c3aed" />
-              <h3 style={{ margin: 0 }}>Material Breakdown by Type</h3>
-              <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Electronic · Housing · Screws · Tapes · Mechanical</span>
-            </div>
-            <div className="card-body">
-              <MaterialBreakdown breakdown={stats.breakdown} />
-            </div>
-          </div>
-        )}
-
-        {/* Navigation Boxes */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 30, marginTop: 10 }}>
-          <div 
-            className="card animate-fade" 
-            style={{ 
-              padding: '40px 32px', 
-              cursor: 'pointer', 
-              textAlign: 'center', 
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
-              border: '2px solid #e5e7eb',
-              background: '#ffffff',
-              borderRadius: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 20
-            }}
-            onClick={() => setSubView('mos')}
-            onMouseEnter={e => { 
-              e.currentTarget.style.transform = 'translateY(-8px)'; 
-              e.currentTarget.style.borderColor = '#2563eb'; 
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(37,99,235,0.12)'; 
-            }}
-            onMouseLeave={e => { 
-              e.currentTarget.style.transform = ''; 
-              e.currentTarget.style.borderColor = '#e5e7eb'; 
-              e.currentTarget.style.boxShadow = ''; 
-            }}
-          >
-            <div style={{ 
-              width: 80, height: 80, 
-              background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', 
-              borderRadius: 22, 
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 8px 16px rgba(37,99,235,0.1)'
-            }}>
-              <GlassIcon name="plan" size={40} color="#2563eb" />
-            </div>
-            <div>
-              <h3 style={{ marginBottom: 10, fontSize: '1.4rem', fontWeight: 800, color: '#111827' }}>Manufacturing Orders</h3>
-              <p className="text-muted" style={{ fontSize: 14, maxWidth: 300, margin: '0 auto', lineHeight: 1.5 }}>
-                Access the full production registry. Update quantities, close orders, and track manufacturing throughput.
-              </p>
-            </div>
-            <div style={{ marginTop: 10, color: '#2563eb', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-              Open Registry <span style={{ fontSize: 18 }}>→</span>
-            </div>
-          </div>
-
-          <div 
-            className="card animate-fade" 
-            style={{ 
-              padding: '40px 32px', 
-              cursor: 'pointer', 
-              textAlign: 'center', 
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', 
-              border: '2px solid #e5e7eb',
-              background: '#ffffff',
-              borderRadius: 20,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 20
-            }}
-            onClick={() => setSubView('returns')}
-            onMouseEnter={e => { 
-              e.currentTarget.style.transform = 'translateY(-8px)'; 
-              e.currentTarget.style.borderColor = '#dc2626'; 
-              e.currentTarget.style.boxShadow = '0 20px 40px rgba(220,38,38,0.12)'; 
-            }}
-            onMouseLeave={e => { 
-              e.currentTarget.style.transform = ''; 
-              e.currentTarget.style.borderColor = '#e5e7eb'; 
-              e.currentTarget.style.boxShadow = ''; 
-            }}
-          >
-            <div style={{ 
-              width: 80, height: 80, 
-              background: 'linear-gradient(135deg, #fff1f2, #ffe4e6)', 
-              borderRadius: 22, 
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 8px 16px rgba(220,38,38,0.1)'
-            }}>
-              <GlassIcon name="history" size={40} color="#dc2626" />
-            </div>
-            <div>
-              <h3 style={{ marginBottom: 10, fontSize: '1.4rem', fontWeight: 800, color: '#111827' }}>Return History</h3>
-              <p className="text-muted" style={{ fontSize: 14, maxWidth: 300, margin: '0 auto', lineHeight: 1.5 }}>
-                Track component returns and manage replenishments. View history of returned items and their status.
-              </p>
-            </div>
-            <div style={{ marginTop: 10, color: '#dc2626', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-              Open History <span style={{ fontSize: 18 }}>→</span>
-            </div>
-          </div>
-        </div>
-      </>
-      )}
+        ))}
+      </div>
 
       {/* MO View */}
-      {subView === 'mos' && (
-        <div className="card">
+        <div className="card" style={{ minHeight: 600 }}>
           <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f3f4f6', paddingBottom: 16, flexWrap: 'wrap', gap: 16 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <button className="btn btn-secondary btn-sm" onClick={() => { setSubView('main'); setSelectedMOs([]); }}>← Back</button>
-              <h3 style={{ margin: 0, whiteSpace: 'nowrap' }}>Manufacturing Orders</h3>
+              <h3 style={{ margin: 0, whiteSpace: 'nowrap' }}>Rework Orders</h3>
               <span className="badge badge-primary" style={{ whiteSpace: 'nowrap' }}>{mos.length} total</span>
             </div>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -667,7 +388,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
           ) : mos.length === 0 ? (
             <div className="empty-state">
               <div className="icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><GlassIcon name="document" size={48} color="#9ca3af" /></div>
-              <p>No production orders found. Submit a plan to get started.</p>
+              <p>No rework orders found. Submit a rework plan to get started.</p>
             </div>
           ) : (
             <div className="table-wrapper">
@@ -784,80 +505,6 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
             </div>
           )}
         </div>
-      )}
-
-      {/* Returns View */}
-      {subView === 'returns' && (
-        <div className="card">
-          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f3f4f6', paddingBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <button className="btn btn-secondary btn-sm" onClick={() => setSubView('main')}>← Back</button>
-              <GlassIcon name="history" size={18} color="#dc2626" />
-              <h3 style={{ margin: 0 }}>Return History</h3>
-              <span className="badge badge-danger">{returnHistory.length} total</span>
-            </div>
-            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-              <input type="date" value={filterStart} onChange={e => setFilterStart(e.target.value)} style={{ width: 140 }} />
-              <span className="text-muted">to</span>
-              <input type="date" value={filterEnd} onChange={e => setFilterEnd(e.target.value)} style={{ width: 140 }} />
-              {(filterStart || filterEnd) && (
-                <button className="btn btn-secondary btn-sm" onClick={() => { setFilterStart(''); setFilterEnd(''); }}>Clear</button>
-              )}
-            </div>
-          </div>
-              {loading ? (
-                <div style={{ textAlign: 'center', padding: 40 }}><span className="spinner" style={{ display: 'inline-block' }} /></div>
-              ) : returnHistory.length === 0 ? (
-                <div className="empty-state"><div className="icon" style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}><GlassIcon name="arrow-left" size={48} color="#9ca3af" /></div><p>No return history.</p></div>
-              ) : (
-                <div className="table-wrapper">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>MO Number</th>
-                        <th>Type</th>
-                        <th>Component</th>
-                        <th>Qty</th>
-                        <th>Returned At</th>
-                        <th>Status</th>
-                        <th style={{ textAlign: 'right' }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {returnHistory.map(r => (
-                        <tr key={r.id}>
-                          <td style={{ fontWeight: 700, color: '#dc2626' }}>{r.moNumber}</td>
-                          <td>
-                            {r.isFullMO ? <span className="badge badge-danger">Full MO</span> : <span className="badge badge-primary">Component</span>}
-                          </td>
-                          <td>{r.isFullMO ? 'All Components' : (r.component || '—')}</td>
-                          <td style={{ fontWeight: 700 }}>{r.componentQty}</td>
-                          <td style={{ fontSize: 12, color: '#6b7280' }}>{new Date(r.returnedAt).toLocaleString()}</td>
-                          <td>
-                            {r.status === 'Replenished' ? (
-                              <div style={{ fontSize: 11 }}>
-                                <span className="badge badge-success">Replenished</span><br/>
-                                <span style={{ color: '#6b7280' }}>{new Date(r.replenishedAt).toLocaleString()}</span>
-                              </div>
-                            ) : (
-                              <span className="badge badge-warning">{r.status}</span>
-                            )}
-                          </td>
-                          <td style={{ textAlign: 'right' }}>
-                            {r.status !== 'Replenished' && !r.isFullMO && (
-                              <button className="btn btn-secondary btn-sm" onClick={() => handleReplenish(r.id)}>
-                                Replenish
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-        </div>
-      )}
       </div>
 
       {/* Close MO Modal */}

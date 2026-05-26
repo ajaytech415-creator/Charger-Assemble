@@ -2,8 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '../../services/api';
 import GlassIcon from '../../components/GlassIcon';
 
-const COMPONENTS = ['Battery', 'PCBA', 'Coil', 'Shell'];
 const COMP_COLORS = { Battery: '#2563eb', PCBA: '#16a34a', Coil: '#7c3aed', Shell: '#d97706' };
+
+// Utility to get color hash based on string if not defined
+const getColor = (str) => {
+  if (!str) return '#6b7280';
+  for (let k in COMP_COLORS) if (str.toLowerCase().includes(k.toLowerCase())) return COMP_COLORS[k];
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  const color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
+  return '#' + '000000'.substring(0, 6 - color.length) + color;
+};
 
 export default function AdminScrapData() {
   const [entries, setEntries]     = useState([]);
@@ -13,6 +22,11 @@ export default function AdminScrapData() {
   const [filterStart, setFilterStart] = useState('');
   const [filterEnd, setFilterEnd]   = useState('');
   const [filterComp, setFilterComp] = useState('');
+  const [allComps, setAllComps]     = useState([]);
+
+  useEffect(() => {
+    api.getComponents().then(c => setAllComps(c.map(x => x.name).sort())).catch(e => console.error(e));
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -54,8 +68,8 @@ export default function AdminScrapData() {
   };
 
   // Summary per component
-  const summary = COMPONENTS.reduce((acc, c) => {
-    const ces = entries.filter(e => e.component === c);
+  const summary = allComps.reduce((acc, c) => {
+    const ces = entries.filter(e => e.componentName === c || e.component === c);
     acc[c] = {
       totalRC:  ces.reduce((s, e) => s + (e.receive || 0), 0),
       totalRJ:  ces.reduce((s, e) => s + (e.reject  || 0), 0),
@@ -81,14 +95,14 @@ export default function AdminScrapData() {
       </div>
 
       {/* Summary Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
-        {COMPONENTS.map(c => {
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 14, marginBottom: 24 }}>
+        {allComps.map(c => {
           const s = summary[c];
-          const col = COMP_COLORS[c];
+          const col = getColor(c);
           return (
             <div key={c} className="card" style={{ padding: '16px 18px' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: col, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-                <GlassIcon name={c === 'Battery' ? 'database' : c === 'PCBA' ? 'card' : c === 'Coil' ? 'shield' : 'plan'} size={14} color={col} />
+              <div style={{ fontSize: 12, fontWeight: 700, color: col, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <GlassIcon name={'database'} size={14} color={col} />
                 {c}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -140,7 +154,7 @@ export default function AdminScrapData() {
           <input type="datetime-local" value={filterEnd}   onChange={e => { setFilterEnd(e.target.value); setFilterDate(''); }} style={{ width: 200, fontSize: 13 }} />
           <select value={filterComp} onChange={e => setFilterComp(e.target.value)} style={{ width: 120, fontSize: 13 }}>
             <option value="">All Components</option>
-            {COMPONENTS.map(c => <option key={c} value={c}>{c}</option>)}
+            {allComps.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
           {(moSearch || filterDate || filterStart || filterEnd || filterComp) && (
             <button className="btn btn-secondary btn-sm" onClick={() => { setMoSearch(''); setFilterDate(''); setFilterStart(''); setFilterEnd(''); setFilterComp(''); }}>
@@ -172,7 +186,6 @@ export default function AdminScrapData() {
                   <th>#</th>
                   <th>MO Number</th>
                   <th>SKU</th>
-                  <th>Component</th>
                   <th>Component Name</th>
                   <th style={{ color: '#16a34a' }}>RC (Receive)</th>
                   <th style={{ color: '#dc2626' }}>RJ (Reject)</th>
@@ -189,12 +202,7 @@ export default function AdminScrapData() {
                     <td style={{ color: '#9ca3af', fontSize: 12 }}>{idx + 1}</td>
                     <td style={{ fontWeight: 700, color: '#dc2626' }}>{e.moNumber || '—'}</td>
                     <td><span className="badge badge-primary">{e.sku || '—'}</span></td>
-                    <td>
-                      <span style={{ fontWeight: 700, fontSize: 12, color: COMP_COLORS[e.component] || '#374151' }}>
-                        {e.component}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: 12, color: '#374151', maxWidth: 200 }}>{e.componentName}</td>
+                    <td style={{ fontWeight: 600, color: '#2563eb' }}>{e.componentName}</td>
                     <td>
                       <span style={{ fontWeight: 700, color: '#16a34a', background: '#f0fdf4', padding: '3px 12px', borderRadius: 20 }}>
                         {e.receive}

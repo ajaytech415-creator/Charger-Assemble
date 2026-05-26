@@ -39,11 +39,25 @@ export const createReworkEntry = async (req, res) => {
   if (rejVal <= 0 && recVal <= 0) return res.status(400).json({ message: 'At least one of receive or reject must be > 0' });
 
   // Accumulate into existing entry for the same MO + component (like scrap does)
-  let entry = db.data.reworkEntries.find(e => e.moId === moId && e.component === component);
+  let entry = db.data.reworkEntries.find(e => e.moId === moId && e.componentName === componentName);
+  
+  // Validation against collectedQty
+  const mo = db.data.moEntries.find(m => m.id === moId);
+  if (!mo) return res.status(404).json({ message: 'MO not found' });
+  const compData = mo.components?.find(c => c.name === componentName);
+  if (!compData) return res.status(404).json({ message: 'Component not found in MO' });
+  
+  const previousRecv = entry ? (entry.receive || 0) : 0;
+  const previousRej = entry ? (entry.reject || 0) : 0;
+  const totalAttempted = previousRecv + previousRej + recVal + rejVal;
+  
+  if (totalAttempted > compData.collectedQty) {
+    return res.status(400).json({ message: `Cannot rework ${totalAttempted} items. Only ${compData.collectedQty} collected for ${componentName}.` });
+  }
 
   if (entry) {
-    if (recVal > 0) { entry.receive = (entry.receive || 0) + recVal; entry.receivedAt  = now; }
-    if (rejVal > 0) { entry.reject  = (entry.reject  || 0) + rejVal; entry.rejectedAt = now; }
+    if (recVal > 0) { entry.receive = previousRecv + recVal; entry.receivedAt  = now; }
+    if (rejVal > 0) { entry.reject  = previousRej + rejVal; entry.rejectedAt = now; }
     entry.submittedAt = now;
     entry.submittedBy = submittedBy || entry.submittedBy;
   } else {

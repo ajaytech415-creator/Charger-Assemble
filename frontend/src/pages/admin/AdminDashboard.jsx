@@ -365,7 +365,7 @@ export default function AdminDashboard({ onNavigate }) {
             <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <GlassIcon name="database" size={18} color="#7c3aed" />
               <h3 style={{ margin: 0 }}>Material Breakdown by Type</h3>
-              <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Battery · PCBA · Coil · Shell · Lens (all MOs)</span>
+              <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Electronic · Housing · Screws · Tapes · Mechanical (all MOs)</span>
             </div>
             <div className="card-body">
               <MaterialBreakdown breakdown={stats.breakdown} />
@@ -506,7 +506,22 @@ export default function AdminDashboard({ onNavigate }) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                       {Object.keys(reportData.detailed || {}).map((cat, idx) => {
                         const palette = ['#2563eb','#16a34a','#7c3aed','#d97706','#e67e22','#059669','#dc2626','#0891b2'];
-                        const catObj = { title: cat.toUpperCase(), data: reportData.detailed[cat], color: palette[idx % palette.length] };
+                        const CAT_NAMES = {
+                          electronic: 'Electronic Components',
+                          housing: 'Housing Parts',
+                          screws: 'Screws & Fasteners',
+                          tapes: 'Tapes & Adhesives',
+                          c2Mech: 'C2 Mechanical Parts',
+                          c25Parts: 'C2.5 Specific Parts',
+                          c3Parts: 'C3 Specific Parts',
+                          dieselParts: 'Diesel Specific Parts',
+                          luxParts: 'Lux Specific Parts',
+                          luxColors: 'Lux Colors',
+                          fgs: 'Finished Goods (FGS)',
+                          foams: 'Foams',
+                          other: 'Other Components'
+                        };
+                        const catObj = { title: CAT_NAMES[cat] || cat.toUpperCase(), data: reportData.detailed[cat], color: palette[idx % palette.length] };
                         return (
                         <div key={idx}>
                           <h4 style={{ color: catObj.color, marginBottom: 12, fontSize: 14 }}>{catObj.title}</h4>

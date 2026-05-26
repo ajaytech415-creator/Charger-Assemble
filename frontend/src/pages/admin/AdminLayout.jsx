@@ -6,6 +6,7 @@ import MOPlans from './MOPlans';
 import ComponentTypes from './ComponentTypes';
 import AuditLog from './AuditLog';
 import AdminScrapData from './AdminScrapData';
+import AdminReworkData from './AdminReworkData';
 import AdminReturnData from './AdminReturnData';
 import AdminDBManager from './AdminDBManager';
 import AdminTrash from './AdminTrash';
@@ -19,6 +20,7 @@ const NAV = [
   { id: 'dashboard',   icon: 'dashboard', label: 'Dashboard' },
   { id: 'moplans',     icon: 'plan',      label: 'Plan Data' },
   { id: 'scrapdata',   icon: 'scrap',     label: 'Scrap Data' },
+  { id: 'reworkdata',  icon: 'refresh',   label: 'Rework Data' },
   { id: 'returndata',  icon: 'history',   label: 'Return Data' },
   { id: 'dbmanager',   icon: 'database',  label: 'DB Manager' },
   { id: 'users',       icon: 'users',     label: 'User Management' },
@@ -39,6 +41,7 @@ export default function AdminLayout({ onBack }) {
       case 'dashboard':  return <AdminDashboard onNavigate={setActive} />;
       case 'moplans':    return <MOPlans />;
       case 'scrapdata':  return <AdminScrapData />;
+      case 'reworkdata': return <AdminReworkData />;
       case 'returndata': return <AdminReturnData />;
       case 'dbmanager':  return <AdminDBManager />;
       case 'trash':      return <AdminTrash />;
