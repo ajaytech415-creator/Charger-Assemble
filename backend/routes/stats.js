@@ -3,11 +3,17 @@ import { getLocalDateStr, isSameLocalDay, inLocalPeriod } from '../utils/dates.j
 
 // GET /api/stats?startDate=&endDate=&date=
 export const getStats = (req, res) => {
-  const { date, startDate, endDate } = req.query;
+  const { date, startDate, endDate, isRework } = req.query;
   const today = date || getLocalDateStr();
 
   // Apply date filter to MO entries
   let entries = db.data.moEntries || [];
+  if (isRework === 'true') {
+    entries = entries.filter(e => e.isRework);
+  } else if (isRework === 'false') {
+    entries = entries.filter(e => !e.isRework);
+  }
+  
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.createdAt, startDate, endDate));
   } else if (date) {
@@ -134,7 +140,7 @@ export const getStats = (req, res) => {
 
 // GET /api/stats/report?startDate=&endDate=
 export const getReport = (req, res) => {
-  const { startDate, endDate } = req.query;
+  const { startDate, endDate, isRework } = req.query;
   if (!startDate || !endDate) return res.status(400).json({ message: 'Start and end dates are required' });
 
   // Helper for proper Date comparisons
@@ -150,7 +156,11 @@ export const getReport = (req, res) => {
   };
 
   // Filter entries exactly by the datetime range
-  const moEntries = (db.data.moEntries || []).filter(e => inPeriod(e.createdAt));
+  let moEntries = (db.data.moEntries || []).filter(e => inPeriod(e.createdAt));
+  
+  if (isRework === 'true') moEntries = moEntries.filter(e => e.isRework);
+  else if (isRework === 'false') moEntries = moEntries.filter(e => !e.isRework);
+
   const scrapEntries = (db.data.scrapEntries || []).filter(e => inPeriod(e.submittedAt));
   const returnEntries = (db.data.returnEntries || []).filter(e => inPeriod(e.returnedAt));
   const reworkEntries = (db.data.reworkEntries || []).filter(e => inPeriod(e.submittedAt));

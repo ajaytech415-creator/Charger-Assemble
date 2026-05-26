@@ -76,8 +76,8 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
       
       const [mosData, statsData, returnsData] = await Promise.all([
         api.getMOs(params), 
-        api.getStats({ startDate: filterStart, endDate: filterEnd }),
-        api.getReturns(params) // Fetch all returns to display history
+        api.getStats({ startDate: filterStart, endDate: filterEnd, isRework: false }),
+        api.getReturns({ ...params, isRework: false }) // Fetch all non-rework returns
       ]);
       setMos(mosData.filter(m => !m.isRework));
       setReworkMos(mosData.filter(m => !!m.isRework));
@@ -102,7 +102,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
     setReturnSearch('');
     try {
       const [mosData, scrapData] = await Promise.all([
-        api.getMOs({ status: 'Pending' }),
+        api.getMOs({ status: 'Pending', isRework: false }),
         api.getScrap()
       ]);
       setReturnMOs(mosData);

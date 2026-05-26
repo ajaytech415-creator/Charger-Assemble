@@ -45,8 +45,14 @@ const parseSKU = (sku, refer, config, type, size) => {
 
 // GET /api/mos
 export const getMOs = (req, res) => {
-  const { date, status, startDate, endDate, moNumber, planDate, planDateStart, planDateEnd } = req.query;
+  const { date, status, startDate, endDate, moNumber, planDate, planDateStart, planDateEnd, isRework } = req.query;
   let entries = [...db.data.moEntries];
+
+  if (isRework === 'true') {
+    entries = entries.filter(e => e.isRework);
+  } else if (isRework === 'false') {
+    entries = entries.filter(e => !e.isRework);
+  }
 
   if (status && status !== 'all') {
     entries = entries.filter(e => e.status === status);

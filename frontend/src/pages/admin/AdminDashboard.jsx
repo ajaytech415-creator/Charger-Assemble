@@ -74,7 +74,7 @@ export default function AdminDashboard({ onNavigate }) {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = {};
+      const params = { isRework: false };
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate;
       const data = await api.getStats(params);
@@ -132,7 +132,7 @@ export default function AdminDashboard({ onNavigate }) {
     if (!reportStart || !reportEnd) return alert('Please select both start and end dates/times.');
     setGeneratingReport(true);
     try {
-      const data = await api.getReport({ startDate: reportStart, endDate: reportEnd });
+      const data = await api.getReport({ startDate: reportStart, endDate: reportEnd, isRework: false });
       setReportData(data);
     } catch (e) {
       console.error(e);

@@ -12,7 +12,7 @@ export default function AdminReturnData() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const params = {};
+      const params = { isRework: false };
       if (moSearch) params.moNumber = moSearch;
       if (filterStart && filterEnd) { params.startDate = filterStart; params.endDate = filterEnd; }
       const data = await api.getReturns(params);

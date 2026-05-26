@@ -28,6 +28,14 @@ export const getReturnEntries = (req, res) => {
     };
   });
 
+  // Filter by isRework if provided
+  const isReworkStr = req.query.isRework;
+  if (isReworkStr === 'true') {
+    entries = entries.filter(e => e.isRework);
+  } else if (isReworkStr === 'false') {
+    entries = entries.filter(e => !e.isRework);
+  }
+
   entries.sort((a, b) => new Date(b.returnedAt) - new Date(a.returnedAt));
   res.json(entries);
 };

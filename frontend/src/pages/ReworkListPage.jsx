@@ -75,8 +75,8 @@ export default function ReworkListPage({ onBack, onNewPlan }) {
       
       const [mosData, statsData, returnsData] = await Promise.all([
         api.getMOs(params), 
-        api.getStats({ startDate: filterStart, endDate: filterEnd }),
-        api.getReturns(params) // Fetch all returns to display history
+        api.getStats({ startDate: filterStart, endDate: filterEnd, isRework: true }),
+        api.getReturns({ ...params, isRework: true }) // Fetch all rework returns
       ]);
       setMos(mosData.filter(m => m.isRework));
       setStats(statsData);
@@ -100,7 +100,7 @@ export default function ReworkListPage({ onBack, onNewPlan }) {
     setReturnSearch('');
     try {
       const [mosData, scrapData] = await Promise.all([
-        api.getMOs({ status: 'Pending' }),
+        api.getMOs({ status: 'Pending', isRework: true }),
         api.getScrap()
       ]);
       setReturnMOs(mosData);
