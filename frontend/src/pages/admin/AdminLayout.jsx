@@ -61,7 +61,7 @@ export default function AdminLayout({ onBack }) {
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
         </div>
         <div className="navbar-right">
           <button className="btn btn-secondary btn-sm" onClick={onBack}>← Back to Platform</button>

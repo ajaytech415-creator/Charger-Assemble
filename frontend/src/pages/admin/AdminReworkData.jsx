@@ -93,7 +93,7 @@ export default function AdminReworkData() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `UltraHuman Assembly_DB_Export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `UltraHuman Charger Assembly_DB_Export_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

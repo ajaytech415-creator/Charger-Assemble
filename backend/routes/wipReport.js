@@ -113,7 +113,7 @@ export const downloadWipExcel = (req, res) => {
   const wsData = [];
 
   // Title rows
-  wsData.push(['UltraHuman Assembly — WIP Material Report (Component-Wise)']);
+  wsData.push(['UltraHuman Charger Assembly — WIP Material Report (Component-Wise)']);
   wsData.push([`Period: ${periodLabel}`]);
   wsData.push([`Formula: WIP = (IN + RC) − (RJ + OUT)  [IN is already net of RT]`]);
   wsData.push([]); // spacer

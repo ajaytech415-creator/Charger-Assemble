@@ -253,7 +253,7 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>
@@ -508,6 +508,20 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
             </div>
           )}
         </div>
+
+        {/* Rework Material Breakdown by Type */}
+        {stats?.breakdown && (
+          <div className="card" style={{ marginTop: 24, marginBottom: 24 }}>
+            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GlassIcon name="database" size={18} color="#7c3aed" />
+              <h3 style={{ margin: 0 }}>Rework Material Breakdown by Type</h3>
+              <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Electronic · Housing · Screws · Tapes · Mechanical</span>
+            </div>
+            <div className="card-body">
+              <MaterialBreakdown breakdown={stats.breakdown} />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Close MO Modal */}

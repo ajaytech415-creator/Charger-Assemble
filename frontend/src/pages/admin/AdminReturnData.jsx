@@ -117,6 +117,7 @@ export default function AdminReturnData() {
                   <th>Returned At</th>
                   <th>Replenished At</th>
                   <th>Submitted By</th>
+                  <th>Remark</th>
                 </tr>
               </thead>
               <tbody>
@@ -171,6 +172,7 @@ export default function AdminReturnData() {
                       {e.replenishedAt ? new Date(e.replenishedAt).toLocaleString() : '—'}
                     </td>
                     <td style={{ fontSize: 12, fontWeight: 500 }}>{e.submittedBy}</td>
+                    <td style={{ fontSize: 12, color: '#4b5563', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={e.remark}>{e.remark || '—'}</td>
                   </tr>
                 ))}
               </tbody>

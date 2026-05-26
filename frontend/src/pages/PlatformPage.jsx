@@ -22,7 +22,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand">
             <div className="navbar-logo">◇</div>
-            UltraHuman Assembly
+            UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
             <span>Platform</span>
@@ -108,7 +108,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
       {/* Footer */}
       <div style={{ textAlign: 'center', padding: '20px', borderTop: '1px solid #e5e7eb', background: 'white', marginTop: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: 900, margin: '0 auto' }}>
-          <span className="text-sm text-muted">© 2026 UltraHuman Assembly Inc. All rights reserved.</span>
+          <span className="text-sm text-muted">© 2026 UltraHuman Charger Assembly Inc. All rights reserved.</span>
           <div style={{ display: 'flex', gap: 20 }}>
             <span className="text-sm text-muted" style={{ cursor: 'pointer' }} onClick={() => setShowHelpDocs(true)}>Help Docs</span>
             <span className="text-sm text-muted" style={{ cursor: 'pointer' }}>Support</span>
@@ -124,7 +124,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
               <div className="modal-header" style={{ padding: '20px 24px', borderBottom: '1px solid #e5e7eb' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: '1.5rem' }}>📘</span>
-                  <h3 style={{ margin: 0 }}>UltraHuman Assembly User Guidance</h3>
+                  <h3 style={{ margin: 0 }}>UltraHuman Charger Assembly User Guidance</h3>
                 </div>
                 <button className="btn-icon" onClick={() => setShowHelpDocs(false)}>✕</button>
               </div>
@@ -133,7 +133,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
                 <div style={{ marginBottom: 24 }}>
                   <h4 style={{ color: '#2563eb', marginBottom: 8, fontSize: '1.1rem' }}>1. Introduction & Workflow Overview</h4>
                   <p className="text-sm text-muted" style={{ lineHeight: 1.6 }}>
-                    UltraHuman Assembly is your central hub for Manufacturing Orders (MOs). The core end-to-end workflow is: <strong>Plan Creation ➡ Component Collection ➡ Production Assembly ➡ Scrap/Rework/Returns ➡ MO Closure & WIP Tracking.</strong>
+                    UltraHuman Charger Assembly is your central hub for Manufacturing Orders (MOs). The core end-to-end workflow is: <strong>Plan Creation ➡ Component Collection ➡ Production Assembly ➡ Scrap/Rework/Returns ➡ MO Closure & WIP Tracking.</strong>
                   </p>
                 </div>
 

@@ -28,6 +28,7 @@ export default function ReworkPage({ onBack }) {
   const [activeCompName, setActiveCompName] = useState('');
   const [recvQty, setRecvQty] = useState('');
   const [rejQty, setRejQty] = useState('');
+  const [entryRemark, setEntryRemark] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [entryError, setEntryError] = useState('');
   const [isFullMO, setIsFullMO] = useState(false);
@@ -37,6 +38,7 @@ export default function ReworkPage({ onBack }) {
   const [editingRework, setEditingRework] = useState(null);
   const [editRecvQty, setEditRecvQty] = useState('');
   const [editRejQty, setEditRejQty] = useState('');
+  const [editRemark, setEditRemark] = useState('');
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   // Load MOs (Only Completed)
@@ -86,6 +88,7 @@ export default function ReworkPage({ onBack }) {
     setIsFullMO(fullMO);
     setRecvQty('');
     setRejQty('');
+    setEntryRemark('');
     setEntryError('');
     setEntryModal(true);
   };
@@ -129,10 +132,12 @@ export default function ReworkPage({ onBack }) {
     finally { setSubmitting(false); }
   };
 
-  const openEditModal = (rework) => {
-    setEditingRework(rework);
-    setEditRecvQty(rework.receive || '');
-    setEditRejQty(rework.reject || '');
+  const openEditModal = (entry) => {
+    setEditingRework(entry);
+    setEditRecvQty(String(entry.receive || 0));
+    setEditRejQty(String(entry.reject || 0));
+    setEditRemark(entry.remark || '');
+    setEntryError('');
     setEditModal(true);
     setEntryError('');
   };
@@ -149,6 +154,7 @@ export default function ReworkPage({ onBack }) {
       await api.updateRework(editingRework.id, {
         receive: rc,
         reject: rj,
+        remark: editRemark,
         submittedBy: user?.fullName || user?.employeeId || 'User'
       });
       setEditModal(false);
@@ -211,7 +217,7 @@ export default function ReworkPage({ onBack }) {
     <div style={{ minHeight: '100vh', background: 'transparent' }}>
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>
@@ -412,6 +418,7 @@ export default function ReworkPage({ onBack }) {
                         <th style={{ color: '#16a34a' }}>Receive (RC)</th>
                         <th style={{ color: '#dc2626' }}>Reject (RJ)</th>
                         <th>Submitted By</th>
+                        <th>Remark</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -424,6 +431,7 @@ export default function ReworkPage({ onBack }) {
                           <td><span className="badge badge-success" style={{ fontSize: 13 }}>{e.receive}</span></td>
                           <td><span className="badge badge-danger" style={{ fontSize: 13 }}>{e.reject}</span></td>
                           <td style={{ fontSize: 12 }}>{e.submittedBy}</td>
+                          <td style={{ fontSize: 12, color: '#4b5563', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={e.remark}>{e.remark || '—'}</td>
                           <td>
                             <div className="td-actions">
                               <button className="btn-icon" onClick={() => openEditModal(e)}><GlassIcon name="edit" size={18} color="#2563eb" /></button>
@@ -478,6 +486,10 @@ export default function ReworkPage({ onBack }) {
                     <input type="number" min="0" value={recvQty} onChange={e => setRecvQty(e.target.value)} />
                   </div>
                 </div>
+                <div className="form-group" style={{ marginBottom: 20 }}>
+                  <label>Remark / Reason (Optional)</label>
+                  <input type="text" placeholder="Reason for rework" value={entryRemark} onChange={e => setEntryRemark(e.target.value)} />
+                </div>
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setEntryModal(false)}>Cancel</button>
@@ -511,6 +523,10 @@ export default function ReworkPage({ onBack }) {
                     <label style={{ color: '#16a34a', fontWeight: 700 }}>Receive (RC)</label>
                     <input type="number" min="0" value={editRecvQty} onChange={e => setEditRecvQty(e.target.value)} />
                   </div>
+                </div>
+                <div className="form-group" style={{ marginBottom: 20 }}>
+                  <label>Remark / Reason (Optional)</label>
+                  <input type="text" placeholder="Reason for rework" value={editRemark} onChange={e => setEditRemark(e.target.value)} />
                 </div>
               </div>
               <div className="modal-footer">

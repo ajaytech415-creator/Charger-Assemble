@@ -37,7 +37,7 @@ export default function LoginPage({ onLogin }) {
       {/* Top bar */}
       <div style={{ padding: '20px 40px', display: 'flex', alignItems: 'center', gap: 10, position: 'relative', zIndex: 10 }}>
         <div className="navbar-logo" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>◇</div>
-        <span style={{ fontFamily: 'Outfit, sans-serif', fontWeight: 700, fontSize: '1.1rem', color: '#ffffff' }}>UltraHuman Assembly</span>
+        <span style={{ fontFamily: 'Outfit, sans-serif', fontWeight: 700, fontSize: '1.1rem', color: '#ffffff' }}>UltraHuman Charger Assembly</span>
       </div>
 
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 10 }}>
@@ -150,7 +150,7 @@ export default function LoginPage({ onLogin }) {
 
       {/* Footer */}
       <div style={{ padding: '16px 40px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', background: 'white' }}>
-        <span className="text-sm text-muted">© 2026 UltraHuman Assembly Inc. All rights reserved.</span>
+        <span className="text-sm text-muted">© 2026 UltraHuman Charger Assembly Inc. All rights reserved.</span>
         <div style={{ display: 'flex', gap: 20 }}>
           {['Privacy Policy', 'Terms of Service', 'Support'].map(l => (
             <span key={l} className="text-sm text-muted" style={{ cursor: 'pointer' }}>{l}</span>

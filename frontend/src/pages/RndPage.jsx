@@ -130,7 +130,7 @@ export default function RndPage({ onBack, onDashboard }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand">
             <div className="navbar-logo">◇</div>
-            UltraHuman Assembly
+            UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>

@@ -261,7 +261,7 @@ export default function PlanPage({ initialRows = [], onBack, onConfirm }) {
     <div style={{ minHeight: '100vh', background: 'transparent' }}>
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>

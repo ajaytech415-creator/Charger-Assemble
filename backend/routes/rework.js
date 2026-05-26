@@ -30,7 +30,7 @@ export const getReworkEntries = (req, res) => {
 // POST /api/rework
 export const createReworkEntry = async (req, res) => {
   ensureRework();
-  const { moId, moNumber, sku, component, componentName, receive, reject, isFullMO, submittedBy } = req.body;
+  const { moId, moNumber, sku, component, componentName, receive, reject, isFullMO, remark, submittedBy } = req.body;
   if (!moNumber || !component) return res.status(400).json({ message: 'MO number and component are required' });
 
   const now      = new Date().toISOString();
@@ -58,6 +58,7 @@ export const createReworkEntry = async (req, res) => {
   if (entry) {
     if (recVal > 0) { entry.receive = previousRecv + recVal; entry.receivedAt  = now; }
     if (rejVal > 0) { entry.reject  = previousRej + rejVal; entry.rejectedAt = now; }
+    if (remark) { entry.remark = remark; }
     entry.submittedAt = now;
     entry.submittedBy = submittedBy || entry.submittedBy;
   } else {
@@ -74,6 +75,7 @@ export const createReworkEntry = async (req, res) => {
       submittedAt:   now,
       receivedAt:    recVal > 0 ? now : null,
       rejectedAt:    rejVal > 0 ? now : null,
+      remark:        remark || '',
       submittedBy:   submittedBy || 'Unknown',
     };
     db.data.reworkEntries.push(entry);
@@ -94,7 +96,7 @@ export const createReworkEntry = async (req, res) => {
 export const updateReworkEntry = async (req, res) => {
   ensureRework();
   const { id } = req.params;
-  const { receive, reject } = req.body;
+  const { receive, reject, remark } = req.body;
   const entry = db.data.reworkEntries.find(e => e.id === id);
   if (!entry) return res.status(404).json({ message: 'Rework entry not found' });
 
@@ -104,6 +106,7 @@ export const updateReworkEntry = async (req, res) => {
 
   if (recVal !== entry.receive) { entry.receive = recVal; entry.receivedAt  = recVal > 0 ? now : null; }
   if (rejVal !== entry.reject)  { entry.reject  = rejVal; entry.rejectedAt  = rejVal > 0 ? now : null; }
+  if (remark !== undefined) { entry.remark = remark; }
   entry.submittedAt = now;
 
   db.data.auditLogs.unshift({
@@ -153,6 +156,7 @@ export const exportReworkExcel = (req, res) => {
     'Received At':    e.receivedAt  ? new Date(e.receivedAt).toLocaleString()  : '—',
     'Rejected At':    e.rejectedAt  ? new Date(e.rejectedAt).toLocaleString()  : '—',
     'Submitted At':   e.submittedAt ? new Date(e.submittedAt).toLocaleString() : '—',
+    'Remark':         e.remark || '—',
     'Submitted By':   e.submittedBy,
   }));
 

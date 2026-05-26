@@ -18,11 +18,12 @@ export default function AdminDBManager() {
     try {
       let res = [];
       if (activeTab === 'mo') {
-        // KEY FIX: use status=all so Returned MOs are included and visible/deletable
-        res = await api.getMOs({ status: 'all' });
+        res = await api.getMOs({ status: 'all', isRework: false });
+      } else if (activeTab === 'rework_plan') {
+        res = await api.getMOs({ status: 'all', isRework: true });
       } else if (activeTab === 'scrap') {
         res = await api.getScrap();
-      } else if (activeTab === 'rework') {
+      } else if (activeTab === 'rework_comp') {
         res = await api.getRework();
       } else if (activeTab === 'return') {
         res = await api.getReturns();
@@ -206,10 +207,11 @@ export default function AdminDBManager() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20, borderBottom: '2px solid #e5e7eb', paddingBottom: 10 }}>
         {[
-          { id: 'mo',     label: 'Plan Data (MOs)', icon: 'plan'    },
-          { id: 'scrap',  label: 'Scrap Data',      icon: 'scrap'   },
-          { id: 'rework', label: 'Rework Data',     icon: 'refresh' },
-          { id: 'return', label: 'Return Data',     icon: 'history' },
+          { id: 'mo',          label: 'Plan Data (MOs)', icon: 'plan'    },
+          { id: 'rework_plan', label: 'Rework Plans',    icon: 'plan'    },
+          { id: 'rework_comp', label: 'Comp. Rework',    icon: 'refresh' },
+          { id: 'scrap',       label: 'Scrap Data',      icon: 'scrap'   },
+          { id: 'return',      label: 'Return Data',     icon: 'history' },
         ].map(t => (
           <button
             key={t.id}
@@ -295,6 +297,7 @@ export default function AdminDBManager() {
                 <th>SKU / Type</th>
                 <th>Status</th>
                 <th>QTY</th>
+                {(activeTab === 'rework_comp' || activeTab === 'return') && <th>Remark</th>}
                 <th>Date</th>
               </tr>
             </thead>
@@ -336,6 +339,11 @@ export default function AdminDBManager() {
                   <td style={{ fontWeight: 600 }}>
                     {item.qty ? item.qty.toLocaleString() : (item.receive != null ? `RC:${item.receive} RJ:${item.reject}` : (item.componentQty || '—'))}
                   </td>
+                  {(activeTab === 'rework_comp' || activeTab === 'return') && (
+                    <td style={{ fontSize: 12, color: '#4b5563', maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={item.remark}>
+                      {item.remark || '—'}
+                    </td>
+                  )}
                   <td style={{ fontSize: 12, color: '#6b7280' }}>
                     {new Date(item.createdAt || item.returnedAt || item.submittedAt).toLocaleString()}
                   </td>

@@ -29,6 +29,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
   const [returnType, setReturnType] = useState(''); // 'Battery'|'PCBA'|'Coil'|'Shell'|'Lens'|'FullMO'
   const [returnQty, setReturnQty] = useState('');
   const [returnSubmitting, setReturnSubmitting] = useState(false);
+  const [returnRemark, setReturnRemark] = useState('');
   const [returnError, setReturnError] = useState('');
 
   const [returnHistory, setReturnHistory] = useState([]);
@@ -99,6 +100,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
     setReturnType('');
     setReturnQty('');
     setReturnError('');
+    setReturnRemark('');
     setReturnSearch('');
     try {
       const [mosData, scrapData] = await Promise.all([
@@ -165,6 +167,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
         component: returnType !== 'FullMO' ? returnType : '',
         componentQty: qtyToReturn,
         isFullMO: returnType === 'FullMO',
+        remark: returnRemark,
         submittedBy: user?.fullName,
       });
       setReturnModal(false);
@@ -255,7 +258,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>
@@ -1116,6 +1119,17 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
                           />
                         </div>
                       )}
+
+                      <div className="form-group" style={{ marginTop: 12 }}>
+                        <label>Remark / Reason (Optional)</label>
+                        <input
+                          type="text"
+                          placeholder="Why is this being returned?"
+                          value={returnRemark}
+                          onChange={e => setReturnRemark(e.target.value)}
+                          style={{ padding: '10px 12px', fontSize: 14 }}
+                        />
+                      </div>
                       
                       <div style={{ marginTop: 'auto', paddingTop: 16 }}>
                         {returnType === 'FullMO' && (

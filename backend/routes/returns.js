@@ -50,7 +50,7 @@ export const getReturnEntries = (req, res) => {
 // POST /api/returns
 // body: { moId, moNumber, sku, returnType, component, componentQty, isFullMO, submittedBy }
 export const createReturnEntry = async (req, res) => {
-  const { moId, moNumber, sku, returnType, component, componentQty, isFullMO, submittedBy } = req.body;
+  const { moId, moNumber, sku, returnType, component, componentQty, isFullMO, remark, submittedBy } = req.body;
   if (!moId || !moNumber) return res.status(400).json({ message: 'moId and moNumber are required' });
 
   const now = new Date().toISOString();
@@ -67,6 +67,7 @@ export const createReturnEntry = async (req, res) => {
     isFullMO: !!isFullMO,
     returnedAt: now,
     submittedBy: submittedBy || 'Unknown',
+    remark: remark || '',
     status: 'Returned',
   };
 

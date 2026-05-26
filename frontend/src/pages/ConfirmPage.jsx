@@ -31,7 +31,7 @@ export default function ConfirmPage({ rows, batchId, onBack, onSubmit, isRework 
     <div style={{ minHeight: '100vh', background: 'transparent' }}>
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ color: '#6b7280', cursor: 'pointer' }} onClick={onBack}>Platform</span>
             <span>›</span>

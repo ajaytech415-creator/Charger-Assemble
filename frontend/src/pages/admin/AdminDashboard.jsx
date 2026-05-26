@@ -130,7 +130,7 @@ export default function AdminDashboard({ onNavigate }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `UltraHuman Assembly_Export_${startDate}_to_${endDate}.csv`);
+    link.setAttribute('download', `UltraHuman Charger Assembly_Export_${startDate}_to_${endDate}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -157,7 +157,7 @@ export default function AdminDashboard({ onNavigate }) {
   const handleDownloadReportExcel = () => {
     if (!reportData) return;
     const { summary, detailed } = reportData;
-    let csv = `UltraHuman Assembly Full Report\nPeriod,${reportData.period.start},to,${reportData.period.end}\n\n`;
+    let csv = `UltraHuman Charger Assembly Full Report\nPeriod,${reportData.period.start},to,${reportData.period.end}\n\n`;
     csv += `Summary\nTotal MOs,${summary.totalMOs}\nCompleted MOs,${summary.completedMOs}\nPending MOs,${summary.pendingMOs}\nTotal Qty Planned,${summary.totalQtyPlanned}\nTotal Qty Completed,${summary.totalQtyCompleted}\n\n`;
     
     csv += `Detailed Material Usage\nComponent Type,IN,Received (RC),Reject (RJ),Return (RT),OUT (Completed)\n`;
@@ -414,7 +414,7 @@ export default function AdminDashboard({ onNavigate }) {
               
               {/* Print Header (Only visible when printing) */}
               <div style={{ display: 'none' }} className="print-header">
-                <h2>UltraHuman Assembly Production Report</h2>
+                <h2>UltraHuman Charger Assembly Production Report</h2>
                 <p>Reporting Period: {startDate} to {endDate}</p>
                 <br/>
               </div>
