@@ -3,6 +3,10 @@ import { randomUUID } from 'crypto';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { mkdirSync } from 'fs';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, 'data');
@@ -1447,15 +1451,54 @@ const defaultData = {
 }
 };
 
-const db = await JSONFilePreset(DB_PATH, defaultData);
+let db;
 
-// Implement global write serialization (mutex) to prevent ENOENT errors on Windows
-let writeQueue = Promise.resolve();
-const originalWrite = db.write.bind(db);
-db.write = () => {
-  writeQueue = writeQueue.then(() => originalWrite()).catch(() => originalWrite());
-  return writeQueue;
-};
+// If MONGODB_URI is provided, use MongoDB as the backend for the entire JSON object
+if (process.env.MONGODB_URI) {
+  console.log("Connecting to MongoDB...");
+  await mongoose.connect(process.env.MONGODB_URI);
+  console.log("MongoDB Connected!");
+
+  const DataSchema = new mongoose.Schema({ _id: String }, { strict: false });
+  const DataModel = mongoose.models.Data || mongoose.model('Data', DataSchema);
+
+  db = {
+    data: null,
+    write: async function() {
+      // Upsert the entire data object to MongoDB
+      await DataModel.updateOne(
+        { _id: 'master_database' },
+        { $set: this.data },
+        { upsert: true }
+      );
+    }
+  };
+
+  // Load existing data from MongoDB
+  let doc = await DataModel.findOne({ _id: 'master_database' }).lean();
+  
+  if (!doc) {
+    db.data = defaultData;
+    await db.write();
+  } else {
+    delete doc._id;
+    delete doc.__v;
+    db.data = { ...defaultData, ...doc }; 
+  }
+} 
+// Otherwise, fallback to the local lowdb JSON file (for local development)
+else {
+  console.log("Using Local JSON Database (lowdb)");
+  db = await JSONFilePreset(DB_PATH, defaultData);
+  
+  // Implement global write serialization (mutex) to prevent ENOENT errors on Windows
+  let writeQueue = Promise.resolve();
+  const originalWrite = db.write.bind(db);
+  db.write = () => {
+    writeQueue = writeQueue.then(() => originalWrite()).catch(() => originalWrite());
+    return writeQueue;
+  };
+}
 
 let needsWrite = false;
 
