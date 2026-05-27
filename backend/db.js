@@ -1456,8 +1456,23 @@ let db;
 // If MONGODB_URI is provided, use MongoDB as the backend for the entire JSON object
 if (process.env.MONGODB_URI) {
   console.log("Connecting to MongoDB...");
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log("MongoDB Connected!");
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000 // 10 seconds timeout
+    });
+    console.log("MongoDB Connected!");
+  } catch (error) {
+    console.error("\n❌ MONGODB CONNECTION ERROR:");
+    console.error("=========================");
+    console.error(error.message);
+    console.error("=========================\n");
+    console.error("💡 DIAGNOSTIC & TROUBLESHOOTING CHECKLIST:");
+    console.error("1. IP Whitelisting (Most Common): Did you allow network access from anywhere (0.0.0.0/0) in MongoDB Atlas -> Network Access? If not, Render will be blocked!");
+    console.error("2. Password in Connection String: Did you replace `<password>` (with brackets) in your MONGODB_URI environment variable on Render with your actual password?");
+    console.error("3. Special Characters: If your password has special characters like @, :, /, or #, MongoDB will fail to parse it. Please change your database user's password in Atlas to use ONLY letters and numbers.");
+    console.error("4. Check Render Env Vars: Make sure the key on Render is exactly 'MONGODB_URI' in capital letters.\n");
+    process.exit(1);
+  }
 
   const DataSchema = new mongoose.Schema({ _id: String }, { strict: false });
   const DataModel = mongoose.models.Data || mongoose.model('Data', DataSchema);
