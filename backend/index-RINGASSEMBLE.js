@@ -13,7 +13,7 @@ import { mkdirSync } from 'fs';
 try { mkdirSync('./data', { recursive: true }); } catch {}
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors({ 
   origin: true, 
@@ -85,8 +85,8 @@ app.get('/api/stats/report', getReport);
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
-const server = app.listen(PORT, () => {
-  console.log(`\n✅ MfgPlan Server running at http://localhost:${PORT}\n`);
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n✅ MfgPlan Server running at http://0.0.0.0:${PORT}\n`);
 });
 
 server.on('error', (err) => {
