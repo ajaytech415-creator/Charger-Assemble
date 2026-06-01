@@ -31,13 +31,13 @@ Analyze this image which contains a manufacturing production plan, possibly a ta
 Extract ALL rows/entries you can see. For each row, identify these fields:
 - "type": The product type (e.g. C2, C2.5, C3, Diesel, LUX). If not visible, use empty string.
 - "refer": A short reference code. If not visible, use empty string.
-- "moNumber": The Manufacturing Order number (e.g. MO-001, MFG-123). If not visible, use empty string.
+- "moNumber": The Manufacturing Order number (e.g. MO-001, MFG-123, 123/45). CRITICAL: You MUST exactly match all characters as they appear in the image, including any slashes (/) or special formatting (e.g., if the image says "123/45", you must output "123/45"). If not visible, use empty string.
 - "size": The size or product code (e.g. 05, 06, AA10, RX9). Required.
 - "qty": The total quantity as a plain integer. Required.
 
-IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON.
+IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON. Ensure you accurately capture exact text including any slashes (/) in the moNumber.
 Example:
-[{"type":"C2","refer":"o","moNumber":"MO-001","size":"10","qty":500}]
+[{"type":"C2","refer":"o","moNumber":"MO/001/45","size":"10","qty":500}]
 
 If no data is found, return: []`;
 
