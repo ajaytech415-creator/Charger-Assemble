@@ -12,6 +12,7 @@ import { getReworkEntries, createReworkEntry, updateReworkEntry, deleteReworkEnt
 import { getRndProducts, createRndProduct, updateRndProduct, deleteRndProduct, getRndEntries, createRndEntry, updateRndEntry, deleteRndEntry, exportRndExcel } from './routes/rnd.js';
 import { getBoms, createBom, updateBom, deleteBom } from './routes/boms.js';
 import { visionUpload, extractFromImage } from './routes/vision.js';
+import { initScheduler, runBackupJob } from './scheduler.js';
 import { mkdirSync } from 'fs';
 
 // Ensure data directory exists
@@ -94,6 +95,10 @@ app.delete('/api/admin/audit', deleteAuditLogs);
 
 // --- Admin: Backup ---
 app.get('/api/admin/backup', backupDatabase);
+app.get('/api/admin/test-backup', async (req, res) => {
+  await runBackupJob();
+  res.json({ message: 'Backup job triggered manually. Check server logs.' });
+});
 
 // --- Admin: DB Manager & Trash ---
 app.post('/api/admin/db/action', handleDbAction);
@@ -119,3 +124,6 @@ const server = app.listen(PORT, () => {
 server.on('error', (err) => {
   console.error('❌ Server error:', err);
 });
+
+// Start scheduler
+initScheduler();
