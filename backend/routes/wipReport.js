@@ -42,9 +42,7 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
         const c = e.components.find(comp => comp.category === category && comp.name === name);
         if (c) {
           IN += c.collectedQty || 0;
-          if (e.status === 'Completed') {
-            OUT += c.completedQty || 0;
-          }
+          OUT += c.completedQty || 0;
         }
       }
     });

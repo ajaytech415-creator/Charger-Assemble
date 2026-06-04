@@ -76,7 +76,6 @@ export const getStats = (req, res) => {
   }, 0);
 
   const OUT = entries
-    .filter(e => e.status === 'Completed')
     .reduce((s, e) => {
       let moOut = 0;
       if (e.components) e.components.forEach(c => moOut += (c.completedQty || 0));
@@ -200,9 +199,7 @@ export const getReport = (req, res) => {
     if (e.components) {
       e.components.forEach(c => {
         findAndAdd(c.category, c.name, 'in', c.collectedQty || 0);
-        if (e.status === 'Completed') {
-          findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
-        }
+        findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
       });
     }
   });
