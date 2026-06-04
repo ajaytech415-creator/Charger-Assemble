@@ -1,16 +1,30 @@
 import db, { randomUUID } from '../db.js';
 import { isSameLocalDay, inLocalPeriod } from '../utils/dates.js';
 
-// Evaluate the component name based on BOM settings
-const resolveBomComponentName = (comp, size) => {
+const resolveBomComponentName = (comp, size, type) => {
   if (!comp.useSize) return comp.name;
-  // S05, S06 ...
-  const num = size.replace(/[^0-9]/g, '');
   
-  if (comp.name.includes('DIESEL')) {
-    return `${comp.name} S${num}`;
+  const num = size.replace(/[^0-9]/g, '');
+  const t = (type || '').toUpperCase();
+  let baseName = comp.name;
+  
+  // Clean off trailing size indicators from the base component name to prevent duplicates
+  // e.g., if they added "CHARGER TOP SIZE-05" but checked useSize, strip it
+  baseName = baseName.replace(/\s+SIZE-\d+$/i, '').replace(/\s+S\d+$/i, '');
+  
+  // Dynamically prepend the type (e.g. C2, LUX) if the component is generic (e.g. just "CHARGER TOP")
+  // and doesn't already contain the type prefix.
+  if (!baseName.toUpperCase().includes(t) && t !== '') {
+    baseName = `${t} ${baseName}`;
   }
-  return `${comp.name} SIZE-${num}`;
+
+  // LUX and DIESEL product lines use the 'S05' format uniformly
+  if (baseName.includes('DIESEL') || baseName.includes('LUX')) {
+    return `${baseName} S${num}`;
+  }
+  
+  // Standard product lines (C2, C3, CX) use 'SIZE-05'
+  return `${baseName} SIZE-${num}`;
 };
 
 // SKU/Type Parser Engine (Strict BOM Mode)
@@ -33,7 +47,7 @@ const parseSKU = (sku, refer, config, type, size) => {
       }
       components.push({
         category: comp.category,
-        name: resolveBomComponentName(comp, bomSize),
+        name: resolveBomComponentName(comp, bomSize, bomType),
         expectedQty: comp.qty,
         collectedQty: 0
       });
