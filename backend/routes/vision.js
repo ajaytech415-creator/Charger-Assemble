@@ -25,19 +25,22 @@ export async function extractFromImage(req, res) {
     const base64 = req.file.buffer.toString('base64');
     const dataUrl = `data:${mimeType};base64,${base64}`;
 
-    const prompt = `You are a production data extraction assistant.
-Analyze this image which contains a manufacturing production plan, possibly a table, spreadsheet, or handwritten document.
+    const prompt = `You are a highly precise OCR and production data extraction assistant.
+Analyze this image which contains a manufacturing production plan (table, spreadsheet, or handwritten document) and extract the data with 100% literal accuracy.
 
 Extract ALL rows/entries you can see. For each row, identify these fields:
-- "type": The product type (e.g. C2, C2.5, C3, Diesel, LUX). If not visible, use empty string.
-- "refer": A short reference code. If not visible, use empty string.
-- "moNumber": The Manufacturing Order number (e.g. MO-001, MFG-123, 123/45). CRITICAL: You MUST exactly match all characters as they appear in the image, including any slashes (/) or special formatting (e.g., if the image says "123/45", you must output "123/45"). If not visible, use empty string.
-- "size": The size or product code (e.g. 05, 06, AA10, RX9). Required.
+- "refer": The reference code (e.g., UHCH2FINISHS08, UHCH2FINISHS07). If not visible, use "".
+- "moNumber": The Manufacturing Order number. *CRITICAL OCR RULE*: You MUST transcribe the MO number exactly as it appears in the image, character by character. These numbers frequently use multiple slashes and dashes (e.g., "UH/MO/25-26/0013268"). You MUST preserve EVERY single slash "/" and dash exactly as written. DO NOT ignore, remove, or change any punctuation.
+- "type": The product type (e.g., C2, C2.5). If not visible, use "".
+- "size": The size or product text (e.g., C2 SIZE 08, C2.5 SIZE 07). Transcribe the entire cell.
 - "qty": The total quantity as a plain integer. Required.
 
-IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON. Ensure you accurately capture exact text including any slashes (/) in the moNumber.
+IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON. Validate that heavily-slashed MO numbers are retained properly in your response.
 Example:
-[{"type":"C2","refer":"o","moNumber":"MO/001/45","size":"10","qty":500}]
+[
+  {"refer":"UHCH2FINISHS08","moNumber":"UH/MO/25-26/0013268","type":"C2","size":"C2 SIZE 08","qty":700},
+  {"refer":"UHCH2FINISHS07","moNumber":"UH/MO/25-26/0013296","type":"C2.5","size":"C2.5 SIZE 07","qty":1000}
+]
 
 If no data is found, return: []`;
 
@@ -52,7 +55,7 @@ If no data is found, return: []`;
           ]
         }
       ],
-      temperature: 0.1,
+      temperature: 0.0,
     };
 
     const cohereRes = await fetch('https://api.cohere.com/v2/chat', {
