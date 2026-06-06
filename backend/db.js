@@ -1609,5 +1609,82 @@ if (needsWrite) {
   await db.write();
 }
 
+// --- HOTFIX MIGRATION: Fix unpadded single digit sizes (e.g. "S9" to "S09") ---
+let hotfixWrite = false;
+const fixSuffixes = (str) => {
+  if (!str) return str;
+  str = str.replace(/ S([1-9])$/i, ' S0$1');
+  str = str.replace(/ SIZE-([1-9])$/i, ' SIZE-0$1');
+  return str;
+};
+
+if (db.data.moEntries) {
+  for (const mo of db.data.moEntries) {
+    const origSize = mo.size;
+    if (origSize && origSize.length === 1 && /^\d$/.test(origSize)) {
+      mo.size = 'S0' + origSize;
+      mo.sku = (mo.sku || '').replace(/\d+/, '0' + origSize);
+      if (!mo.sku.startsWith('S')) mo.sku = 'S' + mo.sku;
+      hotfixWrite = true;
+    }
+    if (mo.components) {
+      for (const comp of mo.components) {
+        if (!comp.name) continue;
+        const newName = fixSuffixes(comp.name);
+        if (newName !== comp.name) {
+          comp.name = newName;
+          hotfixWrite = true;
+        }
+      }
+    }
+  }
+}
+
+const collectionsToCheck = ['returnEntries', 'scrapEntries', 'reworkEntries', 'trashEntries'];
+for (const coll of collectionsToCheck) {
+  if (db.data[coll]) {
+    for (const entry of db.data[coll]) {
+      if (entry.component) {
+         const newName = fixSuffixes(entry.component);
+         if (newName !== entry.component) {
+           entry.component = newName;
+           hotfixWrite = true;
+         }
+      }
+    }
+  }
+}
+
+if (db.data.components) {
+  for (const [category, arr] of Object.entries(db.data.components)) {
+    if (!Array.isArray(arr)) continue;
+    const newArr = [];
+    const seen = new Set();
+    
+    for (const comp of arr) {
+       const isObj = typeof comp === 'object';
+       let name = isObj ? comp.name : comp;
+       let fixedName = fixSuffixes(name);
+       if (fixedName !== name) hotfixWrite = true;
+       
+       if (!seen.has(fixedName)) {
+         seen.add(fixedName);
+         newArr.push(isObj ? { ...comp, name: fixedName } : fixedName);
+       } else {
+         hotfixWrite = true;
+       }
+    }
+    db.data.components[category] = newArr;
+  }
+}
+
+if (hotfixWrite) {
+  console.log("Applied hotfix migration to padded sizes (e.g. S9 -> S09)...");
+  await db.write();
+}
+if (needsWrite) {
+  await db.write();
+}
+
 export { randomUUID };
 export default db;

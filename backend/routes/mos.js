@@ -4,7 +4,8 @@ import { isSameLocalDay, inLocalPeriod } from '../utils/dates.js';
 const resolveBomComponentName = (comp, size, type) => {
   if (!comp.useSize) return comp.name;
   
-  const num = size.replace(/[^0-9]/g, '');
+  let num = size.replace(/[^0-9]/g, '');
+  if (num.length === 1) num = '0' + num;
   const t = (type || '').toUpperCase();
   let baseName = comp.name;
   
