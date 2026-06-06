@@ -306,6 +306,72 @@ const defaultData = {
                 "qty": 1
             }
         ]
+    },
+    {
+        "id": "bom-lux-lp",
+        "name": "LUX PLATINAM CHARGER",
+        "types": [
+            "LUX LP"
+        ],
+        "sizes": [
+            "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14"
+        ],
+        "components": [
+            { "category": "electronic", "name": "C2 CHARGER PCBA", "qty": 1 },
+            { "category": "electronic", "name": "C3 FTX COIL", "qty": 1 },
+            { "category": "tapes", "name": "FERRITE TAPE 10x8", "qty": 2 },
+            { "category": "tapes", "name": "D.C TAPE 10x8", "qty": 2 },
+            { "category": "luxColors", "name": "LUX SILVER BASE MATT", "qty": 1, "useSize": true },
+            { "category": "luxParts", "name": "LUX CHARGER TOP", "qty": 1, "useSize": true },
+            { "category": "stickers", "name": "LUX AS STICKER", "qty": 1, "useSize": true },
+            { "category": "c3Parts", "name": "C3 BOTTOM PADS", "qty": 1 },
+            { "category": "screws", "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)", "qty": 4 },
+            { "category": "stickers", "name": "DIE CUT LEATHER", "qty": 1 }
+        ]
+    },
+    {
+        "id": "bom-lux-lg",
+        "name": "LUX YELLOW GOLD CHARGER",
+        "types": [
+            "LUX LG"
+        ],
+        "sizes": [
+            "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14"
+        ],
+        "components": [
+            { "category": "electronic", "name": "C2 CHARGER PCBA", "qty": 1 },
+            { "category": "electronic", "name": "C3 FTX COIL", "qty": 1 },
+            { "category": "tapes", "name": "FERRITE TAPE 10x8", "qty": 2 },
+            { "category": "tapes", "name": "D.C TAPE 10x8", "qty": 2 },
+            { "category": "luxColors", "name": "LUX YELLOW GOLD BASE MATT", "qty": 1, "useSize": true },
+            { "category": "luxParts", "name": "LUX CHARGER TOP", "qty": 1, "useSize": true },
+            { "category": "stickers", "name": "LUX AS STICKER", "qty": 1, "useSize": true },
+            { "category": "c3Parts", "name": "C3 BOTTOM PADS", "qty": 1 },
+            { "category": "screws", "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)", "qty": 4 },
+            { "category": "stickers", "name": "DIE CUT LEATHER", "qty": 1 }
+        ]
+    },
+    {
+        "id": "bom-lux-lr",
+        "name": "LUX Rose Gold CHARGER",
+        "types": [
+            "LUX LR"
+        ],
+        "sizes": [
+            "S05", "S06", "S07", "S08", "S09", "S10", "S11", "S12", "S13", "S14"
+        ],
+        "components": [
+            { "category": "electronic", "name": "C2 CHARGER PCBA", "qty": 1 },
+            { "category": "electronic", "name": "C3 FTX COIL", "qty": 1 },
+            { "category": "tapes", "name": "FERRITE TAPE 10x8", "qty": 2 },
+            { "category": "tapes", "name": "D.C TAPE 10x8", "qty": 2 },
+            { "category": "luxColors", "name": "LUX ROSE GOLD BASE MATT", "qty": 1, "useSize": true },
+            { "category": "luxParts", "name": "LUX CHARGER TOP", "qty": 1, "useSize": true },
+            { "category": "stickers", "name": "LUX RG STICKER", "qty": 1, "useSize": true },
+            { "category": "c3Parts", "name": "C3 BOTTOM PADS", "qty": 1 },
+            { "category": "screws", "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)", "qty": 4 },
+            { "category": "stickers", "name": "DIE CUT LEATHER", "qty": 1 }
+        ]
     }
 ],
   components: {
@@ -1517,9 +1583,15 @@ else {
 
 let needsWrite = false;
 
-if (!db.data.boms || db.data.boms.length === 4) { 
+if (!db.data.boms) { 
   db.data.boms = defaultData.boms;
   needsWrite = true;
+} else if (db.data.boms.length < defaultData.boms.length) {
+  const newBOMs = defaultData.boms.filter(dbom => !db.data.boms.some(b => b.id === dbom.id));
+  if (newBOMs.length > 0) {
+    db.data.boms.push(...newBOMs);
+    needsWrite = true;
+  }
 }
 
 if (!db.data.components || Object.keys(db.data.components).length === 0) {
