@@ -179,10 +179,10 @@ export default function ScrapPage({ onBack }) {
   };
 
   // Derive all components available in scrap entries
-  const allSummaryComps = Array.from(new Set(scrapEntries.map(e => e.component).filter(Boolean)));
+  const allSummaryComps = Array.from(new Set(scrapEntries.map(e => e.componentName).filter(Boolean)));
   
   const summaryByComp = allSummaryComps.reduce((acc, c) => {
-    const entries = scrapEntries.filter(e => e.component === c);
+    const entries = scrapEntries.filter(e => e.componentName === c);
     acc[c] = {
       totalReceive: entries.reduce((s, e) => s + (e.receive || 0), 0),
       totalReject:  entries.reduce((s, e) => s + (e.reject  || 0), 0),
@@ -191,19 +191,24 @@ export default function ScrapPage({ onBack }) {
     return acc;
   }, {});
 
+  const TAPE_CATEGORIES = ['tapes'];
+
   const getCompCards = () => {
     if (selectedMOs.length === 0) return [];
     const refMO = selectedMOs[0];
     if (!refMO.components || refMO.components.length === 0) return [];
 
-    return refMO.components.map(c => ({
-      comp: c.category,
-      name: c.name,
-      qty: c.collectedQty,
-      color: '#2563eb',
-      bg: '#eff6ff',
-      icon: 'settings'
-    }));
+    // Exclude tape components — they are consumable rolls, not discrete scrap-trackable parts
+    return refMO.components
+      .filter(c => !TAPE_CATEGORIES.includes(c.category))
+      .map(c => ({
+        comp: c.category,
+        name: c.name,
+        qty: c.collectedQty,
+        color: '#2563eb',
+        bg: '#eff6ff',
+        icon: 'settings'
+      }));
   };
 
   return (

@@ -11,7 +11,7 @@ export const getScrapEntries = (req, res) => {
     const q = moNumber.toLowerCase();
     entries = entries.filter(e => (e.moNumber || '').toLowerCase().includes(q));
   }
-  if (component) entries = entries.filter(e => e.component === component);
+  if (component) entries = entries.filter(e => e.componentName === component);
   if (date) entries = entries.filter(e => isSameLocalDay(e.submittedAt, date));
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));
@@ -21,10 +21,18 @@ export const getScrapEntries = (req, res) => {
   res.json(entries);
 };
 
+// Tape categories are consumable rolls — not discrete scrap-trackable parts
+const TAPE_CATEGORIES = ['tapes'];
+
 // POST /api/scrap
 export const createScrapEntry = async (req, res) => {
   const { moId, moNumber, sku, component, componentName, receive, reject, submittedBy } = req.body;
   if (!moNumber || !component) return res.status(400).json({ message: 'MO number and component are required' });
+
+  // Block tape components at the API level
+  if (TAPE_CATEGORIES.includes(component)) {
+    return res.status(400).json({ message: `Tape components cannot be logged as scrap. They are consumable materials.` });
+  }
 
   const now = new Date().toISOString();
   const recVal = parseInt(receive) || 0;
@@ -32,7 +40,23 @@ export const createScrapEntry = async (req, res) => {
 
   if (!db.data.scrapEntries) db.data.scrapEntries = [];
 
-  let entry = db.data.scrapEntries.find(e => e.moId === moId && e.component === component);
+  // Validate against collectedQty (same guard as rework)
+  const mo = db.data.moEntries?.find(m => m.id === moId);
+  if (mo) {
+    const compData = mo.components?.find(c => c.name === componentName);
+    if (compData) {
+      const existing = db.data.scrapEntries.find(e => e.moId === moId && e.componentName === componentName);
+      const previousRej = existing ? (existing.reject || 0) : 0;
+      const totalRej = previousRej + rejVal;
+      if (totalRej > compData.collectedQty) {
+        return res.status(400).json({
+          message: `Cannot scrap ${totalRej} items. Only ${compData.collectedQty} collected for ${componentName}.`
+        });
+      }
+    }
+  }
+
+  let entry = db.data.scrapEntries.find(e => e.moId === moId && e.componentName === componentName);
 
   if (entry) {
     if (recVal > 0) {
@@ -65,7 +89,7 @@ export const createScrapEntry = async (req, res) => {
 
   db.data.auditLogs.unshift({
     id: randomUUID(),
-    action: `Scrap update: MO ${moNumber} — ${component} (+Recv: ${recVal}, +Rej: ${rejVal})`,
+    action: `Scrap update: MO ${moNumber} — ${componentName} (+Recv: ${recVal}, +Rej: ${rejVal})`,
     user: submittedBy,
     time: now,
   });
@@ -97,7 +121,7 @@ export const updateScrapEntry = async (req, res) => {
   
   db.data.auditLogs.unshift({
     id: randomUUID(),
-    action: `Scrap edited: MO ${entry.moNumber} — ${entry.component} (New Recv: ${recVal}, New Rej: ${rejVal})`,
+    action: `Scrap edited: MO ${entry.moNumber} — ${entry.componentName} (New Recv: ${recVal}, New Rej: ${rejVal})`,
     user: req.body.submittedBy || 'Admin',
     time: now,
   });
@@ -126,7 +150,7 @@ export const exportScrapExcel = (req, res) => {
     const q = moNumber.toLowerCase();
     entries = entries.filter(e => (e.moNumber || '').toLowerCase().includes(q));
   }
-  if (component) entries = entries.filter(e => e.component === component);
+  if (component) entries = entries.filter(e => e.componentName === component);
   if (date) entries = entries.filter(e => isSameLocalDay(e.submittedAt, date));
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));

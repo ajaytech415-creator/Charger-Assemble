@@ -17,7 +17,7 @@ export const getReworkEntries = (req, res) => {
     const q = moNumber.toLowerCase();
     entries = entries.filter(e => (e.moNumber || '').toLowerCase().includes(q));
   }
-  if (component) entries = entries.filter(e => e.component === component);
+  if (component) entries = entries.filter(e => e.componentName === component);
   if (date)      entries = entries.filter(e => isSameLocalDay(e.submittedAt, date));
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));
@@ -138,7 +138,7 @@ export const exportReworkExcel = (req, res) => {
   let entries = [...db.data.reworkEntries];
 
   if (moNumber) { const q = moNumber.toLowerCase(); entries = entries.filter(e => (e.moNumber || '').toLowerCase().includes(q)); }
-  if (component)  entries = entries.filter(e => e.component === component);
+  if (component)  entries = entries.filter(e => e.componentName === component);
   if (date)       entries = entries.filter(e => isSameLocalDay(e.submittedAt, date));
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));
