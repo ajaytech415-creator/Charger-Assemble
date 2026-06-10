@@ -191,24 +191,29 @@ export default function ScrapPage({ onBack }) {
     return acc;
   }, {});
 
-  const TAPE_CATEGORIES = ['tapes'];
+  const TAPE_CATEGORY = 'tapes';
 
   const getCompCards = () => {
     if (selectedMOs.length === 0) return [];
     const refMO = selectedMOs[0];
     if (!refMO.components || refMO.components.length === 0) return [];
 
-    // Exclude tape components — they are consumable rolls, not discrete scrap-trackable parts
     return refMO.components
-      .filter(c => !TAPE_CATEGORIES.includes(c.category))
-      .map(c => ({
-        comp: c.category,
-        name: c.name,
-        qty: c.collectedQty,
-        color: '#2563eb',
-        bg: '#eff6ff',
-        icon: 'settings'
-      }));
+      .map(c => {
+        const isTape = c.category === TAPE_CATEGORY;
+        return {
+          comp: c.category,
+          name: c.name,
+          qty: c.collectedQty,
+          isTape,
+          // Tape = amber/gold color; others = blue
+          color: isTape ? '#92400e' : '#2563eb',
+          bg: isTape ? '#fef3c7' : '#eff6ff',
+          border: isTape ? '#fbbf2480' : '#2563eb30',
+          icon: isTape ? 'scrap' : 'settings',
+          label: isTape ? 'TAPE' : c.category.toUpperCase(),
+        };
+      });
   };
 
   return (
@@ -326,26 +331,62 @@ export default function ScrapPage({ onBack }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <GlassIcon name="plan" size={18} color="#dc2626" />
                     <div>
-                      <h3 style={{ margin: 0 }}>Multiple MOs Selected ({selectedMOs.length})</h3>
-                      <p className="text-muted text-sm">Components below represent the first selected MO for visual reference.</p>
+                      {selectedMOs.length === 1 ? (
+                        <>
+                          <h3 style={{ margin: 0 }}>MO: <span style={{ color: '#dc2626' }}>{selectedMOs[0].moNumber || selectedMOs[0].sku}</span></h3>
+                          <p className="text-muted text-sm">
+                            {selectedMOs[0].type} · Size {selectedMOs[0].size} · QTY: <strong>{(selectedMOs[0].qty || 0).toLocaleString()}</strong>
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h3 style={{ margin: 0 }}>Multiple MOs Selected ({selectedMOs.length})</h3>
+                          <p className="text-muted text-sm">Components show from first selected MO for visual reference.</p>
+                        </>
+                      )}
                     </div>
                   </div>
                   <span className="text-sm text-muted">Total QTY: <strong>{selectedMOs.reduce((s, m) => s + (m.qty || 0), 0).toLocaleString()}</strong></span>
                 </div>
                 <div className="card-body">
-                  <p className="text-sm text-muted" style={{ marginBottom: 16 }}>Select a component below to enter Receive / Reject data:</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12 }}>
+                  <p className="text-sm text-muted" style={{ marginBottom: 16 }}>Click a component card to log Reject / Receive scrap data:</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
                     {getCompCards().map(c => (
                       <div
                         key={c.name}
                         onClick={() => openEntryModal(c.comp, c.name)}
-                        style={{ background: c.bg, border: `2px solid ${c.color}30`, borderRadius: 12, padding: '16px 12px', textAlign: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
+                        style={{
+                          background: c.bg,
+                          border: `2px solid ${c.border || c.color + '30'}`,
+                          borderRadius: 12,
+                          padding: '16px 12px',
+                          textAlign: 'center',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          position: 'relative',
+                        }}
+                        onMouseEnter={e => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = `0 4px 12px ${c.color}22`;
+                        }}
+                        onMouseLeave={e => {
+                          e.currentTarget.style.transform = '';
+                          e.currentTarget.style.boxShadow = '';
+                        }}
                       >
+                        {c.isTape && (
+                          <div style={{
+                            position: 'absolute', top: 6, right: 6,
+                            background: '#fbbf24', color: '#78350f',
+                            fontSize: 9, fontWeight: 800, padding: '1px 5px',
+                            borderRadius: 4, letterSpacing: 0.5
+                          }}>TAPE</div>
+                        )}
                         <GlassIcon name={c.icon} size={24} color={c.color} style={{ marginBottom: 8 }} />
-                        <div style={{ fontWeight: 700, color: c.color, fontSize: 13, marginBottom: 4 }}>{c.comp.toUpperCase()}</div>
-                        <div style={{ fontSize: 11, color: '#6b7280', marginBottom: 8, lineHeight: 1.3 }}>{c.name}</div>
+                        <div style={{ fontWeight: 700, color: c.color, fontSize: 11, marginBottom: 4, letterSpacing: 0.3 }}>{c.label || c.comp.toUpperCase()}</div>
+                        <div style={{ fontSize: 11, color: '#374151', marginBottom: 8, lineHeight: 1.3, fontWeight: 600 }}>{c.name}</div>
                         <div style={{ fontSize: 11, background: c.color, color: '#fff', borderRadius: 20, padding: '2px 8px', display: 'inline-block' }}>
-                          QTY: {(c.qty || 0).toLocaleString()}
+                          {c.isTape ? '🎞️ ' : ''}QTY: {(c.qty || 0).toLocaleString()}
                         </div>
                       </div>
                     ))}
@@ -458,13 +499,19 @@ export default function ScrapPage({ onBack }) {
           <div className="modal-overlay" onClick={() => setEntryModal(false)}>
             <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 480 }}>
               <div className="modal-header">
-                <h3>Scrap Entry — {activeComp}</h3>
+                <h3>Scrap Entry — {activeCompName}</h3>
                 <button className="btn-icon" onClick={() => setEntryModal(false)}>✕</button>
               </div>
               <div style={{ padding: '20px 24px' }}>
                 <div style={{ background: '#fff1f2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px', marginBottom: 20 }}>
-                  <div style={{ fontSize: 12, color: '#991b1b', fontWeight: 600 }}>MOs: {selectedMOs.map(m => m.moNumber).join(', ')}</div>
-                  <div style={{ fontSize: 12, color: '#6b7280', marginTop: 2 }}>{activeComp}: <strong>{activeCompName}</strong></div>
+                  <div style={{ fontSize: 12, color: '#991b1b', fontWeight: 600, marginBottom: 2 }}>MOs: {selectedMOs.map(m => m.moNumber).join(', ')}</div>
+                  <div style={{ fontSize: 12, color: '#374151', fontWeight: 700 }}>{activeCompName}</div>
+                  <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>Category: <em>{activeComp}</em></div>
+                  {activeComp === 'tapes' && (
+                    <div style={{ marginTop: 6, fontSize: 11, background: '#fef3c7', border: '1px solid #fbbf24', borderRadius: 6, padding: '4px 8px', color: '#92400e', fontWeight: 600 }}>
+                      🎞️ Tape component — Enter total pieces / rolls rejected
+                    </div>
+                  )}
                 </div>
                 {entryError && <div className="alert alert-danger" style={{ marginBottom: 14 }}>{entryError}</div>}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>

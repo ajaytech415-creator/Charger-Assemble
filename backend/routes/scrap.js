@@ -21,41 +21,50 @@ export const getScrapEntries = (req, res) => {
   res.json(entries);
 };
 
-// Tape categories are consumable rolls — not discrete scrap-trackable parts
-const TAPE_CATEGORIES = ['tapes'];
-
 // POST /api/scrap
 export const createScrapEntry = async (req, res) => {
   const { moId, moNumber, sku, component, componentName, receive, reject, submittedBy } = req.body;
   if (!moNumber || !component) return res.status(400).json({ message: 'MO number and component are required' });
 
-  // Block tape components at the API level
-  if (TAPE_CATEGORIES.includes(component)) {
-    return res.status(400).json({ message: `Tape components cannot be logged as scrap. They are consumable materials.` });
-  }
-
   const now = new Date().toISOString();
   const recVal = parseInt(receive) || 0;
   const rejVal = parseInt(reject) || 0;
 
+  if (rejVal <= 0) {
+    return res.status(400).json({ message: 'Reject quantity must be greater than 0.' });
+  }
+  if (recVal < 0) {
+    return res.status(400).json({ message: 'Receive quantity cannot be negative.' });
+  }
+  if (recVal > rejVal) {
+    return res.status(400).json({ message: `Receive quantity (${recVal}) cannot exceed Reject quantity (${rejVal}).` });
+  }
+
   if (!db.data.scrapEntries) db.data.scrapEntries = [];
 
-  // Validate against collectedQty (same guard as rework)
+  // Validate against collectedQty — works for all components including tapes
   const mo = db.data.moEntries?.find(m => m.id === moId);
   if (mo) {
     const compData = mo.components?.find(c => c.name === componentName);
     if (compData) {
-      const existing = db.data.scrapEntries.find(e => e.moId === moId && e.componentName === componentName);
-      const previousRej = existing ? (existing.reject || 0) : 0;
-      const totalRej = previousRej + rejVal;
-      if (totalRej > compData.collectedQty) {
+      // Sum all previous reject entries for this MO + component
+      const previousEntries = db.data.scrapEntries.filter(
+        e => e.moId === moId && e.componentName === componentName
+      );
+      const previousTotalRej = previousEntries.reduce((s, e) => s + (e.reject || 0), 0);
+      const previousTotalRec = previousEntries.reduce((s, e) => s + (e.receive || 0), 0);
+      const netPreviousLoss = previousTotalRej - previousTotalRec;
+      const newTotalLoss = netPreviousLoss + (rejVal - recVal);
+
+      if (newTotalLoss > compData.collectedQty) {
         return res.status(400).json({
-          message: `Cannot scrap ${totalRej} items. Only ${compData.collectedQty} collected for ${componentName}.`
+          message: `Cannot scrap ${rejVal - recVal} net items. Only ${compData.collectedQty - netPreviousLoss} available for ${componentName}.`
         });
       }
     }
   }
 
+  // Accumulate into an existing entry if one exists, else create new
   let entry = db.data.scrapEntries.find(e => e.moId === moId && e.componentName === componentName);
 
   if (entry) {
@@ -118,6 +127,8 @@ export const updateScrapEntry = async (req, res) => {
     entry.reject = rejVal;
     entry.rejectedAt = rejVal > 0 ? now : null;
   }
+  entry.submittedAt = now;
+  entry.submittedBy = req.body.submittedBy || entry.submittedBy;
   
   db.data.auditLogs.unshift({
     id: randomUUID(),
@@ -161,10 +172,11 @@ export const exportScrapExcel = (req, res) => {
   const rows = entries.map(e => ({
     'MO Number': e.moNumber,
     'SKU': e.sku,
-    'Component Type': e.component,
+    'Component Category': e.component,
     'Component Name': e.componentName,
     'Receive (RT)': e.receive,
     'Reject (RJ)': e.reject,
+    'Net Loss': (e.reject || 0) - (e.receive || 0),
     'Received At': e.receivedAt ? new Date(e.receivedAt).toLocaleString() : '—',
     'Rejected At': e.rejectedAt ? new Date(e.rejectedAt).toLocaleString() : '—',
     'Submitted At': e.submittedAt ? new Date(e.submittedAt).toLocaleString() : '—',
