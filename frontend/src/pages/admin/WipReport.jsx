@@ -172,7 +172,7 @@ export default function WipReport() {
         </div>
       ) : (
         cats.map(cat => {
-          const rows = (report?.detailed?.[cat.key] || []).filter(r => r.in > 0 || r.received > 0 || r.reject > 0 || r.return > 0 || r.out > 0);
+          const rows = (report?.detailed?.[cat.key] || []).filter(r => r.opening > 0 || r.in > 0 || r.received > 0 || r.reject > 0 || r.return > 0 || r.out > 0);
           if (rows.length === 0) return null;
 
           return (
