@@ -92,20 +92,8 @@ export default function ReworkPlanPage({ initialRows = [], onBack, onConfirm }) 
       return; 
     }
 
-    const isDuplicateInRows = rows.some(r => r.moNumber === form.moNumber && r.id !== editId);
-    if (isDuplicateInRows) {
-      setError(`MO Number '${form.moNumber}' is already in the pending plan list below.`);
-      return;
-    }
-
-    try {
-      const existingMOs = await api.getMOs({ moNumber: form.moNumber });
-      const exactMatch = existingMOs.find(m => m.moNumber === form.moNumber);
-      if (exactMatch) {
-        setError(`MO Number '${form.moNumber}' is already taken in the database.`);
-        return;
-      }
-    } catch (e) { console.error(e); }
+    // Removed duplicate check rule based on requirement 
+    // to allow same MO numbered items in Rework plan entry
 
     setError('');
     

@@ -102,7 +102,7 @@ export const createMO = async (req, res) => {
   const { type, size, sku, refer, moNumber, qty, od, submittedBy, batchId, planDate, componentsOverrides, isRework } = req.body;
   if (!qty) return res.status(400).json({ message: 'QTY is required' });
 
-  if (moNumber && db.data.moEntries.some(e => e.moNumber === moNumber)) {
+  if (!isRework && moNumber && db.data.moEntries.some(e => e.moNumber === moNumber)) {
     return res.status(409).json({ message: `MO Number '${moNumber}' is already taken.` });
   }
 
