@@ -4,6 +4,7 @@ import GlassIcon from '../../components/GlassIcon';
 
 /* ─── Colour palette ───────────────────────────────────────────────── */
 const COL = {
+  OPENING: { text: '#475569', bg: '#f1f5f9' },
   IN:  { text: '#2563eb', bg: '#eff6ff' },
   RC:  { text: '#16a34a', bg: '#f0fdf4' },
   RJ:  { text: '#dc2626', bg: '#fff1f2' },
@@ -85,7 +86,7 @@ export default function WipReport() {
         <div>
           <h2 style={{ margin: 0 }}>WIP Report</h2>
           <p className="text-muted text-sm" style={{ marginTop: 4 }}>
-            Work-In-Progress inventory across all components. Formula: <strong>WIP = (IN + RC) − (RJ + OUT)</strong>
+            Work-In-Progress inventory across all components. Formula: <strong>Closing WIP = Opening + (IN + RC) − (RJ + OUT)</strong>
           </p>
           <p className="text-muted" style={{ fontSize: 11, marginTop: 4, color: '#6b7280' }}>
             <em>Note: IN is already net of Returns — returning an MO physically reduces the collected quantity in the database.</em>
@@ -120,14 +121,15 @@ export default function WipReport() {
       </div>
 
       {/* ── Summary WIP tiles ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 14, marginBottom: 28 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 14, marginBottom: 28 }}>
         {[
-          { label: 'IN',  value: wip.IN,  desc: 'Total Collected (net)' },
-          { label: 'RC',  value: wip.RC,  desc: 'Scrap / Rework Received' },
-          { label: 'RJ',  value: wip.RJ,  desc: 'Scrap / Rework Rejected' },
-          { label: 'RT',  value: wip.RT,  desc: 'Returned (for audit)' },
-          { label: 'OUT', value: wip.OUT, desc: 'MO Completed' },
-          { label: 'WIP', value: wip.WIP, desc: 'Current Stock In-Hand' },
+          { label: 'OPENING', value: wip.opening, desc: 'Stock carry-over' },
+          { label: 'IN',  value: wip.IN,  desc: 'Period Collected' },
+          { label: 'RC',  value: wip.RC,  desc: 'Period Received' },
+          { label: 'RJ',  value: wip.RJ,  desc: 'Period Rejected' },
+          { label: 'RT',  value: wip.RT,  desc: 'Period Returned' },
+          { label: 'OUT', value: wip.OUT, desc: 'Period Completed' },
+          { label: 'WIP', value: wip.WIP, desc: 'Closing Stock In-Hand' },
         ].map(item => (
           <div
             key={item.label}
@@ -182,13 +184,13 @@ export default function WipReport() {
                 {/* row-level totals */}
                 {(() => {
                   const tot = rows.reduce((s, r) => ({
-                    in: s.in + r.in, rc: s.rc + (r.received||0), rj: s.rj + (r.reject||0),
-                    rt: s.rt + (r.return||0), out: s.out + r.out,
-                  }), { in: 0, rc: 0, rj: 0, rt: 0, out: 0 });
-                  const catWip = (tot.in + tot.rc) - (tot.rj + tot.out);
+                    op: s.op + r.opening, in: s.in + r.in, rc: s.rc + (r.received||0), rj: s.rj + (r.reject||0),
+                    rt: s.rt + (r.return||0), out: s.out + r.out, cl: s.cl + r.closing,
+                  }), { op: 0, in: 0, rc: 0, rj: 0, rt: 0, out: 0, cl: 0 });
+                  const catWip = tot.cl;
                   return (
                     <span style={{ marginLeft: 'auto', fontSize: 12, color: '#6b7280' }}>
-                      Category WIP:&nbsp;
+                      Category Closing WIP:&nbsp;
                       <strong style={{ color: catWip < 0 ? '#dc2626' : '#16a34a', fontSize: 14 }}>
                         {catWip.toLocaleString()}
                       </strong>
@@ -202,20 +204,22 @@ export default function WipReport() {
                   <thead>
                     <tr>
                       <th>Component Name</th>
+                      <th style={{ textAlign: 'right', color: COL.OPENING.text }}>Opening</th>
                       <th style={{ textAlign: 'right', color: COL.IN.text }}>IN</th>
                       <th style={{ textAlign: 'right', color: COL.RC.text }}>RC</th>
                       <th style={{ textAlign: 'right', color: COL.RJ.text }}>RJ</th>
                       <th style={{ textAlign: 'right', color: COL.RT.text }}>RT (audit)</th>
                       <th style={{ textAlign: 'right', color: COL.OUT.text }}>OUT</th>
-                      <th style={{ textAlign: 'right' }}>WIP</th>
+                      <th style={{ textAlign: 'right' }}>Closing WIP</th>
                     </tr>
                   </thead>
                   <tbody>
                     {rows.map((item, i) => {
-                      const rowWip = (item.in + (item.received||0)) - ((item.reject||0) + item.out);
+                      const rowWip = item.closing;
                       return (
                         <tr key={i}>
                           <td style={{ fontWeight: 600, color: '#374151' }}>{item.name}</td>
+                          <td style={{ textAlign: 'right', color: COL.OPENING.text }}>{item.opening.toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.IN.text, fontWeight: 600 }}>{item.in.toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.RC.text, fontWeight: 600 }}>{(item.received||0).toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.RJ.text, fontWeight: 600 }}>{(item.reject||0).toLocaleString()}</td>
@@ -239,13 +243,14 @@ export default function WipReport() {
                     {/* Category total row */}
                     {(() => {
                       const tot = rows.reduce((s, r) => ({
-                        in: s.in + r.in, rc: s.rc + (r.received||0), rj: s.rj + (r.reject||0),
-                        rt: s.rt + (r.return||0), out: s.out + r.out,
-                      }), { in: 0, rc: 0, rj: 0, rt: 0, out: 0 });
-                      const catWip = (tot.in + tot.rc) - (tot.rj + tot.out);
+                        op: s.op + r.opening, in: s.in + r.in, rc: s.rc + (r.received||0), rj: s.rj + (r.reject||0),
+                        rt: s.rt + (r.return||0), out: s.out + r.out, cl: s.cl + r.closing,
+                      }), { op: 0, in: 0, rc: 0, rj: 0, rt: 0, out: 0, cl: 0 });
+                      const catWip = tot.cl;
                       return (
                         <tr style={{ background: '#f8fafc', fontWeight: 800, borderTop: '2px solid #e5e7eb' }}>
                           <td style={{ color: '#1e293b' }}>★ {cat.label} Total</td>
+                          <td style={{ textAlign: 'right', color: COL.OPENING.text }}>{tot.op.toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.IN.text }}>{tot.in.toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.RC.text }}>{tot.rc.toLocaleString()}</td>
                           <td style={{ textAlign: 'right', color: COL.RJ.text }}>{tot.rj.toLocaleString()}</td>
@@ -277,12 +282,13 @@ export default function WipReport() {
         <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
           <span style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>Legend:</span>
           {[
+            { key: 'OPENING', desc: 'Stock carry-over from before the period' },
             { key: 'IN',  desc: 'Collected from MOs (net after returns)' },
             { key: 'RC',  desc: 'Scrap/Rework Received back into stock' },
             { key: 'RJ',  desc: 'Rejected / Scrapped' },
             { key: 'RT',  desc: 'Returned to supplier (shown for audit, already reflected in IN)' },
             { key: 'OUT', desc: 'Assembled & finished (MO Completed)' },
-            { key: 'WIP', desc: '= (IN + RC) − (RJ + OUT)' },
+            { key: 'WIP', desc: 'Closing Stock = Opening + (IN + RC) − (RJ + OUT)' },
           ].map(l => (
             <div key={l.key} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Badge label={l.key} />

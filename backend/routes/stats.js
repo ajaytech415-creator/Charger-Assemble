@@ -82,7 +82,46 @@ export const getStats = (req, res) => {
       return s + moOut;
     }, 0);
 
-  const WIP = (IN + RC) - (RJ + OUT);
+  let openingWIP = 0;
+  if (startDate) {
+    const isBeforeStart = (isoString) => {
+      if (!isoString) return false;
+      const start = new Date(startDate.length === 10 ? startDate + 'T00:00:00' : startDate);
+      return new Date(isoString) < start;
+    };
+    
+    let opIN = 0, opRC = 0, opRJ = 0, opOUT = 0;
+    allMOs.forEach(e => {
+      // Respect rework filter if applied
+      if (isRework === 'true' && !e.isRework) return;
+      if (isRework === 'false' && e.isRework) return;
+
+      if (isBeforeStart(e.createdAt) && e.components) {
+        e.components.forEach(c => {
+          opIN += (c.collectedQty || 0);
+          opOUT += (c.completedQty || 0);
+        });
+      }
+    });
+
+    scrap.forEach(e => {
+      if (isBeforeStart(e.submittedAt)) {
+        opRC += (e.receive || 0);
+        opRJ += (e.reject || 0);
+      }
+    });
+
+    rework.forEach(e => {
+      if (isBeforeStart(e.submittedAt)) {
+        opRC += (e.receive || 0);
+        opRJ += (e.reject || 0);
+      }
+    });
+
+    openingWIP = (opIN + opRC) - (opRJ + opOUT);
+  }
+
+  const WIP = openingWIP + (IN + RC) - (RJ + OUT);
 
   const breakdown = {};
   entries.forEach(e => {
@@ -133,7 +172,7 @@ export const getStats = (req, res) => {
     recentLogs: db.data.auditLogs.slice(0, 5),
     users: db.data.users.map(u => ({ id: u.id, fullName: u.fullName, role: u.role })),
     // WIP
-    wip: { IN, RC, RJ, RT, OUT, WIP },
+    wip: { opening: openingWIP, IN, RC, RJ, RT, OUT, WIP },
     // Material breakdown
     breakdown: formattedBreakdown,
   });
@@ -156,22 +195,6 @@ export const getReport = (req, res) => {
     return d >= startDT && d <= endDT;
   };
 
-  // Filter entries exactly by the datetime range
-  let moEntries = (db.data.moEntries || []).filter(e => inPeriod(e.createdAt));
-  
-  if (isRework === 'true') moEntries = moEntries.filter(e => e.isRework);
-  else if (isRework === 'false') moEntries = moEntries.filter(e => !e.isRework);
-
-  const scrapEntries = (db.data.scrapEntries || []).filter(e => inPeriod(e.submittedAt));
-  const returnEntries = (db.data.returnEntries || []).filter(e => inPeriod(e.returnedAt));
-  const reworkEntries = (db.data.reworkEntries || []).filter(e => inPeriod(e.submittedAt));
-
-  const totalMOs = moEntries.length;
-  const pendingMOs = moEntries.filter(e => e.status === 'Pending').length;
-  const completedMOs = moEntries.filter(e => e.status === 'Completed').length;
-  const totalQtyPlanned = moEntries.reduce((sum, e) => sum + (e.qty || 0), 0);
-  const totalQtyCompleted = moEntries.reduce((sum, e) => sum + (e.completedQty || 0), 0);
-
   // Initialize ALL components
   const comps = db.data.components || {};
   const detailed = {};
@@ -179,7 +202,7 @@ export const getReport = (req, res) => {
   for (const cat in comps) {
     detailed[cat] = (comps[cat] || []).map(c => ({
       name: typeof c === 'string' ? c : c.name,
-      in: 0, received: 0, reject: 0, return: 0, out: 0
+      opening: 0, in: 0, received: 0, reject: 0, return: 0, out: 0, closing: 0
     }));
   }
 
@@ -188,54 +211,82 @@ export const getReport = (req, res) => {
     if (!detailed[cat]) detailed[cat] = [];
     let item = detailed[cat].find(c => c.name === name);
     if (!item) {
-      item = { name, in: 0, received: 0, reject: 0, return: 0, out: 0 };
+      item = { name, opening: 0, in: 0, received: 0, reject: 0, return: 0, out: 0, closing: 0 };
       detailed[cat].push(item);
     }
     item[field] += (val || 0);
   };
 
+  const isBeforeStart = (dateStr) => {
+    if (!startDT || !dateStr) return false;
+    return new Date(dateStr) < startDT;
+  };
+
   // 1. MO Entries (IN & OUT)
-  moEntries.forEach(e => {
+  (db.data.moEntries || []).forEach(e => {
+    if (isRework === 'true' && !e.isRework) return;
+    if (isRework === 'false' && e.isRework) return;
+
     if (e.components) {
       e.components.forEach(c => {
-        findAndAdd(c.category, c.name, 'in', c.collectedQty || 0);
-        findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
+        if (isBeforeStart(e.createdAt)) {
+          findAndAdd(c.category, c.name, 'opening', (c.collectedQty || 0) - (c.completedQty || 0));
+        } else if (inPeriod(e.createdAt)) {
+          findAndAdd(c.category, c.name, 'in', c.collectedQty || 0);
+          findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
+        }
       });
     }
   });
 
   // 2. Scrap & Rework Entries (Received & Reject)
-  scrapEntries.forEach(e => {
+  (db.data.scrapEntries || []).forEach(e => {
     if (e.component && e.componentName) {
-      findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
-      findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
+      if (isBeforeStart(e.submittedAt)) {
+        findAndAdd(e.component, e.componentName, 'opening', (e.receive || 0) - (e.reject || 0));
+      } else if (inPeriod(e.submittedAt)) {
+        findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
+        findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
+      }
     }
   });
 
-  reworkEntries.forEach(e => {
+  (db.data.reworkEntries || []).forEach(e => {
     if (e.component && e.componentName) {
-      findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
-      findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
+      if (isBeforeStart(e.submittedAt)) {
+        findAndAdd(e.component, e.componentName, 'opening', (e.receive || 0) - (e.reject || 0));
+      } else if (inPeriod(e.submittedAt)) {
+        findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
+        findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
+      }
     }
   });
 
   // 3. Return Entries (Return)
-  returnEntries.forEach(e => {
-    const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
-    if (!mo || !mo.components) return;
-    
-    if (e.isFullMO) {
-      mo.components.forEach(c => {
-        findAndAdd(c.category, c.name, 'return', c.collectedQty || 0);
-      });
-    } else if (e.component) {
-      // Find the specific component
-      const c = mo.components.find(c => c.category === e.component);
-      if (c) {
-         findAndAdd(e.component, c.name, 'return', e.componentQty || 0);
+  (db.data.returnEntries || []).forEach(e => {
+    if (inPeriod(e.returnedAt)) {
+      const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
+      if (!mo || !mo.components) return;
+      
+      if (e.isFullMO) {
+        mo.components.forEach(c => {
+          findAndAdd(c.category, c.name, 'return', c.collectedQty || 0);
+        });
+      } else if (e.component) {
+        const c = mo.components.find(c => c.category === e.component);
+        if (c) {
+           findAndAdd(e.component, c.name, 'return', e.componentQty || 0);
+        }
       }
     }
   });
+
+  // 4. Calculate Closing WIP
+  for (const cat in detailed) {
+    detailed[cat].forEach(item => {
+      item.closing = item.opening + item.in + item.received - item.reject - item.out;
+    });
+  }
 
   res.json({
     period: { start: startDate, end: endDate },

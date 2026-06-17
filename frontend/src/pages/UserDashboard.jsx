@@ -54,6 +54,16 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
 
   const handleBulkClose = async () => {
     if (selectedMOs.length === 0) return;
+
+    const invalidMOs = mos.filter(m => selectedMOs.includes(m.id)).filter(mo => {
+      return !mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0));
+    });
+
+    if (invalidMOs.length > 0) {
+      alert(`Cannot bulk close. There are ${invalidMOs.length} selected MO(s) where Collected Qty does not match Completed Qty.`);
+      return;
+    }
+
     if (!window.confirm(`Close ${selectedMOs.length} selected MO(s)? This action cannot be undone.`)) return;
     setUpdatingId('bulk');
     try {
@@ -210,6 +220,12 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
   };
 
   const handleMOClose = async (mo) => {
+    const isMatching = mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0));
+    if (!isMatching) {
+      alert('Cannot close this MO. The Collected Quantity and Completed Quantity must be exactly the same for all components.');
+      return;
+    }
+
     if (window.confirm(`Are you sure you want to completely close MO ${mo.moNumber || mo.sku}?`)) {
       setUpdatingId(mo.id);
       try {
@@ -773,7 +789,8 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
                               <button
                                 className="btn btn-sm btn-success"
                                 onClick={() => handleMOClose(mo)}
-                                disabled={updatingId === mo.id}
+                                disabled={updatingId === mo.id || !mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0))}
+                                title={!mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0)) ? "Collected Qty must equal Completed Qty to close" : ""}
                               >
                                 MO Close
                               </button>

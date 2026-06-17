@@ -29,6 +29,16 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
     return d >= startDT && d <= endDT;
   };
 
+  const isBeforeStart = (dateStr) => {
+    if (!startDT || !dateStr) return false;
+    return new Date(dateStr) < startDT;
+  };
+
+  const openingMOs     = startDT ? allMOs.filter(e     => isBeforeStart(e.createdAt))   : [];
+  const openingScrap   = startDT ? allScrap.filter(e   => isBeforeStart(e.submittedAt)) : [];
+  const openingReturns = startDT ? allReturns.filter(e => isBeforeStart(e.returnedAt))  : [];
+  const openingReworks = startDT ? allReworks.filter(e => isBeforeStart(e.submittedAt)) : [];
+
   const periodMOs     = startDT ? allMOs.filter(e     => inPeriod(e.createdAt))   : allMOs;
   const periodScrap   = startDT ? allScrap.filter(e   => inPeriod(e.submittedAt)) : allScrap;
   const periodReturns = startDT ? allReturns.filter(e => inPeriod(e.returnedAt))  : allReturns;
@@ -88,28 +98,21 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
   const wsData = [];
   wsData.push(['UltraHuman Charger Assembly — WIP Material Report (Component-Wise)']);
   wsData.push([`Period: ${periodLabel}`]);
-  wsData.push([`Formula: WIP = (IN + RC) − (RJ + OUT)  [IN is already net of RT]`]);
+  wsData.push([`Formula: Closing WIP = Opening WIP + (IN + RC) − (RJ + OUT)  [IN is already net of RT]`]);
   wsData.push([]);
 
   wsData.push([
     'MATERIAL / PART DESCRIPTION',
-    'IN (Planned)',
-    'RC (Received)',
-    'RJ (Rejected)',
-    'RT (Returned)',
-    'OUT (Completed)',
-    'WIP',
-    '',
-    hasPeriod ? 'Period IN'  : '',
-    hasPeriod ? 'Period RC'  : '',
-    hasPeriod ? 'Period RJ'  : '',
-    hasPeriod ? 'Period RT'  : '',
-    hasPeriod ? 'Period OUT' : '',
-    hasPeriod ? 'Period WIP' : '',
+    'Opening WIP',
+    'IN (Period)',
+    'RC (Period)',
+    'RJ (Period)',
+    'RT (Period)',
+    'OUT (Period)',
+    'Closing WIP',
   ]);
 
-  let grandIN = 0, grandRC = 0, grandRJ = 0, grandRT = 0, grandOUT = 0;
-  let grandPIN = 0, grandPRC = 0, grandPRJ = 0, grandPRT = 0, grandPOUT = 0;
+  let grandOpeningWIP = 0, grandIN = 0, grandRC = 0, grandRJ = 0, grandRT = 0, grandOUT = 0, grandClosingWIP = 0;
 
   categories.forEach(cat => {
     const materialList = comps[cat.key] || [];
@@ -120,61 +123,43 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
     wsData.push([`— ${cat.label.toUpperCase()} —`]);
 
     names.forEach(name => {
-      const total  = calcStats(name, cat.key, allMOs,    allScrap,   allReturns, allReworks);
-      const period = hasPeriod
-        ? calcStats(name, cat.key, periodMOs, periodScrap, periodReturns, periodReworks)
-        : total;
+      const opening = calcStats(name, cat.key, openingMOs, openingScrap, openingReturns, openingReworks);
+      const period = calcStats(name, cat.key, periodMOs, periodScrap, periodReturns, periodReworks);
+      
+      const openingWIP = opening.WIP;
+      const closingWIP = openingWIP + period.WIP;
 
-      grandIN  += total.IN;
-      grandRC  += total.RC;
-      grandRJ  += total.RJ;
-      grandRT  += total.RT;
-      grandOUT += total.OUT;
-      grandPIN  += period.IN;
-      grandPRC  += period.RC;
-      grandPRJ  += period.RJ;
-      grandPRT  += period.RT;
-      grandPOUT += period.OUT;
+      grandOpeningWIP += openingWIP;
+      grandIN  += period.IN;
+      grandRC  += period.RC;
+      grandRJ  += period.RJ;
+      grandRT  += period.RT;
+      grandOUT += period.OUT;
+      grandClosingWIP += closingWIP;
 
       wsData.push([
         name,
-        total.IN,
-        total.RC,
-        total.RJ,
-        total.RT,
-        total.OUT,
-        total.WIP,
-        '',
-        hasPeriod ? period.IN  : '',
-        hasPeriod ? period.RC  : '',
-        hasPeriod ? period.RJ  : '',
-        hasPeriod ? period.RT  : '',
-        hasPeriod ? period.OUT : '',
-        hasPeriod ? period.WIP : '',
+        openingWIP,
+        period.IN,
+        period.RC,
+        period.RJ,
+        period.RT,
+        period.OUT,
+        closingWIP,
       ]);
     });
   });
 
-  const grandWIP  = (grandIN  + grandRC)  - (grandRJ  + grandOUT);
-  const grandPWIP = (grandPIN + grandPRC) - (grandPRJ + grandPOUT);
   wsData.push([]);
   wsData.push([
     '★ GRAND TOTAL (All Components)',
-    grandIN, grandRC, grandRJ, grandRT, grandOUT, grandWIP,
-    '',
-    hasPeriod ? grandPIN  : '',
-    hasPeriod ? grandPRC  : '',
-    hasPeriod ? grandPRJ  : '',
-    hasPeriod ? grandPRT  : '',
-    hasPeriod ? grandPOUT : '',
-    hasPeriod ? grandPWIP : '',
+    grandOpeningWIP, grandIN, grandRC, grandRJ, grandRT, grandOUT, grandClosingWIP
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet(wsData);
 
   ws['!cols'] = [
-    { wch: 40 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 },
-    { wch: 4  }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 },
+    { wch: 40 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }
   ];
 
   ws['!freeze'] = { xSplit: 1, ySplit: 5 };
@@ -222,7 +207,7 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
         cell.s.alignment = { vertical: 'center', horizontal: C === 0 ? 'left' : 'center' };
       } else if (C > 0 && R > 4) {
         cell.s.alignment = { vertical: 'center', horizontal: 'center' };
-        if ((C === 6 || C === 13) && typeof cell.v === 'number') {
+        if ((C === 1 || C === 7) && typeof cell.v === 'number') {
           if (cell.v < 0) {
             cell.s.font = { name: 'Calibri', sz: 11, bold: true, color: { rgb: 'DC2626' } };
           } else if (cell.v === 0) {
