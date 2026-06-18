@@ -15,7 +15,11 @@ const req = async (url, opts = {}) => {
     } else {
       // If not JSON, it might be an error page or raw text
       const text = await res.text();
-      if (!res.ok) throw new Error(text || `Server error: ${res.status}`);
+      let errorMsg = text;
+      if (text && text.trim().startsWith('<')) {
+        errorMsg = 'A server error occurred, but the server returned HTML instead of a valid response. Please contact support.';
+      }
+      if (!res.ok) throw new Error(errorMsg || `Server error: ${res.status}`);
       return text;
     }
 

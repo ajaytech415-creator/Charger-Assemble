@@ -117,6 +117,16 @@ app.post('/api/vision/extract', visionUpload, extractFromImage);
 // Health check
 app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled Server Error:', err);
+  res.status(err.status || 500).json({ 
+    message: 'Internal Server Error',
+    details: err.message,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined 
+  });
+});
+
 const server = app.listen(PORT, () => {
   console.log(`\n✅ MfgPlan Server running at http://localhost:${PORT}\n`);
 });
