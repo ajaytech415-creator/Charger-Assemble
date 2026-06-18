@@ -93,8 +93,6 @@ export default function LoginPage({ onLogin }) {
                 />
               </div>
 
-              {error && <div className="alert alert-danger" style={{ marginBottom: 20, display: 'flex', alignItems: 'center', gap: 6, color: '#fca5a5', padding: '10px 12px', background: 'rgba(220, 38, 38, 0.1)', borderLeft: '3px solid #dc2626', fontSize: 13, borderRadius: 4 }}><GlassIcon name="alert" size={16} /> {error}</div>}
-              
               <div className="form-group" style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                   <label style={{ margin: 0, color: '#d1d5db', fontSize: 13, fontWeight: 500 }}>Password</label>
