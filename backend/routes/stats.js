@@ -290,7 +290,6 @@ export const getReport = (req, res) => {
 
   res.json({
     period: { start: startDate, end: endDate },
-    summary: { totalMOs, pendingMOs, completedMOs, totalQtyPlanned, totalQtyCompleted },
     detailed
   });
 };
