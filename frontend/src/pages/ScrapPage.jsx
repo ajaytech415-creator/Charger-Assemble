@@ -41,6 +41,9 @@ export default function ScrapPage({ onBack }) {
   // Bulk delete
   const [selectedScrapIds, setSelectedScrapIds] = useState([]);
 
+  // Alert modal
+  const [alertModal, setAlertModal] = useState(false);
+
   const handleBulkDeleteScrap = async () => {
     if (selectedScrapIds.length === 0) return;
     if (!window.confirm(`Are you sure you want to delete ${selectedScrapIds.length} scrap record(s)?`)) return;
@@ -191,6 +194,19 @@ export default function ScrapPage({ onBack }) {
     return acc;
   }, {});
 
+  const mismatchedComponents = allSummaryComps.map(c => {
+    const s = summaryByComp[c];
+    if (s.totalReject !== s.totalReceive) {
+      return {
+        name: c,
+        reject: s.totalReject,
+        receive: s.totalReceive,
+        diff: s.totalReject - s.totalReceive
+      };
+    }
+    return null;
+  }).filter(Boolean);
+
   const TAPE_CATEGORY = 'tapes';
 
   const getCompCards = () => {
@@ -238,9 +254,28 @@ export default function ScrapPage({ onBack }) {
               <div className="role">Scrap Entry</div>
             </div>
           </div>
-          <button className="btn btn-secondary btn-sm" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <GlassIcon name="export" size={14} color="#374151" /> Excel Export
-          </button>
+          <div style={{ display: 'flex', gap: 12 }}>
+            <button className="btn btn-secondary btn-sm" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <GlassIcon name="export" size={14} color="#374151" /> Excel Export
+            </button>
+            <button 
+              className="btn btn-secondary btn-sm" 
+              onClick={() => setAlertModal(true)} 
+              style={{ display: 'flex', alignItems: 'center', gap: 6, position: 'relative', padding: '6px 10px' }}
+            >
+              <GlassIcon name="alert" size={16} color={mismatchedComponents.length > 0 ? "#dc2626" : "#6b7280"} />
+              {mismatchedComponents.length > 0 && (
+                <span style={{ 
+                  position: 'absolute', top: -5, right: -5, 
+                  background: '#ef4444', color: 'white', borderRadius: '50%', 
+                  width: 18, height: 18, fontSize: 10, display: 'flex', 
+                  alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' 
+                }}>
+                  {mismatchedComponents.length}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -562,6 +597,60 @@ export default function ScrapPage({ onBack }) {
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setEditModal(false)}>Cancel</button>
                 <button className="btn btn-primary" onClick={submitEdit} disabled={editSubmitting}>Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {alertModal && (
+        <ModalPortal>
+          <div className="modal-overlay" onClick={() => setAlertModal(false)}>
+            <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 680 }}>
+              <div className="modal-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <GlassIcon name="alert" size={20} color="#dc2626" />
+                  <h3 style={{ margin: 0 }}>Mismatched Components</h3>
+                </div>
+                <button className="btn-icon" onClick={() => setAlertModal(false)}>✕</button>
+              </div>
+              <div style={{ padding: '20px 24px', maxHeight: '60vh', overflowY: 'auto' }}>
+                {mismatchedComponents.length === 0 ? (
+                  <div className="empty-state">
+                    <p>All component rejected and received quantities are matching.</p>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ padding: '12px 16px', background: '#fffbeb', border: '1px solid #fef3c7', borderRadius: 8, marginBottom: 16 }}>
+                      <p style={{ margin: 0, fontSize: 13, color: '#92400e', fontWeight: 600 }}>
+                        Attention: The following components show a difference between total scrap (RJ) and total returned (RT) quantities.
+                      </p>
+                    </div>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                          <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: 13, color: '#4b5563' }}>Component Name</th>
+                          <th style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, color: '#dc2626' }}>Total Reject</th>
+                          <th style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, color: '#16a34a' }}>Total Receive</th>
+                          <th style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, color: '#d97706' }}>Difference</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {mismatchedComponents.map((c, i) => (
+                          <tr key={i} style={{ borderBottom: '1px solid #e5e7eb' }}>
+                            <td style={{ padding: '10px 12px', fontSize: 13, fontWeight: 600, color: '#1f2937' }}>{c.name}</td>
+                            <td style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: '#dc2626' }}>{c.reject}</td>
+                            <td style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: '#16a34a' }}>{c.receive}</td>
+                            <td style={{ padding: '10px 12px', textAlign: 'right', fontSize: 13, fontWeight: 700, color: '#d97706' }}>{Math.abs(c.diff)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setAlertModal(false)}>Close</button>
               </div>
             </div>
           </div>
