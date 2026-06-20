@@ -14,6 +14,7 @@ dist-ssr/
 
 # Database files (runtime data, not source code)
 backend/data/*.json
+!backend/data/db.json
 
 # Old nested folder and zip (cleanup artifacts)
 Assemble DataFlow Collection/

@@ -12,8 +12,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, 'data');
 const DB_PATH = join(DATA_DIR, 'db.json');
 
-// Ensure data directory exists before lowdb tries to write
-try { mkdirSync(DATA_DIR, { recursive: true }); } catch {}
+// Ensure data directory exists before lowdb tries to write (Locally only)
+if (!process.env.VERCEL) {
+  try { mkdirSync(DATA_DIR, { recursive: true }); } catch (err) {}
+}
 
 const defaultData = {
   users: [

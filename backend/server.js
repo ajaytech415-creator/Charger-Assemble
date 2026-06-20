@@ -15,8 +15,10 @@ import { visionUpload, extractFromImage } from './routes/vision.js';
 import { initScheduler, runBackupJob } from './scheduler.js';
 import { mkdirSync } from 'fs';
 
-// Ensure data directory exists
-try { mkdirSync('./data', { recursive: true }); } catch {}
+// Ensure data directory exists (Locally only, as Vercel is read-only)
+if (!process.env.VERCEL) {
+  try { mkdirSync('./data', { recursive: true }); } catch (err) {}
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -133,13 +135,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`\n✅ MfgPlan Server running at http://localhost:${PORT}\n`);
-});
+if (!process.env.VERCEL) {
+  const server = app.listen(PORT, () => {
+    console.log(`\n✅ MfgPlan Server running at http://localhost:${PORT}\n`);
+  });
 
-server.on('error', (err) => {
-  console.error('❌ Server error:', err);
-});
+  server.on('error', (err) => {
+    console.error('❌ Server error:', err);
+  });
 
-// Start scheduler
-initScheduler();
+  // Start scheduler only if not on Vercel
+  // (Vercel requires serverless Cron config instead of node-cron)
+  initScheduler();
+}
+
+export default app;
