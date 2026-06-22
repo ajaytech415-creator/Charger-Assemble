@@ -608,7 +608,7 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                       newComps.forEach(c => c.completedQty = c.collectedQty);
                       setMoComponents(newComps);
                       
-                      const maxVal = Math.max(0, ...newComps.map(c => parseInt(c.collectedQty||0)));
+                      const maxVal = Math.max(0, ...newComps.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
                       setCloseQty(String(maxVal));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
@@ -625,7 +625,7 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                       value={closeQty} 
                       onChange={e => {
                         let val = e.target.value;
-                        const maxCollected = Math.max(0, ...moComponents.map(c => parseInt(c.collectedQty||0)));
+                        const maxCollected = Math.max(0, ...moComponents.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
                         if (val !== '' && parseInt(val) > maxCollected) val = String(maxCollected);
                         setCloseQty(val);
                         if (val !== '') {

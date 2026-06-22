@@ -950,7 +950,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
                       newComps.forEach(c => c.completedQty = c.collectedQty);
                       setMoComponents(newComps);
                       
-                      const minVal = Math.min(...newComps.map(c => parseInt(c.collectedQty||0)));
+                      const minVal = Math.min(...newComps.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
                       setCloseQty(String(minVal));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
@@ -967,7 +967,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
                       value={closeQty} 
                       onChange={e => {
                         let val = e.target.value;
-                        const minCollected = Math.min(...moComponents.map(c => parseInt(c.collectedQty||0)));
+                        const minCollected = Math.min(...moComponents.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
                         if (val !== '' && parseInt(val) > minCollected) val = String(minCollected);
                         setCloseQty(val);
                         if (val !== '') {
