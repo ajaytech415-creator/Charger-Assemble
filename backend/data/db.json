@@ -1,6 +1,96 @@
 {
   "auditLogs": [
     {
+      "id": "3789028e-c17b-4894-bef4-aab3db7cd25e",
+      "action": "Scrap update: MO UH/INTR/26-27/00805 — C2 CHARGER BASE SIZE-06 (+Recv: 2, +Rej: 2)",
+      "user": "Rajesh",
+      "time": "2026-06-22T13:57:21.618Z"
+    },
+    {
+      "id": "2aa466ce-5d10-4dec-9600-1af667ffbca9",
+      "action": "Scrap update: MO UH/INTR/26-27/00805 — C2 CHARGER TOP SIZE-06 (+Recv: 9, +Rej: 9)",
+      "user": "Rajesh",
+      "time": "2026-06-22T13:57:11.081Z"
+    },
+    {
+      "id": "1b62dafd-6703-489c-8c1b-4e0b9f4c2572",
+      "action": "Rajesh logged in",
+      "user": "Rajesh",
+      "time": "2026-06-22T13:54:45.067Z"
+    },
+    {
+      "id": "f50f2367-ed59-4fd3-a8d1-2793d7ccc6af",
+      "action": "System Admin logged in",
+      "user": "System Admin",
+      "time": "2026-06-22T06:54:36.913Z"
+    },
+    {
+      "id": "2f0c448a-db3c-4805-b412-d8018491a4a2",
+      "action": "Bulk created 1 MOs",
+      "user": "Sairam",
+      "time": "2026-06-22T06:44:36.644Z"
+    },
+    {
+      "id": "3cd14fbd-5c71-4794-b0a2-a5207d3d01d0",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 C2 CHARGER BASE SIZE-07 (+Recv: 2, +Rej: 2)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:22:10.524Z"
+    },
+    {
+      "id": "69f4cdab-a064-43bd-9a9f-27a92e645a36",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 CHARGER TOP SIZE-07 (+Recv: 2, +Rej: 2)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:50.830Z"
+    },
+    {
+      "id": "9ba38a9b-d540-40a5-a506-c4cdf788104d",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2.5 CHARGER TOP SIZE-05 (+Recv: 1, +Rej: 1)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:39.688Z"
+    },
+    {
+      "id": "0814c695-7f52-40a1-8e15-9d18e7b25888",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — CHARGER SCREWS (M1.8x6, Head 3.3 mm) (+Recv: 440, +Rej: 440)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:28.614Z"
+    },
+    {
+      "id": "26e32e11-dec3-4032-8395-8a9d40a08f37",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2 BOTTOM PADS (+Recv: 110, +Rej: 110)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:18.586Z"
+    },
+    {
+      "id": "37b8d542-e20e-428d-af57-3bb282da4d6c",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — D.C TAPE 10x8 (+Recv: 220, +Rej: 220)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:09.642Z"
+    },
+    {
+      "id": "a770cf15-8758-4983-99d2-3e8bd7651d33",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — FERRITE TAPE 10x8 (+Recv: 220, +Rej: 220)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:21:00.475Z"
+    },
+    {
+      "id": "afabc60a-e139-4dbd-a179-9966110cdb4a",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C3 FTX COIL (+Recv: 110, +Rej: 110)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:20:51.641Z"
+    },
+    {
+      "id": "71d72731-407e-4f1e-92be-8732eccdc480",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 C2 CHARGER BASE SIZE-09 (+Recv: 110, +Rej: 110)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:20:41.255Z"
+    },
+    {
+      "id": "478d8c61-1052-4774-b34b-5e8749178c0d",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 CHARGER TOP SIZE-09 (+Recv: 110, +Rej: 110)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:20:26.659Z"
+    },
+    {
       "id": "63f85334-d296-44ef-8c55-a92458931fab",
       "action": "Scrap update: MO UH/INTR/26-27/00879 — CHARGER SCREWS (M1.8x6, Head 3.3 mm) (+Recv: 800, +Rej: 800)",
       "user": "Sairam",
@@ -10350,7 +10440,7 @@
           "expectedQty": 1,
           "targetQty": 200,
           "collectedQty": 200,
-          "completedQty": 0
+          "completedQty": 200
         },
         {
           "category": "tapes",
@@ -10358,7 +10448,7 @@
           "expectedQty": 2,
           "targetQty": 400,
           "collectedQty": 400,
-          "completedQty": 0
+          "completedQty": 400
         },
         {
           "category": "tapes",
@@ -10366,7 +10456,7 @@
           "expectedQty": 2,
           "targetQty": 400,
           "collectedQty": 400,
-          "completedQty": 0
+          "completedQty": 400
         },
         {
           "category": "electronic",
@@ -10374,7 +10464,7 @@
           "expectedQty": 1,
           "targetQty": 200,
           "collectedQty": 200,
-          "completedQty": 0
+          "completedQty": 200
         },
         {
           "category": "c25Parts",
@@ -10382,7 +10472,7 @@
           "expectedQty": 1,
           "targetQty": 200,
           "collectedQty": 200,
-          "completedQty": 0
+          "completedQty": 200
         },
         {
           "category": "c2Mech",
@@ -10390,7 +10480,7 @@
           "expectedQty": 1,
           "targetQty": 200,
           "collectedQty": 200,
-          "completedQty": 0
+          "completedQty": 200
         },
         {
           "category": "screws",
@@ -10398,7 +10488,7 @@
           "expectedQty": 4,
           "targetQty": 800,
           "collectedQty": 800,
-          "completedQty": 0
+          "completedQty": 800
         },
         {
           "category": "c2Mech",
@@ -10406,17 +10496,17 @@
           "expectedQty": 1,
           "targetQty": 200,
           "collectedQty": 200,
-          "completedQty": 0
+          "completedQty": 200
         }
       ],
       "overrides": {},
       "isRework": true,
-      "status": "Completed",
+      "status": "Pending",
       "batchId": "BATCH-1781858304646",
       "submittedBy": "Poornima",
       "createdAt": "2026-06-19T08:38:45.798Z",
-      "completedAt": "2026-06-22T04:25:54.372Z",
-      "completedQty": 0
+      "completedAt": null,
+      "completedQty": 200
     },
     {
       "id": "9c56c051-5fa3-4bf2-9190-e9db2afd2f33",
@@ -10495,11 +10585,11 @@
       ],
       "overrides": {},
       "isRework": true,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781858304646",
       "submittedBy": "Poornima",
       "createdAt": "2026-06-19T08:38:45.798Z",
-      "completedAt": null,
+      "completedAt": "2026-06-22T06:45:42.628Z",
       "completedQty": 307
     },
     {
@@ -11026,74 +11116,75 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 170,
           "targetQty": 170,
-          "completedQty": 0
+          "collectedQty": 170,
+          "completedQty": 170
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 340,
           "targetQty": 340,
-          "completedQty": 0
+          "collectedQty": 340,
+          "completedQty": 340
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 340,
           "targetQty": 340,
-          "completedQty": 0
+          "collectedQty": 340,
+          "completedQty": 340
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 170,
           "targetQty": 170,
-          "completedQty": 0
+          "collectedQty": 170,
+          "completedQty": 170
         },
         {
           "category": "c25Parts",
           "name": "C2.5 CHARGER TOP SIZE-07",
           "expectedQty": 1,
-          "collectedQty": 170,
           "targetQty": 170,
-          "completedQty": 0
+          "collectedQty": 170,
+          "completedQty": 170
         },
         {
           "category": "c2Mech",
           "name": "C2.5 C2 CHARGER BASE SIZE-07",
           "expectedQty": 1,
-          "collectedQty": 170,
           "targetQty": 170,
-          "completedQty": 0
+          "collectedQty": 170,
+          "completedQty": 170
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 680,
           "targetQty": 680,
-          "completedQty": 0
+          "collectedQty": 680,
+          "completedQty": 680
         },
         {
           "category": "c2Mech",
           "name": "C2 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 170,
           "targetQty": 170,
-          "completedQty": 0
+          "collectedQty": 170,
+          "completedQty": 170
         }
       ],
       "overrides": {},
       "isRework": true,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1782108025265",
       "submittedBy": "Sairam",
       "createdAt": "2026-06-22T06:00:29.519Z",
-      "completedAt": null
+      "completedAt": "2026-06-22T07:42:28.216Z",
+      "completedQty": 170
     },
     {
       "id": "49ea7c45-6e52-4894-a967-05c741eda802",
@@ -11179,8 +11270,8 @@
       "completedAt": null
     },
     {
-      "id": "ad4e89e5-00ac-4c66-af62-cf7c5772196e",
-      "moNumber": "UH/INTR/26-27/00879",
+      "id": "6b0c6f9c-c8d0-4620-b349-383ccdf4ce72",
+      "moNumber": "UH/INTR/26-27/00882",
       "planDate": "2026-06-22",
       "type": "C2.5",
       "size": "S09",
@@ -11192,74 +11283,75 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 270,
           "targetQty": 270,
-          "completedQty": 0
+          "collectedQty": 270,
+          "completedQty": 110
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 540,
           "targetQty": 540,
-          "completedQty": 0
+          "collectedQty": 540,
+          "completedQty": 110
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 540,
           "targetQty": 540,
-          "completedQty": 0
+          "collectedQty": 540,
+          "completedQty": 110
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 270,
           "targetQty": 270,
-          "completedQty": 0
+          "collectedQty": 270,
+          "completedQty": 110
         },
         {
           "category": "c25Parts",
           "name": "C2.5 CHARGER TOP SIZE-09",
           "expectedQty": 1,
-          "collectedQty": 270,
           "targetQty": 270,
-          "completedQty": 0
+          "collectedQty": 270,
+          "completedQty": 110
         },
         {
           "category": "c2Mech",
           "name": "C2.5 C2 CHARGER BASE SIZE-09",
           "expectedQty": 1,
-          "collectedQty": 270,
           "targetQty": 270,
-          "completedQty": 0
+          "collectedQty": 270,
+          "completedQty": 110
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 1080,
           "targetQty": 1080,
-          "completedQty": 0
+          "collectedQty": 1080,
+          "completedQty": 110
         },
         {
           "category": "c2Mech",
           "name": "C2 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 270,
           "targetQty": 270,
-          "completedQty": 0
+          "collectedQty": 270,
+          "completedQty": 110
         }
       ],
       "overrides": {},
       "isRework": true,
       "status": "Pending",
-      "batchId": "BATCH-1782108025265",
+      "batchId": "BATCH-1782110672109",
       "submittedBy": "Sairam",
-      "createdAt": "2026-06-22T06:00:29.520Z",
-      "completedAt": null
+      "createdAt": "2026-06-22T06:44:36.644Z",
+      "completedAt": null,
+      "completedQty": 110
     }
   ],
   "returnEntries": [],
@@ -14465,12 +14557,12 @@
       "sku": "S06",
       "component": "c2Mech",
       "componentName": "C2 CHARGER TOP SIZE-06",
-      "receive": 200,
-      "reject": 200,
-      "submittedAt": "2026-06-19T06:17:08.999Z",
-      "receivedAt": "2026-06-19T06:17:08.999Z",
-      "rejectedAt": "2026-06-19T06:17:08.999Z",
-      "submittedBy": "Poornima"
+      "receive": 209,
+      "reject": 209,
+      "submittedAt": "2026-06-22T13:57:11.081Z",
+      "receivedAt": "2026-06-22T13:57:11.081Z",
+      "rejectedAt": "2026-06-22T13:57:11.081Z",
+      "submittedBy": "Rajesh"
     },
     {
       "id": "0f5bd352-7ea6-4762-82ec-7b5169e2536e",
@@ -14493,12 +14585,12 @@
       "sku": "S06",
       "component": "c2Mech",
       "componentName": "C2 CHARGER BASE SIZE-06",
-      "receive": 200,
-      "reject": 200,
-      "submittedAt": "2026-06-19T06:16:55.386Z",
-      "receivedAt": "2026-06-19T06:16:55.386Z",
-      "rejectedAt": "2026-06-19T06:16:55.386Z",
-      "submittedBy": "Poornima"
+      "receive": 202,
+      "reject": 202,
+      "submittedAt": "2026-06-22T13:57:21.618Z",
+      "receivedAt": "2026-06-22T13:57:21.618Z",
+      "rejectedAt": "2026-06-22T13:57:21.618Z",
+      "submittedBy": "Rajesh"
     },
     {
       "id": "43af952e-cd71-4ef2-8c60-e32cb45a90aa",
@@ -14983,11 +15075,11 @@
       "sku": "S05",
       "component": "c25Parts",
       "componentName": "C2.5 CHARGER TOP SIZE-05",
-      "receive": 100,
-      "reject": 100,
-      "submittedAt": "2026-06-22T06:01:35.985Z",
-      "receivedAt": "2026-06-22T06:01:35.985Z",
-      "rejectedAt": "2026-06-22T06:01:35.985Z",
+      "receive": 101,
+      "reject": 101,
+      "submittedAt": "2026-06-22T06:21:39.688Z",
+      "receivedAt": "2026-06-22T06:21:39.688Z",
+      "rejectedAt": "2026-06-22T06:21:39.688Z",
       "submittedBy": "Sairam"
     },
     {
@@ -15095,11 +15187,11 @@
       "sku": "S07",
       "component": "c25Parts",
       "componentName": "C2.5 CHARGER TOP SIZE-07",
-      "receive": 170,
-      "reject": 170,
-      "submittedAt": "2026-06-22T06:07:33.666Z",
-      "receivedAt": "2026-06-22T06:07:33.666Z",
-      "rejectedAt": "2026-06-22T06:07:33.666Z",
+      "receive": 172,
+      "reject": 172,
+      "submittedAt": "2026-06-22T06:21:50.830Z",
+      "receivedAt": "2026-06-22T06:21:50.830Z",
+      "rejectedAt": "2026-06-22T06:21:50.830Z",
       "submittedBy": "Sairam"
     },
     {
@@ -15109,11 +15201,11 @@
       "sku": "S07",
       "component": "c2Mech",
       "componentName": "C2.5 C2 CHARGER BASE SIZE-07",
-      "receive": 170,
-      "reject": 170,
-      "submittedAt": "2026-06-22T06:07:45.308Z",
-      "receivedAt": "2026-06-22T06:07:45.308Z",
-      "rejectedAt": "2026-06-22T06:07:45.308Z",
+      "receive": 172,
+      "reject": 172,
+      "submittedAt": "2026-06-22T06:22:10.524Z",
+      "receivedAt": "2026-06-22T06:22:10.524Z",
+      "rejectedAt": "2026-06-22T06:22:10.524Z",
       "submittedBy": "Sairam"
     },
     {
@@ -16150,7 +16242,7 @@
       "fullName": "System Admin",
       "status": "Active",
       "createdAt": "2026-05-27T06:00:55.519Z",
-      "lastLogin": "2026-06-22T04:01:41.885Z"
+      "lastLogin": "2026-06-22T06:54:35.679Z"
     },
     {
       "id": "2",
@@ -16160,7 +16252,7 @@
       "fullName": "Rajesh",
       "status": "Active",
       "createdAt": "2026-05-27T06:00:55.519Z",
-      "lastLogin": "2026-06-06T08:01:54.049Z"
+      "lastLogin": "2026-06-22T13:54:43.845Z"
     },
     {
       "id": "40bb9569-6d23-4d28-8ba5-4abc4c1bcea8",
