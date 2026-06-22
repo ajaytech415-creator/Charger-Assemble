@@ -1,0 +1,43 @@
+name: Weekly Database Backup
+
+on:
+  schedule:
+    # Runs at 18:29 UTC every Sunday, which correlates to 11:59 PM IST (Indian Standard Time)
+    - cron: '29 18 * * 0'
+  workflow_dispatch: # Allows you to run it manually anytime from the GitHub website
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # Needed so the bot can push the commit back to the repo
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Run Backup Script
+        working-directory: ./backend
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: node backup.js
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "GitHub Backup Bot"
+          git config --global user.email "actions@users.noreply.github.com"
+          
+          # Only commit if there are new files
+          git add backend/data/
+          git commit -m "chore(backup): weekly automated database backup [skip ci]" || echo "No changes to commit"
+          git push
