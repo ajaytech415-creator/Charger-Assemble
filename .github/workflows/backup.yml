@@ -2,8 +2,8 @@ name: Weekly Database Backup
 
 on:
   schedule:
-    # Runs at 18:29 UTC every Sunday, which correlates to 11:59 PM IST (Indian Standard Time)
-    - cron: '29 18 * * 0'
+    # Runs at 18:30 UTC every day, which correlates to exactly 12:00 AM IST (Midnight)
+    - cron: '30 18 * * *'
   workflow_dispatch: # Allows you to run it manually anytime from the GitHub website
 
 jobs:
