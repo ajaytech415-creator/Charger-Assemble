@@ -67,8 +67,18 @@ export default function ReworkPage({ onBack }) {
   }, [reworkSearch, filterDate, filterStart, filterEnd, filterComp]);
 
   useEffect(() => {
+    // Initial load
     const t = setTimeout(() => loadMOs(), 0);
-    return () => clearTimeout(t);
+    // Poll every 30 seconds so admin status changes propagate to this view
+    const poll = setInterval(() => loadMOs(), 30000);
+    // Also refresh immediately when the user switches back to this tab
+    const onVisible = () => { if (document.visibilityState === 'visible') loadMOs(); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearTimeout(t);
+      clearInterval(poll);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [loadMOs]);
   useEffect(() => {
     const t = setTimeout(() => loadRework(), 0);

@@ -96,8 +96,18 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
   }, [filterStart, filterEnd, filterStatus, filterPlanDate]);
 
   useEffect(() => {
+    // Initial load
     const t = setTimeout(() => load(), 0);
-    return () => clearTimeout(t);
+    // Poll every 30s silently (no spinner) so admin status changes show up automatically
+    const poll = setInterval(() => load(false), 30000);
+    // Refresh immediately when user switches back to this tab
+    const onVisible = () => { if (document.visibilityState === 'visible') load(false); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearTimeout(t);
+      clearInterval(poll);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [load]);
 
   // Load pending MOs for return modal

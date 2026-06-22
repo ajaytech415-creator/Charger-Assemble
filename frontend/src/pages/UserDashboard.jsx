@@ -99,8 +99,18 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
   }, [filterStart, filterEnd, filterStatus, filterPlanDate]);
 
   useEffect(() => {
+    // Initial load
     const t = setTimeout(() => load(), 0);
-    return () => clearTimeout(t);
+    // Poll every 30s silently so admin status changes appear without a page refresh
+    const poll = setInterval(() => load(false), 30000);
+    // Also refresh immediately when user switches back to this tab
+    const onVisible = () => { if (document.visibilityState === 'visible') load(false); };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearTimeout(t);
+      clearInterval(poll);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, [load]);
 
   // Load pending MOs for return modal
