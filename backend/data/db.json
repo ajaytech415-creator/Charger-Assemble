@@ -1,6 +1,216 @@
 {
   "auditLogs": [
     {
+      "id": "63f85334-d296-44ef-8c55-a92458931fab",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — CHARGER SCREWS (M1.8x6, Head 3.3 mm) (+Recv: 800, +Rej: 800)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:09:43.962Z"
+    },
+    {
+      "id": "50966f6b-4d24-408a-a499-06540ae6d71a",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2 BOTTOM PADS (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:09:34.416Z"
+    },
+    {
+      "id": "254cb26a-7f03-4f94-982e-6d39b76922dc",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — D.C TAPE 10x8 (+Recv: 400, +Rej: 400)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:09:20.959Z"
+    },
+    {
+      "id": "0bae3d26-6cba-488f-bece-6b37b7340177",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — FERRITE TAPE 10x8 (+Recv: 400, +Rej: 400)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:09:12.181Z"
+    },
+    {
+      "id": "68f6cdb4-9305-4dcb-975a-a7847f48d830",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C3 FTX COIL (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:09:03.072Z"
+    },
+    {
+      "id": "b4274eb2-984e-4fc7-a7d0-853e7d1f5f9a",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 C2 CHARGER BASE SIZE-08 (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:08:54.582Z"
+    },
+    {
+      "id": "38ff0e93-90cf-4619-84ce-7a4bca468fcd",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 CHARGER TOP SIZE-08 (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:08:44.823Z"
+    },
+    {
+      "id": "eaf6ffe7-41dc-486d-80c7-938c8b9d70bd",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2 BOTTOM PADS (+Recv: 170, +Rej: 170)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:08:24.331Z"
+    },
+    {
+      "id": "fbebadd0-c4d1-480a-af41-beb9f0e6b1f5",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — D.C TAPE 10x8 (+Recv: 340, +Rej: 340)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:08:14.254Z"
+    },
+    {
+      "id": "3a08e1f0-7e18-4520-8e5a-af17b14bc9b8",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — FERRITE TAPE 10x8 (+Recv: 340, +Rej: 340)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:08:03.802Z"
+    },
+    {
+      "id": "d728798b-49d2-47f6-95a8-ac08a29eccc4",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C3 FTX COIL (+Recv: 170, +Rej: 170)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:07:54.885Z"
+    },
+    {
+      "id": "5973a11a-2e00-49cb-854c-b07f0ba65fbf",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 C2 CHARGER BASE SIZE-07 (+Recv: 170, +Rej: 170)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:07:45.308Z"
+    },
+    {
+      "id": "a5f7eed0-c3a5-4378-8027-579caaa0d3d0",
+      "action": "Scrap update: MO UH/INTR/26-27/00879 — C2.5 CHARGER TOP SIZE-07 (+Recv: 170, +Rej: 170)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:07:33.666Z"
+    },
+    {
+      "id": "192de215-cc56-42a0-ac4c-8501dd9cd1c8",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2 CHARGER BASE SIZE-10 (+Recv: 1, +Rej: 1)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:07:04.662Z"
+    },
+    {
+      "id": "cef1b052-1e8b-4414-ba1b-d57dba2c0416",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2 BOTTOM PADS (+Recv: 100, +Rej: 100)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:06:40.601Z"
+    },
+    {
+      "id": "85b945fe-5283-427e-ab02-861b87ad8ae4",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — CHARGER SCREWS (M1.8x6, Head 3.3 mm) (+Recv: 400, +Rej: 400)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:06:30.610Z"
+    },
+    {
+      "id": "e63fa715-fde4-453e-8876-6527c96a4877",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — D.C TAPE 10x8 (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:06:20.286Z"
+    },
+    {
+      "id": "853ca936-7582-4cd3-aadb-0f8e61752de7",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — FERRITE TAPE 10x8 (+Recv: 200, +Rej: 200)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:06:10.599Z"
+    },
+    {
+      "id": "cd394349-3861-4b15-aa5b-d571efa42e8e",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C3 FTX COIL (+Recv: 100, +Rej: 100)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:01:56.666Z"
+    },
+    {
+      "id": "92b5f3e7-cd27-498d-999f-32ac5989678b",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2.5 C2 CHARGER BASE SIZE-05 (+Recv: 100, +Rej: 100)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:01:46.727Z"
+    },
+    {
+      "id": "903ee94b-9ba9-4b9e-90fd-4b85a23e5bfe",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2.5 CHARGER TOP SIZE-05 (+Recv: 100, +Rej: 100)",
+      "user": "Sairam",
+      "time": "2026-06-22T06:01:35.985Z"
+    },
+    {
+      "id": "72a72141-a86d-4a24-b8c2-13faf4fc4a51",
+      "action": "Bulk created 3 MOs",
+      "user": "Sairam",
+      "time": "2026-06-22T06:00:29.520Z"
+    },
+    {
+      "id": "0d1f0f81-06c2-4f2c-87e6-a20f083cd936",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2 CHARGER PCBA (+Recv: 5, +Rej: 5)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:49:38.133Z"
+    },
+    {
+      "id": "ad2d708a-90ce-4e97-9798-089562d63503",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — D.C TAPE 10x8 (+Recv: 8, +Rej: 8)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:49:30.270Z"
+    },
+    {
+      "id": "a7aa0792-4c4e-4b42-ae22-227bf60e6b8d",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — FERRITE TAPE 10x8 (+Recv: 8, +Rej: 8)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:49:22.623Z"
+    },
+    {
+      "id": "ea47c471-49ee-4b7d-b593-db18585a98aa",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C3 FTX COIL (+Recv: 4, +Rej: 4)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:48:38.700Z"
+    },
+    {
+      "id": "9fd18cc5-730c-4c86-b75f-fb9e44966146",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2.5 C2 CHARGER BASE SIZE-10 (+Recv: 1, +Rej: 1)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:48:30.281Z"
+    },
+    {
+      "id": "321dd8e6-232e-40f6-9eb5-af870525534c",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2.5 CHARGER TOP SIZE-10 (+Recv: 4, +Rej: 4)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:48:06.228Z"
+    },
+    {
+      "id": "3882990c-18c9-4655-a2fc-dc8fb88608ec",
+      "action": "Scrap update: MO UH/INTR/26-27/00865 — C2 CHARGER TOP SIZE-10 (+Recv: 4, +Rej: 4)",
+      "user": "Sairam",
+      "time": "2026-06-22T04:47:48.804Z"
+    },
+    {
+      "id": "43ad5d6e-43c3-44a4-9fdd-0aae3eb3ecd1",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-06-22T04:02:35.575Z"
+    },
+    {
+      "id": "6550272b-77d9-49da-8aa9-13a111629b5e",
+      "action": "System Admin logged in",
+      "user": "System Admin",
+      "time": "2026-06-22T04:01:43.077Z"
+    },
+    {
+      "id": "535a5bf8-1d54-4e9a-9869-1d6bf9b9a965",
+      "action": "System Admin logged in",
+      "user": "System Admin",
+      "time": "2026-06-20T13:24:17.470Z"
+    },
+    {
+      "id": "9344ae1a-73aa-45c0-97ae-aaf9b10ac42f",
+      "action": "System Admin logged in",
+      "user": "System Admin",
+      "time": "2026-06-20T13:21:18.474Z"
+    },
+    {
+      "id": "607d8fb2-87a1-4e98-870a-fb3405e554fe",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-06-20T10:59:34.475Z"
+    },
+    {
+      "id": "1b7f9df8-521b-4c71-b92b-8299079e5238",
+      "action": "System Admin logged in",
+      "user": "System Admin",
+      "time": "2026-06-20T10:49:55.623Z"
+    },
+    {
       "id": "de1d1c2e-5799-4828-a7c0-fd61c804d3d0",
       "action": "Scrap update: MO UH/INTR/26-27/00865 — C2 CHARGER PCBA (+Recv: 2, +Rej: 2)",
       "user": "Sairam",
@@ -10201,11 +10411,11 @@
       ],
       "overrides": {},
       "isRework": true,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781858304646",
       "submittedBy": "Poornima",
       "createdAt": "2026-06-19T08:38:45.798Z",
-      "completedAt": null,
+      "completedAt": "2026-06-22T04:25:54.372Z",
       "completedQty": 0
     },
     {
@@ -10222,65 +10432,65 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 307,
           "targetQty": 307,
-          "completedQty": 0
+          "collectedQty": 307,
+          "completedQty": 307
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 614,
           "targetQty": 614,
-          "completedQty": 0
+          "collectedQty": 614,
+          "completedQty": 614
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 614,
           "targetQty": 614,
-          "completedQty": 0
+          "collectedQty": 614,
+          "completedQty": 614
         },
         {
           "category": "c3Parts",
           "name": "C3 CHARGER TOP SIZE-07",
           "expectedQty": 1,
-          "collectedQty": 307,
           "targetQty": 307,
-          "completedQty": 0
+          "collectedQty": 307,
+          "completedQty": 307
         },
         {
           "category": "c3Parts",
           "name": "C3 CHARGER BASE SIZE-07",
           "expectedQty": 1,
-          "collectedQty": 307,
           "targetQty": 307,
-          "completedQty": 0
+          "collectedQty": 307,
+          "completedQty": 307
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 307,
           "targetQty": 307,
-          "completedQty": 0
+          "collectedQty": 307,
+          "completedQty": 307
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 1228,
           "targetQty": 1228,
-          "completedQty": 0
+          "collectedQty": 1228,
+          "completedQty": 1228
         },
         {
           "category": "c3Parts",
           "name": "C3 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 307,
           "targetQty": 307,
-          "completedQty": 0
+          "collectedQty": 307,
+          "completedQty": 307
         }
       ],
       "overrides": {},
@@ -10289,7 +10499,8 @@
       "batchId": "BATCH-1781858304646",
       "submittedBy": "Poornima",
       "createdAt": "2026-06-19T08:38:45.798Z",
-      "completedAt": null
+      "completedAt": null,
+      "completedQty": 307
     },
     {
       "id": "a5016409-b8ae-4e1f-b85f-413e49960c98",
@@ -10479,74 +10690,75 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 3,
           "targetQty": 3,
-          "completedQty": 0
+          "collectedQty": 3,
+          "completedQty": 3
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 6,
           "targetQty": 6,
-          "completedQty": 0
+          "collectedQty": 6,
+          "completedQty": 6
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 6,
           "targetQty": 6,
-          "completedQty": 0
+          "collectedQty": 6,
+          "completedQty": 6
         },
         {
           "category": "c3Parts",
           "name": "DISL C3 CHARGER TOP SIZE-05",
           "expectedQty": 1,
-          "collectedQty": 3,
           "targetQty": 3,
-          "completedQty": 0
+          "collectedQty": 3,
+          "completedQty": 3
         },
         {
           "category": "dieselParts",
           "name": "DISL DIESEL CHARGER BASE S05",
           "expectedQty": 1,
-          "collectedQty": 3,
           "targetQty": 3,
-          "completedQty": 0
+          "collectedQty": 3,
+          "completedQty": 3
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 3,
           "targetQty": 3,
-          "completedQty": 0
+          "collectedQty": 3,
+          "completedQty": 3
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 12,
           "targetQty": 12,
-          "completedQty": 0
+          "collectedQty": 12,
+          "completedQty": 12
         },
         {
           "category": "c3Parts",
           "name": "C3 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 3,
           "targetQty": 3,
-          "completedQty": 0
+          "collectedQty": 3,
+          "completedQty": 3
         }
       ],
       "overrides": {},
       "isRework": false,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781866255382",
       "submittedBy": "Sairam",
       "createdAt": "2026-06-19T10:51:00.802Z",
-      "completedAt": null
+      "completedAt": "2026-06-20T13:17:02.656Z",
+      "completedQty": 3
     },
     {
       "id": "6fe77f97-6795-47d2-89b5-645be51c4fa4",
@@ -10562,74 +10774,75 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 10,
           "targetQty": 10,
-          "completedQty": 0
+          "collectedQty": 10,
+          "completedQty": 10
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 20,
           "targetQty": 20,
-          "completedQty": 0
+          "collectedQty": 20,
+          "completedQty": 20
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 20,
           "targetQty": 20,
-          "completedQty": 0
+          "collectedQty": 20,
+          "completedQty": 20
         },
         {
           "category": "c3Parts",
           "name": "DISL C3 CHARGER TOP SIZE-07",
           "expectedQty": 1,
-          "collectedQty": 10,
           "targetQty": 10,
-          "completedQty": 0
+          "collectedQty": 10,
+          "completedQty": 10
         },
         {
           "category": "dieselParts",
           "name": "DISL DIESEL CHARGER BASE S07",
           "expectedQty": 1,
-          "collectedQty": 10,
           "targetQty": 10,
-          "completedQty": 0
+          "collectedQty": 10,
+          "completedQty": 10
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 10,
           "targetQty": 10,
-          "completedQty": 0
+          "collectedQty": 10,
+          "completedQty": 10
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 40,
           "targetQty": 40,
-          "completedQty": 0
+          "collectedQty": 40,
+          "completedQty": 40
         },
         {
           "category": "c3Parts",
           "name": "C3 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 10,
           "targetQty": 10,
-          "completedQty": 0
+          "collectedQty": 10,
+          "completedQty": 10
         }
       ],
       "overrides": {},
       "isRework": false,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781866255382",
       "submittedBy": "Sairam",
       "createdAt": "2026-06-19T10:51:00.802Z",
-      "completedAt": null
+      "completedAt": "2026-06-20T13:16:51.280Z",
+      "completedQty": 10
     },
     {
       "id": "77c92daa-1461-44a1-bcaf-5f197b13f6c2",
@@ -10645,74 +10858,75 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
           "targetQty": 4,
-          "completedQty": 0
+          "collectedQty": 4,
+          "completedQty": 4
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
           "targetQty": 4,
-          "completedQty": 0
+          "collectedQty": 4,
+          "completedQty": 4
         },
         {
           "category": "c3Parts",
           "name": "DISL C3 CHARGER TOP SIZE-09",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "dieselParts",
           "name": "DISL DIESEL CHARGER BASE S09",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 8,
           "targetQty": 8,
-          "completedQty": 0
+          "collectedQty": 8,
+          "completedQty": 8
         },
         {
           "category": "c3Parts",
           "name": "C3 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         }
       ],
       "overrides": {},
       "isRework": false,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781866255382",
       "submittedBy": "Sairam",
       "createdAt": "2026-06-19T10:51:00.802Z",
-      "completedAt": null
+      "completedAt": "2026-06-20T13:17:48.234Z",
+      "completedQty": 2
     },
     {
       "id": "721aa8de-914e-4bd1-88d1-57d1a838a7a1",
@@ -10728,156 +10942,323 @@
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
           "targetQty": 4,
-          "completedQty": 0
+          "collectedQty": 4,
+          "completedQty": 4
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
           "targetQty": 4,
-          "completedQty": 0
+          "collectedQty": 4,
+          "completedQty": 4
         },
         {
           "category": "c3Parts",
           "name": "DISL C3 CHARGER TOP SIZE-11",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "dieselParts",
           "name": "DISL DIESEL CHARGER BASE S11",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 8,
           "targetQty": 8,
-          "completedQty": 0
+          "collectedQty": 8,
+          "completedQty": 8
         },
         {
           "category": "c3Parts",
           "name": "C3 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 2,
           "targetQty": 2,
-          "completedQty": 0
+          "collectedQty": 2,
+          "completedQty": 2
         }
       ],
       "overrides": {},
       "isRework": false,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1781866255382",
       "submittedBy": "Sairam",
       "createdAt": "2026-06-19T10:51:00.802Z",
-      "completedAt": null
+      "completedAt": "2026-06-20T13:18:01.177Z",
+      "completedQty": 2
     },
     {
-      "id": "69258b6c-8b34-428d-9f41-26a9757505a1",
-      "moNumber": "UH/MO/26-27/04639",
-      "planDate": "2026-06-19",
-      "type": "DISL",
-      "size": "SIZE 12",
-      "refer": "UHDISLCHGRS12",
-      "od": "DISL",
-      "qty": 2,
+      "id": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "planDate": "2026-06-22",
+      "type": "C2.5",
+      "size": "S07",
+      "refer": "UHCH2FINISHS07",
+      "od": "C2.5",
+      "qty": 170,
       "components": [
         {
           "category": "electronic",
           "name": "C3 FTX COIL",
           "expectedQty": 1,
-          "collectedQty": 2,
-          "targetQty": 2,
+          "collectedQty": 170,
+          "targetQty": 170,
           "completedQty": 0
         },
         {
           "category": "tapes",
           "name": "FERRITE TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
-          "targetQty": 4,
+          "collectedQty": 340,
+          "targetQty": 340,
           "completedQty": 0
         },
         {
           "category": "tapes",
           "name": "D.C TAPE 10x8",
           "expectedQty": 2,
-          "collectedQty": 4,
-          "targetQty": 4,
-          "completedQty": 0
-        },
-        {
-          "category": "c3Parts",
-          "name": "DISL C3 CHARGER TOP SIZE-12",
-          "expectedQty": 1,
-          "collectedQty": 2,
-          "targetQty": 2,
-          "completedQty": 0
-        },
-        {
-          "category": "dieselParts",
-          "name": "DISL DIESEL CHARGER BASE S12",
-          "expectedQty": 1,
-          "collectedQty": 2,
-          "targetQty": 2,
+          "collectedQty": 340,
+          "targetQty": 340,
           "completedQty": 0
         },
         {
           "category": "electronic",
           "name": "C2 CHARGER PCBA",
           "expectedQty": 1,
-          "collectedQty": 2,
-          "targetQty": 2,
+          "collectedQty": 170,
+          "targetQty": 170,
+          "completedQty": 0
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-07",
+          "expectedQty": 1,
+          "collectedQty": 170,
+          "targetQty": 170,
+          "completedQty": 0
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-07",
+          "expectedQty": 1,
+          "collectedQty": 170,
+          "targetQty": 170,
           "completedQty": 0
         },
         {
           "category": "screws",
           "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
           "expectedQty": 4,
-          "collectedQty": 8,
-          "targetQty": 8,
+          "collectedQty": 680,
+          "targetQty": 680,
           "completedQty": 0
         },
         {
-          "category": "c3Parts",
-          "name": "C3 BOTTOM PADS",
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
           "expectedQty": 1,
-          "collectedQty": 2,
-          "targetQty": 2,
+          "collectedQty": 170,
+          "targetQty": 170,
           "completedQty": 0
         }
       ],
       "overrides": {},
-      "isRework": false,
+      "isRework": true,
       "status": "Pending",
-      "batchId": "BATCH-1781866255382",
+      "batchId": "BATCH-1782108025265",
       "submittedBy": "Sairam",
-      "createdAt": "2026-06-19T10:51:00.802Z",
+      "createdAt": "2026-06-22T06:00:29.519Z",
+      "completedAt": null
+    },
+    {
+      "id": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "planDate": "2026-06-22",
+      "type": "C2.5",
+      "size": "S08",
+      "refer": "UHCH2FINISHS08",
+      "od": "C2.5",
+      "qty": 300,
+      "components": [
+        {
+          "category": "electronic",
+          "name": "C3 FTX COIL",
+          "expectedQty": 1,
+          "collectedQty": 300,
+          "targetQty": 300,
+          "completedQty": 0
+        },
+        {
+          "category": "tapes",
+          "name": "FERRITE TAPE 10x8",
+          "expectedQty": 2,
+          "collectedQty": 600,
+          "targetQty": 600,
+          "completedQty": 0
+        },
+        {
+          "category": "tapes",
+          "name": "D.C TAPE 10x8",
+          "expectedQty": 2,
+          "collectedQty": 600,
+          "targetQty": 600,
+          "completedQty": 0
+        },
+        {
+          "category": "electronic",
+          "name": "C2 CHARGER PCBA",
+          "expectedQty": 1,
+          "collectedQty": 300,
+          "targetQty": 300,
+          "completedQty": 0
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-08",
+          "expectedQty": 1,
+          "collectedQty": 300,
+          "targetQty": 300,
+          "completedQty": 0
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-08",
+          "expectedQty": 1,
+          "collectedQty": 300,
+          "targetQty": 300,
+          "completedQty": 0
+        },
+        {
+          "category": "screws",
+          "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+          "expectedQty": 4,
+          "collectedQty": 1200,
+          "targetQty": 1200,
+          "completedQty": 0
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
+          "expectedQty": 1,
+          "collectedQty": 300,
+          "targetQty": 300,
+          "completedQty": 0
+        }
+      ],
+      "overrides": {},
+      "isRework": true,
+      "status": "Pending",
+      "batchId": "BATCH-1782108025265",
+      "submittedBy": "Sairam",
+      "createdAt": "2026-06-22T06:00:29.519Z",
+      "completedAt": null
+    },
+    {
+      "id": "ad4e89e5-00ac-4c66-af62-cf7c5772196e",
+      "moNumber": "UH/INTR/26-27/00879",
+      "planDate": "2026-06-22",
+      "type": "C2.5",
+      "size": "S09",
+      "refer": "UHCH2FINISHS09",
+      "od": "C2.5",
+      "qty": 270,
+      "components": [
+        {
+          "category": "electronic",
+          "name": "C3 FTX COIL",
+          "expectedQty": 1,
+          "collectedQty": 270,
+          "targetQty": 270,
+          "completedQty": 0
+        },
+        {
+          "category": "tapes",
+          "name": "FERRITE TAPE 10x8",
+          "expectedQty": 2,
+          "collectedQty": 540,
+          "targetQty": 540,
+          "completedQty": 0
+        },
+        {
+          "category": "tapes",
+          "name": "D.C TAPE 10x8",
+          "expectedQty": 2,
+          "collectedQty": 540,
+          "targetQty": 540,
+          "completedQty": 0
+        },
+        {
+          "category": "electronic",
+          "name": "C2 CHARGER PCBA",
+          "expectedQty": 1,
+          "collectedQty": 270,
+          "targetQty": 270,
+          "completedQty": 0
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-09",
+          "expectedQty": 1,
+          "collectedQty": 270,
+          "targetQty": 270,
+          "completedQty": 0
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-09",
+          "expectedQty": 1,
+          "collectedQty": 270,
+          "targetQty": 270,
+          "completedQty": 0
+        },
+        {
+          "category": "screws",
+          "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+          "expectedQty": 4,
+          "collectedQty": 1080,
+          "targetQty": 1080,
+          "completedQty": 0
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
+          "expectedQty": 1,
+          "collectedQty": 270,
+          "targetQty": 270,
+          "completedQty": 0
+        }
+      ],
+      "overrides": {},
+      "isRework": true,
+      "status": "Pending",
+      "batchId": "BATCH-1782108025265",
+      "submittedBy": "Sairam",
+      "createdAt": "2026-06-22T06:00:29.520Z",
       "completedAt": null
     }
   ],
@@ -14510,6 +14891,384 @@
       "receivedAt": "2026-06-19T13:05:30.465Z",
       "rejectedAt": "2026-06-19T13:05:30.465Z",
       "submittedBy": "Sairam"
+    },
+    {
+      "id": "67b80797-aa0b-4c3a-ad56-f18c14f23eec",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-10",
+      "receive": 4,
+      "reject": 4,
+      "submittedAt": "2026-06-22T04:48:06.228Z",
+      "receivedAt": "2026-06-22T04:48:06.228Z",
+      "rejectedAt": "2026-06-22T04:48:06.228Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "ca134626-b20d-4137-84cd-3fe8d3dfe65f",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-10",
+      "receive": 1,
+      "reject": 1,
+      "submittedAt": "2026-06-22T04:48:30.281Z",
+      "receivedAt": "2026-06-22T04:48:30.281Z",
+      "rejectedAt": "2026-06-22T04:48:30.281Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "079a2be1-1662-4052-b4b4-27defb5df5b9",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "electronic",
+      "componentName": "C3 FTX COIL",
+      "receive": 4,
+      "reject": 4,
+      "submittedAt": "2026-06-22T04:48:38.700Z",
+      "receivedAt": "2026-06-22T04:48:38.700Z",
+      "rejectedAt": "2026-06-22T04:48:38.700Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "5bba27f4-184c-4186-9ada-23b4c0a003c0",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "tapes",
+      "componentName": "FERRITE TAPE 10x8",
+      "receive": 8,
+      "reject": 8,
+      "submittedAt": "2026-06-22T04:49:22.623Z",
+      "receivedAt": "2026-06-22T04:49:22.623Z",
+      "rejectedAt": "2026-06-22T04:49:22.623Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "35ab9b4a-807f-48d2-b121-bdaa0307c879",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "tapes",
+      "componentName": "D.C TAPE 10x8",
+      "receive": 8,
+      "reject": 8,
+      "submittedAt": "2026-06-22T04:49:30.270Z",
+      "receivedAt": "2026-06-22T04:49:30.270Z",
+      "rejectedAt": "2026-06-22T04:49:30.270Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "71157710-5691-45a8-9193-45d2bfe7075a",
+      "moId": "fbea6fa5-12e5-4a39-b8de-caca5491b1e2",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "electronic",
+      "componentName": "C2 CHARGER PCBA",
+      "receive": 5,
+      "reject": 5,
+      "submittedAt": "2026-06-22T04:49:38.133Z",
+      "receivedAt": "2026-06-22T04:49:38.133Z",
+      "rejectedAt": "2026-06-22T04:49:38.133Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "8fcbfe6e-5155-43c4-828d-57dc5056c7aa",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-05",
+      "receive": 100,
+      "reject": 100,
+      "submittedAt": "2026-06-22T06:01:35.985Z",
+      "receivedAt": "2026-06-22T06:01:35.985Z",
+      "rejectedAt": "2026-06-22T06:01:35.985Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "3dd1cbb2-f98b-48dc-bf3e-3a85d8aa11f8",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-05",
+      "receive": 100,
+      "reject": 100,
+      "submittedAt": "2026-06-22T06:01:46.727Z",
+      "receivedAt": "2026-06-22T06:01:46.727Z",
+      "rejectedAt": "2026-06-22T06:01:46.727Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "0f771424-ae79-4268-946b-283596dc7dac",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "electronic",
+      "componentName": "C3 FTX COIL",
+      "receive": 100,
+      "reject": 100,
+      "submittedAt": "2026-06-22T06:01:56.666Z",
+      "receivedAt": "2026-06-22T06:01:56.666Z",
+      "rejectedAt": "2026-06-22T06:01:56.666Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "6bccb991-97c3-46f1-b1ec-b5794bae8487",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "tapes",
+      "componentName": "FERRITE TAPE 10x8",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:06:10.599Z",
+      "receivedAt": "2026-06-22T06:06:10.599Z",
+      "rejectedAt": "2026-06-22T06:06:10.599Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "34f1c33f-a86a-48b8-99a6-b94007bc3ee4",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "tapes",
+      "componentName": "D.C TAPE 10x8",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:06:20.286Z",
+      "receivedAt": "2026-06-22T06:06:20.286Z",
+      "rejectedAt": "2026-06-22T06:06:20.286Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "ab8d870f-d5fd-4668-870b-12521f5cb5c5",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "screws",
+      "componentName": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+      "receive": 400,
+      "reject": 400,
+      "submittedAt": "2026-06-22T06:06:30.610Z",
+      "receivedAt": "2026-06-22T06:06:30.610Z",
+      "rejectedAt": "2026-06-22T06:06:30.610Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "a4bb7548-0829-4797-b210-7d4b66f35530",
+      "moId": "0cb97437-a7c7-4e97-aa61-ae59c42514ae",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S05",
+      "component": "c2Mech",
+      "componentName": "C2 BOTTOM PADS",
+      "receive": 100,
+      "reject": 100,
+      "submittedAt": "2026-06-22T06:06:40.601Z",
+      "receivedAt": "2026-06-22T06:06:40.601Z",
+      "rejectedAt": "2026-06-22T06:06:40.601Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "ddcfc7fb-63bf-4b56-8101-21add6435c59",
+      "moId": "a5016409-b8ae-4e1f-b85f-413e49960c98",
+      "moNumber": "UH/INTR/26-27/00865",
+      "sku": "S10",
+      "component": "c2Mech",
+      "componentName": "C2 CHARGER BASE SIZE-10",
+      "receive": 1,
+      "reject": 1,
+      "submittedAt": "2026-06-22T06:07:04.662Z",
+      "receivedAt": "2026-06-22T06:07:04.662Z",
+      "rejectedAt": "2026-06-22T06:07:04.662Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "1aa9fcb9-f099-404b-9887-98e175bdb88a",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-07",
+      "receive": 170,
+      "reject": 170,
+      "submittedAt": "2026-06-22T06:07:33.666Z",
+      "receivedAt": "2026-06-22T06:07:33.666Z",
+      "rejectedAt": "2026-06-22T06:07:33.666Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "f6fea00c-902d-426c-b935-2c4459af9d76",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-07",
+      "receive": 170,
+      "reject": 170,
+      "submittedAt": "2026-06-22T06:07:45.308Z",
+      "receivedAt": "2026-06-22T06:07:45.308Z",
+      "rejectedAt": "2026-06-22T06:07:45.308Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "62cabdcb-3eb1-4092-b147-d2031adb69e7",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "electronic",
+      "componentName": "C3 FTX COIL",
+      "receive": 170,
+      "reject": 170,
+      "submittedAt": "2026-06-22T06:07:54.885Z",
+      "receivedAt": "2026-06-22T06:07:54.885Z",
+      "rejectedAt": "2026-06-22T06:07:54.885Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "e2643ff3-3cd5-4209-b288-9d765ad80622",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "tapes",
+      "componentName": "FERRITE TAPE 10x8",
+      "receive": 340,
+      "reject": 340,
+      "submittedAt": "2026-06-22T06:08:03.802Z",
+      "receivedAt": "2026-06-22T06:08:03.802Z",
+      "rejectedAt": "2026-06-22T06:08:03.802Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "18418a83-12ba-40a5-b539-7bce9207c1c9",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "tapes",
+      "componentName": "D.C TAPE 10x8",
+      "receive": 340,
+      "reject": 340,
+      "submittedAt": "2026-06-22T06:08:14.254Z",
+      "receivedAt": "2026-06-22T06:08:14.254Z",
+      "rejectedAt": "2026-06-22T06:08:14.254Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "14b5186a-b1d6-4291-aa68-1ab6c254b399",
+      "moId": "64dd4161-7fed-43af-8692-1ecba5ae0c98",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S07",
+      "component": "c2Mech",
+      "componentName": "C2 BOTTOM PADS",
+      "receive": 170,
+      "reject": 170,
+      "submittedAt": "2026-06-22T06:08:24.331Z",
+      "receivedAt": "2026-06-22T06:08:24.331Z",
+      "rejectedAt": "2026-06-22T06:08:24.331Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "61fc595e-e428-470f-b428-291079fbfc7a",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-08",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:08:44.823Z",
+      "receivedAt": "2026-06-22T06:08:44.823Z",
+      "rejectedAt": "2026-06-22T06:08:44.823Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "c19b6aab-6d82-4f16-adcb-05c962da69ef",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-08",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:08:54.582Z",
+      "receivedAt": "2026-06-22T06:08:54.582Z",
+      "rejectedAt": "2026-06-22T06:08:54.582Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "34db192a-5cfd-4118-b4ed-33f5c1248442",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "electronic",
+      "componentName": "C3 FTX COIL",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:09:03.072Z",
+      "receivedAt": "2026-06-22T06:09:03.072Z",
+      "rejectedAt": "2026-06-22T06:09:03.072Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "1b093036-6f9e-4c87-91fe-57bf170b7f2b",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "tapes",
+      "componentName": "FERRITE TAPE 10x8",
+      "receive": 400,
+      "reject": 400,
+      "submittedAt": "2026-06-22T06:09:12.181Z",
+      "receivedAt": "2026-06-22T06:09:12.181Z",
+      "rejectedAt": "2026-06-22T06:09:12.181Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "f74ac846-4073-42a0-bb38-553888a27ea3",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "tapes",
+      "componentName": "D.C TAPE 10x8",
+      "receive": 400,
+      "reject": 400,
+      "submittedAt": "2026-06-22T06:09:20.959Z",
+      "receivedAt": "2026-06-22T06:09:20.959Z",
+      "rejectedAt": "2026-06-22T06:09:20.959Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "171316f5-56dd-446b-a346-72676811efc5",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "c2Mech",
+      "componentName": "C2 BOTTOM PADS",
+      "receive": 200,
+      "reject": 200,
+      "submittedAt": "2026-06-22T06:09:34.416Z",
+      "receivedAt": "2026-06-22T06:09:34.416Z",
+      "rejectedAt": "2026-06-22T06:09:34.416Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "ddad0f42-dfc2-4931-b9b3-e71a01489d55",
+      "moId": "49ea7c45-6e52-4894-a967-05c741eda802",
+      "moNumber": "UH/INTR/26-27/00879",
+      "sku": "S08",
+      "component": "screws",
+      "componentName": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+      "receive": 800,
+      "reject": 800,
+      "submittedAt": "2026-06-22T06:09:43.962Z",
+      "receivedAt": "2026-06-22T06:09:43.962Z",
+      "rejectedAt": "2026-06-22T06:09:43.962Z",
+      "submittedBy": "Sairam"
     }
   ],
   "trashEntries": [
@@ -15391,7 +16150,7 @@
       "fullName": "System Admin",
       "status": "Active",
       "createdAt": "2026-05-27T06:00:55.519Z",
-      "lastLogin": "2026-06-18T06:29:44.495Z"
+      "lastLogin": "2026-06-22T04:01:41.885Z"
     },
     {
       "id": "2",
@@ -15411,7 +16170,7 @@
       "fullName": "Sairam",
       "status": "Active",
       "createdAt": "2026-05-27T06:21:56.710Z",
-      "lastLogin": "2026-06-19T09:12:59.451Z"
+      "lastLogin": "2026-06-22T04:02:34.417Z"
     },
     {
       "id": "d01ae174-7363-47a0-be89-83b44d9a5207",
