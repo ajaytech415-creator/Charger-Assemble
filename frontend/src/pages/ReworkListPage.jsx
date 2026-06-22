@@ -608,7 +608,10 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                       newComps.forEach(c => c.completedQty = c.collectedQty);
                       setMoComponents(newComps);
                       
-                      const maxVal = Math.max(0, ...newComps.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
+                      const maxVal = newComps.length === 0 ? 0 : Math.min(...newComps.map(c => {
+                        const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
+                        return Math.floor(parseInt(c.collectedQty || 0) / expected);
+                      }));
                       setCloseQty(String(maxVal));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
@@ -625,12 +628,18 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                       value={closeQty} 
                       onChange={e => {
                         let val = e.target.value;
-                        const maxCollected = Math.max(0, ...moComponents.map(c => Math.floor(parseInt(c.collectedQty||0) / (c.expectedQty || 1))));
+                        const maxCollected = moComponents.length === 0 ? 0 : Math.min(...moComponents.map(c => {
+                          const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
+                          return Math.floor(parseInt(c.collectedQty || 0) / expected);
+                        }));
                         if (val !== '' && parseInt(val) > maxCollected) val = String(maxCollected);
                         setCloseQty(val);
                         if (val !== '') {
                           const newComps = [...moComponents];
-                          newComps.forEach(c => c.completedQty = val);
+                          newComps.forEach(c => {
+                            const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
+                            c.completedQty = String(parseInt(val) * expected);
+                          });
                           setMoComponents(newComps);
                         }
                       }} 
