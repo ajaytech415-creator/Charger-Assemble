@@ -7,7 +7,7 @@ import ModalPortal from '../components/ModalPortal';
 
 const EMPTY_FORM = { refer: '', moNumber: '', type: 'C2', size: 'S06', qty: '', overrides: {} };
 
-export default function ReworkPlanPage({ initialRows = [], onBack, onConfirm }) {
+export default function ReworkPlanPage({ initialRows = [], onBack, onConfirm, onDashboard }) {
   const { user } = useAuth();
   const [form, setForm] = useState(EMPTY_FORM);
   const [derived, setDerived] = useState({ components: [] });
@@ -269,6 +269,9 @@ export default function ReworkPlanPage({ initialRows = [], onBack, onConfirm }) 
               <div className="role">Data Entry</div>
             </div>
           </div>
+          <button className="btn btn-secondary btn-sm" onClick={onDashboard} style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 8 }}>
+            <GlassIcon name="dashboard" size={14} color="#374151" /> Rework Dashboard
+          </button>
           {rows.length > 0 && (
             <button className="btn btn-primary" onClick={handleConfirm} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <GlassIcon name="history" size={16} color="#ffffff" /> Confirm Plan ({rows.length})

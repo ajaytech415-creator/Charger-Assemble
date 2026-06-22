@@ -63,6 +63,7 @@ const AppContent = () => {
       initialRows={pendingRows}
       onBack={() => setView('platform')}
       onConfirm={(rows, bid) => { setPendingRows(rows); setBatchId(bid); setView('rework-confirm'); }}
+      onDashboard={() => setView('rework-list')}
     />
   );
   if (view === 'rework-confirm') return (
