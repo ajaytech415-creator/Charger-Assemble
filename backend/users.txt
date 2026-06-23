@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "employeeId": "UltraCharger",
+    "password": "Human@2026",
+    "role": "admin",
+    "fullName": "System Admin",
+    "status": "Active",
+    "createdAt": "2026-05-27T06:00:55.519Z",
+    "lastLogin": "2026-06-22T04:01:41.885Z"
+  },
+  {
+    "id": "2",
+    "employeeId": "Rajesh",
+    "password": "1122",
+    "role": "user",
+    "fullName": "Rajesh",
+    "status": "Active",
+    "createdAt": "2026-05-27T06:00:55.519Z",
+    "lastLogin": "2026-06-06T08:01:54.049Z"
+  },
+  {
+    "id": "40bb9569-6d23-4d28-8ba5-4abc4c1bcea8",
+    "employeeId": "Sairam",
+    "password": "1154",
+    "role": "user",
+    "fullName": "Sairam",
+    "status": "Active",
+    "createdAt": "2026-05-27T06:21:56.710Z",
+    "lastLogin": "2026-06-22T04:02:34.417Z"
+  },
+  {
+    "id": "d01ae174-7363-47a0-be89-83b44d9a5207",
+    "employeeId": "Poornima",
+    "password": "1157",
+    "role": "user",
+    "fullName": "Poornima",
+    "status": "Active",
+    "createdAt": "2026-05-28T08:37:51.740Z",
+    "lastLogin": "2026-06-19T06:10:25.934Z"
+  }
+]

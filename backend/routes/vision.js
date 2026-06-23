@@ -33,7 +33,7 @@ Extract ALL rows/entries you can see. For each row, identify these fields:
 - "moNumber": The Manufacturing Order number. *CRITICAL OCR RULE*: You MUST transcribe the MO number exactly as it appears in the image, character by character. These numbers frequently use multiple slashes and dashes (e.g., "UH/MO/25-26/0013268"). You MUST preserve EVERY single slash "/" and dash exactly as written. DO NOT ignore, remove, or change any punctuation.
 - "type": The product type (e.g., C2, C2.5). If not visible, use "".
 - "size": The size or product text (e.g., C2 SIZE 08, C2.5 SIZE 07). Transcribe the entire cell.
-- "qty": The total quantity as a plain integer. Required.
+- "qty": The EXACT target/plan quantity for the product order shown in that row. Extract the exact number written in the plan's quantity column as a plain integer (e.g., if it says 15, output 15. Do NOT add extra zeros, do not confuse with total component weights or batch sizes). Required.
 
 IMPORTANT: Respond ONLY with a valid JSON array. No explanation. No markdown. Just raw JSON. Validate that heavily-slashed MO numbers are retained properly in your response.
 Example:
