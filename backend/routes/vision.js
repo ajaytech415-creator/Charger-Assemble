@@ -28,7 +28,12 @@ export async function extractFromImage(req, res) {
     const prompt = `You are a highly precise OCR and production data extraction assistant.
 Analyze this image which contains a manufacturing production plan (table, spreadsheet, or handwritten document) and extract the data with 100% literal accuracy.
 
-Extract ALL rows/entries you can see. For each row, identify these fields:
+CRITICAL INSTRUCTIONS:
+1. Extract exactly ONE JSON object for each physical row seen in the table. 
+2. Do NOT hallucinate, guess, duplicate, or split rows. If there are 15 distinct lines/rows in the image table, output exactly 15 JSON objects.
+3. If a row specifies a target quantity (e.g. 10), output ONE JSON object for that entire row with "qty": 10. Do NOT output 10 separate rows. Stop extracting as soon as you reach the end of the visible table.
+
+For each row, identify these fields:
 - "refer": The reference code (e.g., UHCH2FINISHS08, UHCH2FINISHS07). If not visible, use "".
 - "moNumber": The Manufacturing Order number. *CRITICAL OCR RULE*: You MUST transcribe the MO number exactly as it appears in the image, character by character. These numbers frequently use multiple slashes and dashes (e.g., "UH/MO/25-26/0013268"). You MUST preserve EVERY single slash "/" and dash exactly as written. DO NOT ignore, remove, or change any punctuation.
 - "type": The product type (e.g., C2, C2.5). If not visible, use "".
