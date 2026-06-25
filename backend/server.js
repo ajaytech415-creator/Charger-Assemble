@@ -136,8 +136,8 @@ app.use((err, req, res, next) => {
 });
 
 if (!process.env.VERCEL) {
-  const server = app.listen(PORT, () => {
-    console.log(`\n✅ MfgPlan Server running at http://localhost:${PORT}\n`);
+  const server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n✅ MfgPlan Server running at http://127.0.0.1:${PORT}\n`);
   });
 
   server.on('error', (err) => {
