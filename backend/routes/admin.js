@@ -270,3 +270,40 @@ export const wipeAllData = async (req, res) => {
   await db.write();
   res.json({ success: true, deleted: { mo: moCnt, scrap: scrapCnt, rework: reworkCnt, returns: returnCnt, trash: trashCnt } });
 };
+
+// GET /api/admin/sync-may-data
+// One-time utility to inject May historical MOs into the live database 
+export const syncMayData = async (req, res) => {
+  try {
+    const fs = await import('fs');
+    if (!fs.existsSync('./may_backup.json')) {
+      return res.status(404).json({ message: 'No May backup file found to sync.' });
+    }
+    const mayData = JSON.parse(fs.readFileSync('./may_backup.json', 'utf8'));
+    const mayMOs = mayData.mayMOs || [];
+    
+    let addedCount = 0;
+    mayMOs.forEach(mayMo => {
+      // Prevent duplicates
+      if (!db.data.moEntries.find(m => m.id === mayMo.id || m.moNumber === mayMo.moNumber)) {
+        db.data.moEntries.push(mayMo);
+        addedCount++;
+      }
+    });
+
+    if (addedCount > 0) {
+      db.data.auditLogs.unshift({
+        id: randomUUID(),
+        action: `Sync: Injected ${addedCount} historical May MOs into live database`,
+        user: 'System Admin',
+        time: new Date().toISOString(),
+      });
+      await db.write();
+    }
+    
+    res.json({ success: true, message: `Successfully synced ${addedCount} May MOs to the live server!` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Failed to sync May data.' });
+  }
+};

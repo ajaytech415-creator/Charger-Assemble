@@ -113,6 +113,9 @@ app.post('/api/admin/db/action', handleDbAction);
 app.get('/api/admin/trash', getTrash);
 app.post('/api/admin/trash/action', handleTrashAction);
 app.post('/api/admin/wipe-all', wipeAllData);
+app.get('/api/admin/sync-may', (req, res) => {
+  import('./routes/admin.js').then(mod => mod.syncMayData(req, res));
+});
 
 // --- Stats ---
 app.get('/api/stats', getStats);
