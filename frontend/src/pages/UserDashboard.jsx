@@ -253,12 +253,11 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
     } catch (e) { console.error(e); alert('Failed to replenish.'); }
   };
 
-  const totalPlanned = mos.reduce((s, m) => s + (m.qty || 0), 0);
-  const totalCompleted = mos.reduce((s, m) => {
-    if (m.status === 'Completed') return s + Math.max(m.completedQty || 0, m.qty || 0);
-    return s + (m.completedQty || 0);
-  }, 0);
-  const totalPending = totalPlanned - totalCompleted;
+  // Top stat tiles: use MO-level qty (planned units) and completedQty (assembled units)
+  // These are MO assembly counts. Component material counts are in the breakdown bar below.
+  const totalPlanned   = mos.reduce((s, m) => s + (m.qty || 0), 0);
+  const totalCompleted = mos.reduce((s, m) => s + (m.completedQty || 0), 0);
+  const totalPending   = totalPlanned - totalCompleted;
 
   const renderComponentProgress = (name, qty, comp) => {
     const isDone = comp >= qty;

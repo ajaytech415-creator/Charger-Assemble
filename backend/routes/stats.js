@@ -84,7 +84,7 @@ export const getStats = (req, res) => {
 
   let openingWIP = 0;
   if (startDate) {
-    const isBeforeStart = (isoString) => {
+    const isBeforeStartStr = (isoString) => {
       if (!isoString) return false;
       const start = new Date(startDate.length === 10 ? startDate + 'T00:00:00' : startDate);
       return new Date(isoString) < start;
@@ -96,23 +96,30 @@ export const getStats = (req, res) => {
       if (isRework === 'true' && !e.isRework) return;
       if (isRework === 'false' && e.isRework) return;
 
-      if (isBeforeStart(e.createdAt) && e.components) {
+      if (e.components) {
         e.components.forEach(c => {
-          opIN += (c.collectedQty || 0);
-          opOUT += (c.completedQty || 0);
+          // IN: bucket by createdAt
+          if (isBeforeStartStr(e.createdAt)) {
+            opIN += (c.collectedQty || 0);
+          }
+          // OUT: bucket by completedAt (if pending, falls back to createdAt)
+          const outTs = e.completedAt || e.createdAt;
+          if (isBeforeStartStr(outTs)) {
+            opOUT += (c.completedQty || 0);
+          }
         });
       }
     });
 
     scrap.forEach(e => {
-      if (isBeforeStart(e.submittedAt)) {
+      if (isBeforeStartStr(e.submittedAt)) {
         opRC += (e.receive || 0);
         opRJ += (e.reject || 0);
       }
     });
 
     rework.forEach(e => {
-      if (isBeforeStart(e.submittedAt)) {
+      if (isBeforeStartStr(e.submittedAt)) {
         opRC += (e.receive || 0);
         opRJ += (e.reject || 0);
       }
@@ -130,9 +137,9 @@ export const getStats = (req, res) => {
       e.components.forEach(c => {
         const cat = c.category || 'other';
         if (!breakdown[cat]) breakdown[cat] = {};
-        // Count component qty × MO qty; fall back to planned if completedQty not yet set
-        const amount = (c.completedQty || 0) > 0
-          ? c.completedQty
+        // Use physically collected/issued quantity, else fall back to planned qty
+        const amount = c.collectedQty !== undefined
+          ? c.collectedQty
           : (c.qty || 1) * moQty;
         breakdown[cat][c.name] = (breakdown[cat][c.name] || 0) + amount;
       });
@@ -222,6 +229,12 @@ export const getReport = (req, res) => {
     return new Date(dateStr) < startDT;
   };
 
+  const inPeriodDT = (dStr) => {
+    if (!startDT || !endDT) return true;
+    const d = new Date(dStr || '');
+    return d >= startDT && d <= endDT;
+  };
+
   // 1. MO Entries (IN & OUT)
   (db.data.moEntries || []).forEach(e => {
     if (isRework === 'true' && !e.isRework) return;
@@ -229,10 +242,20 @@ export const getReport = (req, res) => {
 
     if (e.components) {
       e.components.forEach(c => {
-        if (isBeforeStart(e.createdAt)) {
-          findAndAdd(c.category, c.name, 'opening', (c.collectedQty || 0) - (c.completedQty || 0));
-        } else if (inPeriod(e.createdAt)) {
+        const inDT = new Date(e.createdAt);
+        const outDT = e.completedAt ? new Date(e.completedAt) : new Date(e.createdAt);
+
+        // IN
+        if (isBeforeStart(inDT)) {
+          findAndAdd(c.category, c.name, 'opening', c.collectedQty || 0);
+        } else if (inPeriodDT(inDT)) {
           findAndAdd(c.category, c.name, 'in', c.collectedQty || 0);
+        }
+
+        // OUT
+        if (isBeforeStart(outDT)) {
+          findAndAdd(c.category, c.name, 'opening', -(c.completedQty || 0));
+        } else if (inPeriodDT(outDT)) {
           findAndAdd(c.category, c.name, 'out', c.completedQty || 0);
         }
       });
@@ -242,9 +265,10 @@ export const getReport = (req, res) => {
   // 2. Scrap & Rework Entries (Received & Reject)
   (db.data.scrapEntries || []).forEach(e => {
     if (e.component && e.componentName) {
-      if (isBeforeStart(e.submittedAt)) {
+      const dt = new Date(e.submittedAt);
+      if (isBeforeStart(dt)) {
         findAndAdd(e.component, e.componentName, 'opening', (e.receive || 0) - (e.reject || 0));
-      } else if (inPeriod(e.submittedAt)) {
+      } else if (inPeriodDT(dt)) {
         findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
         findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
       }
@@ -253,9 +277,10 @@ export const getReport = (req, res) => {
 
   (db.data.reworkEntries || []).forEach(e => {
     if (e.component && e.componentName) {
-      if (isBeforeStart(e.submittedAt)) {
+      const dt = new Date(e.submittedAt);
+      if (isBeforeStart(dt)) {
         findAndAdd(e.component, e.componentName, 'opening', (e.receive || 0) - (e.reject || 0));
-      } else if (inPeriod(e.submittedAt)) {
+      } else if (inPeriodDT(dt)) {
         findAndAdd(e.component, e.componentName, 'received', e.receive || 0);
         findAndAdd(e.component, e.componentName, 'reject',   e.reject  || 0);
       }
@@ -264,7 +289,8 @@ export const getReport = (req, res) => {
 
   // 3. Return Entries (Return)
   (db.data.returnEntries || []).forEach(e => {
-    if (inPeriod(e.returnedAt)) {
+    const dt = new Date(e.returnedAt);
+    if (inPeriodDT(dt)) {
       const mo = (db.data.moEntries || []).find(m => m.id === e.moId);
       if (!mo || !mo.components) return;
       
@@ -273,11 +299,15 @@ export const getReport = (req, res) => {
           findAndAdd(c.category, c.name, 'return', c.collectedQty || 0);
         });
       } else if (e.component) {
-        const c = mo.components.find(c => c.category === e.component);
+        // e.component here may be category or name, check against category first based on frontend expectations
+        const c = mo.components.find(c => c.category === e.component || c.name === e.component);
         if (c) {
-           findAndAdd(e.component, c.name, 'return', e.componentQty || 0);
+           findAndAdd(c.category, c.name, 'return', e.componentQty || 0);
         }
       }
+    } else if (isBeforeStart(dt)) {
+       // Returns before start technically don't impact WIP calculation directly since math is IN - RC - RJ - OUT
+       // But keeping it consistent.
     }
   });
 

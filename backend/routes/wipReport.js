@@ -34,59 +34,92 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
     return new Date(dateStr) < startDT;
   };
 
-  const openingMOs     = startDT ? allMOs.filter(e     => isBeforeStart(e.createdAt))   : [];
-  const openingScrap   = startDT ? allScrap.filter(e   => isBeforeStart(e.submittedAt)) : [];
-  const openingReturns = startDT ? allReturns.filter(e => isBeforeStart(e.returnedAt))  : [];
-  const openingReworks = startDT ? allReworks.filter(e => isBeforeStart(e.submittedAt)) : [];
+  const calcStats = (name, category) => {
+    let openingIN = 0, openingRC = 0, openingRJ = 0, openingRT = 0, openingOUT = 0;
+    let periodIN = 0, periodRC = 0, periodRJ = 0, periodRT = 0, periodOUT = 0;
 
-  const periodMOs     = startDT ? allMOs.filter(e     => inPeriod(e.createdAt))   : allMOs;
-  const periodScrap   = startDT ? allScrap.filter(e   => inPeriod(e.submittedAt)) : allScrap;
-  const periodReturns = startDT ? allReturns.filter(e => inPeriod(e.returnedAt))  : allReturns;
-  const periodReworks = startDT ? allReworks.filter(e => inPeriod(e.submittedAt)) : allReworks;
-
-  const calcStats = (name, category, mos, scrap, returns, reworks) => {
-    let IN = 0, RC = 0, RJ = 0, RT = 0, OUT = 0;
-
-    mos.forEach(e => {
+    // MOs: IN = creation time, OUT = completion time
+    allMOs.forEach(e => {
       if (e.components) {
         const c = e.components.find(comp => comp.category === category && comp.name === name);
         if (c) {
-          IN += c.collectedQty || 0;
-          OUT += c.completedQty || 0;
-        }
-      }
-    });
+          const inDT = new Date(e.createdAt);
+          if (!startDT || inDT < startDT) {
+            openingIN += c.collectedQty || 0;
+          } else if (inDT >= startDT && (!endDT || inDT <= endDT)) {
+            periodIN += c.collectedQty || 0;
+          }
 
-    scrap.forEach(e => {
-      if (e.component === category && e.componentName === name) {
-        RC += e.receive || 0;
-        RJ += e.reject  || 0;
-      }
-    });
-
-    (reworks || []).forEach(e => {
-      if (e.component === category && e.componentName === name) {
-        RC += e.receive || 0;
-        RJ += e.reject  || 0;
-      }
-    });
-
-    returns.forEach(e => {
-      const mo = allMOs.find(m => m.id === e.moId);
-      if (mo && mo.components) {
-        const c = mo.components.find(comp => comp.category === category && comp.name === name);
-        if (c) {
-          if (e.isFullMO) {
-            RT += c.collectedQty || 0;
-          } else if (e.component === category) {
-            RT += e.componentQty || 0;
+          // If pending, fallback to createdAt so partials are historically credited
+          const outDT = e.completedAt ? new Date(e.completedAt) : new Date(e.createdAt);
+          if (!startDT || outDT < startDT) {
+            openingOUT += c.completedQty || 0;
+          } else if (outDT >= startDT && (!endDT || outDT <= endDT)) {
+            periodOUT += c.completedQty || 0;
           }
         }
       }
     });
 
-    const WIP = (IN + RC) - (RJ + OUT);
-    return { IN, RC, RJ, RT, OUT, WIP };
+    // Scrap: RC and RJ
+    allScrap.forEach(e => {
+      if (e.component === category && e.componentName === name) {
+        const scrapDT = new Date(e.submittedAt);
+        if (!startDT || scrapDT < startDT) {
+          openingRC += e.receive || 0;
+          openingRJ += e.reject  || 0;
+        } else if (scrapDT >= startDT && (!endDT || scrapDT <= endDT)) {
+          periodRC += e.receive || 0;
+          periodRJ += e.reject  || 0;
+        }
+      }
+    });
+
+    // Rework: RC and RJ
+    allReworks.forEach(e => {
+      if (e.component === category && e.componentName === name) {
+        const reworkDT = new Date(e.submittedAt);
+        if (!startDT || reworkDT < startDT) {
+          openingRC += e.receive || 0;
+          openingRJ += e.reject  || 0;
+        } else if (reworkDT >= startDT && (!endDT || reworkDT <= endDT)) {
+          periodRC += e.receive || 0;
+          periodRJ += e.reject  || 0;
+        }
+      }
+    });
+
+    // Returns: RT
+    allReturns.forEach(e => {
+      const mo = allMOs.find(m => m.id === e.moId);
+      if (mo && mo.components) {
+        const c = mo.components.find(comp => comp.category === category && comp.name === name);
+        if (c) {
+          let rtAmt = 0;
+          if (e.isFullMO) {
+            rtAmt = c.collectedQty || 0;
+          } else if (e.component === category || e.component === name) {
+            rtAmt = e.componentQty || 0;
+          }
+
+          const retDT = new Date(e.returnedAt);
+          if (!startDT || retDT < startDT) {
+            openingRT += rtAmt;
+          } else if (retDT >= startDT && (!endDT || retDT <= endDT)) {
+            periodRT += rtAmt;
+          }
+        }
+      }
+    });
+
+    const openingWIP = (openingIN + openingRC) - (openingRJ + openingOUT);
+    const closingWIP = openingWIP + (periodIN + periodRC) - (periodRJ + periodOUT);
+
+    return {
+      openingWIP,
+      periodIN, periodRC, periodRJ, periodRT, periodOUT,
+      closingWIP
+    };
   };
 
   const categories = Object.keys(comps).map(cat => ({ key: cat, label: cat }));
@@ -123,29 +156,25 @@ export const generateWipExcelBuffer = (startDate, endDate) => {
     wsData.push([`— ${cat.label.toUpperCase()} —`]);
 
     names.forEach(name => {
-      const opening = calcStats(name, cat.key, openingMOs, openingScrap, openingReturns, openingReworks);
-      const period = calcStats(name, cat.key, periodMOs, periodScrap, periodReturns, periodReworks);
+      const stats = calcStats(name, cat.key);
       
-      const openingWIP = opening.WIP;
-      const closingWIP = openingWIP + period.WIP;
-
-      grandOpeningWIP += openingWIP;
-      grandIN  += period.IN;
-      grandRC  += period.RC;
-      grandRJ  += period.RJ;
-      grandRT  += period.RT;
-      grandOUT += period.OUT;
-      grandClosingWIP += closingWIP;
+      grandOpeningWIP += stats.openingWIP;
+      grandIN  += stats.periodIN;
+      grandRC  += stats.periodRC;
+      grandRJ  += stats.periodRJ;
+      grandRT  += stats.periodRT;
+      grandOUT += stats.periodOUT;
+      grandClosingWIP += stats.closingWIP;
 
       wsData.push([
         name,
-        openingWIP,
-        period.IN,
-        period.RC,
-        period.RJ,
-        period.RT,
-        period.OUT,
-        closingWIP,
+        stats.openingWIP,
+        stats.periodIN,
+        stats.periodRC,
+        stats.periodRJ,
+        stats.periodRT,
+        stats.periodOUT,
+        stats.closingWIP,
       ]);
     });
   });

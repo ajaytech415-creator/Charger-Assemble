@@ -192,7 +192,7 @@ tbody tr:hover { background: var(--gray-50); }
 /* Navbar */
 .navbar { height: var(--navbar-height); background: white; border-bottom: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-sm); }
 .navbar-brand { display: flex; align-items: center; gap: 10px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--gray-900); }
-.navbar-logo { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-image: url('https://blog.ultrahuman.com/wp-content/uploads/2025/05/4Ww9Uqhk_400x400.jpg'); background-size: cover; background-position: center; color: transparent; overflow: hidden; }
+.navbar-logo { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-image: url('https://pbs.twimg.com/profile_images/1699042223019806720/K183K1U__400x400.jpg'); background-size: cover; background-position: center; color: transparent; overflow: hidden; }
 .navbar-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray-500); }
 .navbar-breadcrumb span { color: var(--gray-300); }
 .navbar-right { display: flex; align-items: center; gap: 12px; }
@@ -218,7 +218,7 @@ body::before {
   content: '';
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-image: url('https://blog.ultrahuman.com/wp-content/uploads/2025/05/4Ww9Uqhk_400x400.jpg');
+  background-image: url('https://pbs.twimg.com/profile_images/1699042223019806720/K183K1U__400x400.jpg');
   background-size: 80px 80px;
   background-repeat: repeat;
   opacity: 0.04;

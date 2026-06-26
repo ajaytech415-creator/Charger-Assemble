@@ -248,12 +248,10 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
     } catch (e) { console.error(e); alert('Failed to replenish.'); }
   };
 
-  const totalPlanned = mos.reduce((s, m) => s + (m.qty || 0), 0);
-  const totalCompleted = mos.reduce((s, m) => {
-    if (m.status === 'Completed') return s + Math.max(m.completedQty || 0, m.qty || 0);
-    return s + (m.completedQty || 0);
-  }, 0);
-  const totalPending = totalPlanned - totalCompleted;
+  // Top stat tiles: MO-level planned units and completed units
+  const totalPlanned   = mos.reduce((s, m) => s + (m.qty || 0), 0);
+  const totalCompleted = mos.reduce((s, m) => s + (m.completedQty || 0), 0);
+  const totalPending   = totalPlanned - totalCompleted;
 
   const renderComponentProgress = (name, qty, comp) => {
     const isDone = comp >= qty;
