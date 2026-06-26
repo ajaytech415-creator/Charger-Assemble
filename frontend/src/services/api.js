@@ -90,4 +90,5 @@ export const api = {
   exportRndUrl: (params = {}) => `${API}/rnd/export?${new URLSearchParams(params).toString()}`,
   exportWipUrl: (params = {}) => `${API}/stats/wip-excel?${new URLSearchParams(params).toString()}`,
   exportBackupUrl: () => `${API}/admin/backup`,
+  syncMay: () => req('/admin/sync-may'),
 };

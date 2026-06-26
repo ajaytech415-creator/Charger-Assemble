@@ -169,6 +169,32 @@ export default function AdminDBManager() {
               >×</button>
             )}
           </div>
+          {/* Sync May Data Button */}
+          <button
+            onClick={async () => {
+              if (window.confirm('Sync 100+ Historical May MOs into the live Database?')) {
+                setWiping(true);
+                try {
+                  const res = await api.syncMay();
+                  alert(res.message);
+                  await loadData();
+                } catch(e) {
+                  alert(e.message);
+                } finally {
+                  setWiping(false);
+                }
+              }
+            }}
+            disabled={wiping}
+            style={{
+              padding: '8px 16px', borderRadius: 8, border: '1px solid #10b981',
+              background: 'linear-gradient(135deg,#d1fae5,#ecfdf5)',
+              color: '#047857', fontWeight: 700, fontSize: 13, cursor: wiping ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s',
+            }}
+          >
+            <GlassIcon name="refresh" size={14} color="#047857" /> Sync May Data
+          </button>
           {/* Nuclear wipe button */}
           <button
             onClick={handleWipeAll}
