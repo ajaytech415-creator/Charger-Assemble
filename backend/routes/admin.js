@@ -275,11 +275,12 @@ export const wipeAllData = async (req, res) => {
 // One-time utility to inject May historical MOs into the live database 
 export const syncMayData = async (req, res) => {
   try {
-    const fs = await import('fs');
-    if (!fs.existsSync('./may_backup.json')) {
-      return res.status(404).json({ message: 'No May backup file found to sync.' });
+    // Statically import the data so Vercel bundler always includes it in the lambda
+    const { mayData } = await import('./may_backup.js');
+    
+    if (!mayData || !mayData.mayMOs) {
+      return res.status(404).json({ message: 'May backup data is empty or invalid.' });
     }
-    const mayData = JSON.parse(fs.readFileSync('./may_backup.json', 'utf8'));
     const mayMOs = mayData.mayMOs || [];
     
     let addedCount = 0;

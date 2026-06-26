@@ -1,4 +1,4 @@
-{
+export const mayData = {
   "mayMOs": [
     {
       "id": "d07107f6-0124-43c0-bf99-a3be0304d54e",
@@ -8547,4 +8547,4 @@
       "importedFromMayPlan": true
     }
   ]
-}
+};
