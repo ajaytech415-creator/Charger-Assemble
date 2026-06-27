@@ -283,7 +283,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div className="navbar-brand"><div className="navbar-logo">◇</div>UltraHuman Charger Assembly</div>
+          <div className="navbar-brand"><div className="navbar-logo"><img src={logo} alt="Logo" /></div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
             <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
             <span>›</span>

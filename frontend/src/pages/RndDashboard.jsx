@@ -111,7 +111,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand">
-            <div className="navbar-logo">◇</div>
+            <div className="navbar-logo"><img src={logo} alt="Logo" /></div>
             UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
