@@ -21,8 +21,8 @@ const defaultData = {
   users: [
     {
       id: '1',
-      employeeId: process.env.ADMIN_ID || 'UltraCharger',
-      password: process.env.ADMIN_PASSWORD || 'Password',
+      employeeId: process.env.ADMIN_ID || 'UltraC',
+      password: process.env.ADMIN_PASSWORD || 'HumanC',
       role: 'admin',
       fullName: 'System Admin',
       status: 'Active',
