@@ -74,7 +74,6 @@ export default function LoginPage({ onLogin }) {
               <div className="form-group" style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                   <label style={{ margin: 0 }}>Password</label>
-                  <span style={{ color: 'var(--primary)', fontSize: 13, cursor: 'pointer', fontWeight: 500 }}>Forgot password?</span>
                 </div>
                 <input
                   id="password"
