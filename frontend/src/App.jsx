@@ -13,18 +13,20 @@ import ReworkListPage from './pages/ReworkListPage';
 import RndPage from './pages/RndPage';
 import RndDashboard from './pages/RndDashboard';
 import AdminLayout from './pages/admin/AdminLayout';
+import AdminCodePage from './pages/AdminCodePage';
 import './App.css';
 
 const AppContent = () => {
   const { user } = useAuth();
 
   // adminSession = true when site was entered via /admin URL.
-  // Allows full platform access without a user login.
-  const [adminSession, setAdminSession] = useState(
+  const [adminSession] = useState(
     () => window.location.pathname === '/admin'
   );
+  // adminVerified = true once the secure code has been entered correctly.
+  const [adminVerified, setAdminVerified] = useState(false);
   const [view, setView] = useState(() => {
-    // /admin URL lands on platform page (with admin privileges shown)
+    // /admin URL shows code gate first, then platform
     if (window.location.pathname === '/admin') return 'platform';
     return user ? 'platform' : 'login';
   });
@@ -43,8 +45,13 @@ const AppContent = () => {
     );
   }
 
-  // Allow platform access if logged in OR coming from /admin
-  if (!user && !adminSession) return <LoginPage onLogin={() => setView('platform')} />;
+  // If entered via /admin URL but code not yet verified, show the code gate
+  if (adminSession && !adminVerified && !user) {
+    return <AdminCodePage onSuccess={() => setAdminVerified(true)} />;
+  }
+
+  // Allow platform access if logged in OR admin code verified
+  if (!user && !(adminSession && adminVerified)) return <LoginPage onLogin={() => setView('platform')} />;
   if (view === 'platform') return (
     <PlatformPage
       onSelectPlan={() => setView('plan')}
