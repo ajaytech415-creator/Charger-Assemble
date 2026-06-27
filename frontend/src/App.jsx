@@ -18,7 +18,10 @@ import './App.css';
 const AppContent = () => {
   const { user } = useAuth();
   const [view, setView] = useState(user ? 'platform' : 'login');
+  
+  // Persist working rows so data is never "automatically removed" if users tab away
   const [pendingRows, setPendingRows] = useState([]);
+  const [pendingReworkRows, setPendingReworkRows] = useState([]);
   const [batchId, setBatchId] = useState('');
 
   if (!user) return <LoginPage onLogin={() => setView('platform')} />;
@@ -37,6 +40,7 @@ const AppContent = () => {
   if (view === 'plan') return (
     <PlanPage
       initialRows={pendingRows}
+      onUpdateRows={setPendingRows}
       onBack={() => setView('platform')}
       onConfirm={(rows, bid) => { setPendingRows(rows); setBatchId(bid); setView('confirm'); }}
     />
@@ -61,20 +65,21 @@ const AppContent = () => {
   );
   if (view === 'rework') return (
     <ReworkPlanPage
-      initialRows={pendingRows}
+      initialRows={pendingReworkRows}
+      onUpdateRows={setPendingReworkRows}
       onBack={() => setView('platform')}
-      onConfirm={(rows, bid) => { setPendingRows(rows); setBatchId(bid); setView('rework-confirm'); }}
+      onConfirm={(rows, bid) => { setPendingReworkRows(rows); setBatchId(bid); setView('rework-confirm'); }}
       onDashboard={() => setView('rework-list')}
     />
   );
   if (view === 'rework-confirm') return (
     <ConfirmPage
-      rows={pendingRows}
+      rows={pendingReworkRows}
       batchId={batchId}
       isRework={true}
       onBack={() => setView('rework')}
       onSubmit={() => {
-        setPendingRows([]);
+        setPendingReworkRows([]);
         setBatchId('');
         setView('rework-list');
       }}

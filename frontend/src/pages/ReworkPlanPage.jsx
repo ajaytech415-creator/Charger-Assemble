@@ -8,12 +8,16 @@ import ModalPortal from '../components/ModalPortal';
 
 const EMPTY_FORM = { refer: '', moNumber: '', type: 'C2', size: 'S06', qty: '', overrides: {} };
 
-export default function ReworkPlanPage({ initialRows = [], onBack, onConfirm, onDashboard }) {
+export default function ReworkPlanPage({ initialRows = [], onUpdateRows, onBack, onConfirm, onDashboard }) {
   const { user } = useAuth();
   const [form, setForm] = useState(EMPTY_FORM);
   const [derived, setDerived] = useState({ components: [] });
   const [config, setConfig] = useState({});
   const [rows, setRows] = useState(initialRows);
+
+  useEffect(() => {
+    if (onUpdateRows) onUpdateRows(rows);
+  }, [rows, onUpdateRows]);
   const [editId, setEditId] = useState(null);
 
   const [parsing, setParsing] = useState(false);
