@@ -46,7 +46,7 @@ const AppContent = () => {
   }
 
   // If entered via /admin URL but code not yet verified, show the code gate
-  if (adminSession && !adminVerified && !user) {
+  if (adminSession && !adminVerified && user?.role !== 'admin') {
     return <AdminCodePage onSuccess={() => {
       setAdminVerified(true);
       sessionStorage.setItem('mfg_admin_override', 'true');
@@ -63,7 +63,7 @@ const AppContent = () => {
       onSelectRnd={() => setView('rnd')}
       onAdmin={() => setView('admin')}
       onDashboard={() => setView('dashboard')}
-      isAdminSession={adminSession}
+      isAdminSession={adminSession && adminVerified}
     />
   );
   if (view === 'plan') return (
