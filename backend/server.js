@@ -35,6 +35,21 @@ app.use((req, res, next) => {
   next();
 });
 
+// ─── Admin-Only Guard Middleware ────────────────────────────────────────────
+// Protects destructive DELETE routes — reads the x-user-role header sent by
+// the frontend. Returns 403 Forbidden if the caller is not an admin.
+// Regular users can NEVER delete MO plans or Rework entries.
+const requireAdmin = (req, res, next) => {
+  const role = req.headers['x-user-role'];
+  if (role !== 'admin') {
+    return res.status(403).json({
+      message: 'Access Denied: Only administrators are allowed to delete records. Please contact your admin.'
+    });
+  }
+  next();
+};
+// ────────────────────────────────────────────────────────────────────────────
+
 // --- Auth ---
 app.post('/api/auth/login', login);
 
@@ -43,27 +58,27 @@ app.get('/api/mos', getMOs);
 app.post('/api/mos', createMO);
 app.post('/api/mos/bulk', createMOBulk);
 app.put('/api/mos/:id', updateMO);
-app.delete('/api/mos/:id', deleteMO);
+app.delete('/api/mos/:id', requireAdmin, deleteMO);  // 🔒 Admin only
 app.post('/api/mos/parse-sku', parseSKUPreview);
 
 // --- Scrap ---
 app.get('/api/scrap', getScrapEntries);
 app.post('/api/scrap', createScrapEntry);
 app.put('/api/scrap/:id', updateScrapEntry);
-app.delete('/api/scrap/:id', deleteScrapEntry);
+app.delete('/api/scrap/:id', requireAdmin, deleteScrapEntry);  // 🔒 Admin only
 app.get('/api/scrap/export', exportScrapExcel);
 
 // --- Returns ---
 app.get('/api/returns', getReturnEntries);
 app.post('/api/returns', createReturnEntry);
 app.put('/api/returns/:id/replenish', replenishReturnEntry);
-app.delete('/api/returns/:id', deleteReturnEntry);
+app.delete('/api/returns/:id', requireAdmin, deleteReturnEntry);  // 🔒 Admin only
 
 // --- Rework ---
 app.get('/api/rework', getReworkEntries);
 app.post('/api/rework', createReworkEntry);
 app.put('/api/rework/:id', updateReworkEntry);
-app.delete('/api/rework/:id', deleteReworkEntry);
+app.delete('/api/rework/:id', requireAdmin, deleteReworkEntry);  // 🔒 Admin only
 app.get('/api/rework/export', exportReworkExcel);
 
 // --- R&D ---

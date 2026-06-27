@@ -65,7 +65,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 | Role  | ID          | Password    |
 |-------|-------------|-------------|
-| Admin | UltraCharger| Human@2026  |
+| Admin | UltraCharger| Password    |
 | User  | Rajesh      | 1122        |
 
 ## Tech Stack

@@ -445,7 +445,9 @@ export default function ReworkPage({ onBack }) {
                           <td>
                             <div className="td-actions">
                               <button className="btn-icon" onClick={() => openEditModal(e)}><GlassIcon name="edit" size={18} color="#2563eb" /></button>
-                              <button className="btn-icon danger" onClick={() => handleDelete(e.id)}><GlassIcon name="delete" size={18} color="#dc2626" /></button>
+                              {user?.role === 'admin' && (
+                                <button className="btn-icon danger" onClick={() => handleDelete(e.id)}><GlassIcon name="delete" size={18} color="#dc2626" /></button>
+                              )}
                             </div>
                           </td>
                         </tr>

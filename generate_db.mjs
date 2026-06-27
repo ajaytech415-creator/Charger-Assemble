@@ -185,7 +185,7 @@ const fileContent = [
   "    {",
   "      id: '1',",
   "      employeeId: process.env.ADMIN_ID || 'UltraCharger',",
-  "      password: process.env.ADMIN_PASSWORD || 'Human@2026',",
+  "      password: process.env.ADMIN_PASSWORD || 'Password',",
   "      role: 'admin',",
   "      fullName: 'System Admin',",
   "      status: 'Active',",

@@ -1,9 +1,20 @@
 const API = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api';
 
+// Helper to read stored session (works for both remember-me and session-only logins)
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem('mfg_auth_session')) || JSON.parse(sessionStorage.getItem('mfg_auth_session')) || null;
+  } catch { return null; }
+};
+
 const req = async (url, opts = {}) => {
   try {
+    const storedUser = getStoredUser();
+    const authHeaders = storedUser
+      ? { 'x-user-role': storedUser.role || 'user', 'x-user-id': storedUser.id || '' }
+      : {};
     const res = await fetch(`${API}${url}`, {
-      headers: { 'Content-Type': 'application/json', ...opts.headers },
+      headers: { 'Content-Type': 'application/json', ...authHeaders, ...opts.headers },
       ...opts,
       body: opts.body ? JSON.stringify(opts.body) : undefined,
     });
