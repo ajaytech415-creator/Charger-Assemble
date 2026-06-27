@@ -47,7 +47,10 @@ const AppContent = () => {
 
   // If entered via /admin URL but code not yet verified, show the code gate
   if (adminSession && !adminVerified && !user) {
-    return <AdminCodePage onSuccess={() => setAdminVerified(true)} />;
+    return <AdminCodePage onSuccess={() => {
+      setAdminVerified(true);
+      sessionStorage.setItem('mfg_admin_override', 'true');
+    }} />;
   }
 
   // Allow platform access if logged in OR admin code verified

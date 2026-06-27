@@ -268,9 +268,9 @@ export default function PlanPage({ initialRows = [], onUpdateRows, onBack, onCon
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand"><div className="navbar-logo"><img src={logo} alt="Logo" /></div>UltraHuman Charger Assembly</div>
           <div className="navbar-breadcrumb">
-            <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
+            <span style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onBack}>Platform</span>
             <span>›</span>
-            <span style={{ color: '#111827', fontWeight: 600 }}>Plan Data Entry</span>
+            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Plan Data Entry</span>
           </div>
         </div>
         <div className="navbar-right">
@@ -351,8 +351,8 @@ export default function PlanPage({ initialRows = [], onUpdateRows, onBack, onCon
                   </div>
 
                   {editId && (
-                    <div style={{ marginTop: 10, marginBottom: 20, padding: 12, background: '#eff6ff', borderRadius: 8, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
-                      <div style={{ gridColumn: '1 / -1', fontSize: 13, fontWeight: 600, color: '#1e40af', marginBottom: 4 }}>Collected Quantities Override</div>
+                    <div style={{ marginTop: 10, marginBottom: 20, padding: 12, background: 'var(--primary-light)', borderRadius: 8, display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+                      <div style={{ gridColumn: '1 / -1', fontSize: 13, fontWeight: 600, color: 'var(--primary-dark)', marginBottom: 4 }}>Collected Quantities Override</div>
                       {derived.components.map(c => (
                         <div key={c.name} className="form-group" style={{ marginBottom: 0 }}>
                           <label style={{ color: '#3b82f6', fontSize: 11 }}>{c.name}</label>
@@ -414,13 +414,13 @@ export default function PlanPage({ initialRows = [], onUpdateRows, onBack, onCon
                           <td><input type="checkbox" checked={selectedIds.includes(row.id)} onChange={() => toggleSelect(row.id)} /></td>
                           <td style={{ fontSize: 12, fontWeight: 500 }}>{row.planDate}</td>
                           <td>{row.type}</td>
-                          <td style={{ fontWeight: 600, color: '#2563eb' }}>{row.moNumber}</td>
+                          <td style={{ fontWeight: 600, color: 'var(--primary)' }}>{row.moNumber}</td>
                           <td><span className="badge badge-primary">{row.size}</span></td>
                           <td style={{ fontWeight: 600 }}>{row.qty}</td>
                           <td>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                               {row.components.map(c => (
-                                <span key={c.name} style={{ fontSize: 11, background: '#f1f5f9', padding: '2px 6px', borderRadius: 4, border: '1px solid #e2e8f0' }}>
+                                <span key={c.name} style={{ fontSize: 11, background: 'var(--surface)', padding: '2px 6px', borderRadius: 4, border: '1px solid var(--surface-border)' }}>
                                   {c.name}: <strong>{c.collectedQty}</strong>
                                 </span>
                               ))}
@@ -454,10 +454,10 @@ export default function PlanPage({ initialRows = [], onUpdateRows, onBack, onCon
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {derived.components.map(c => (
-                    <div key={c.name} style={{ padding: '8px 12px', border: '1px solid #e5e7eb', borderRadius: 8 }}>
-                      <div style={{ fontSize: 11, fontWeight: 600, color: '#6b7280', marginBottom: 2 }}>{c.category.toUpperCase()}</div>
-                      <div style={{ fontWeight: 500, color: '#111827', fontSize: 13 }}>{c.name}</div>
-                      <div style={{ fontSize: 12, color: '#2563eb', marginTop: 4 }}>Required: <strong>x{c.expectedQty}</strong></div>
+                    <div key={c.name} style={{ padding: '8px 12px', border: '1px solid var(--card-border)', borderRadius: 8 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 2 }}>{c.category.toUpperCase()}</div>
+                      <div style={{ fontWeight: 500, color: 'var(--text-primary)', fontSize: 13 }}>{c.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--primary)', marginTop: 4 }}>Required: <strong>x{c.expectedQty}</strong></div>
                     </div>
                   ))}
                   {derived.components.length === 0 && (

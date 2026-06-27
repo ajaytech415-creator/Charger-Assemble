@@ -122,10 +122,10 @@ export default function RndPage({ onBack, onDashboard }) {
   };
 
   const inputStyle = { fontSize: '0.95rem', padding: '10px 14px' };
-  const labelStyle = { display: 'block', marginBottom: 8, fontWeight: 600, fontSize: '0.82rem', letterSpacing: '0.04em', textTransform: 'uppercase', color: '#6b7280' };
+  const labelStyle = { display: 'block', marginBottom: 8, fontWeight: 600, fontSize: '0.82rem', letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--text-muted)' };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+    <div style={{ minHeight: '100vh', background: 'transparent' }}>
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -134,8 +134,8 @@ export default function RndPage({ onBack, onDashboard }) {
             UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
-            <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
-            <span style={{ margin: '0 8px', color: '#d1d5db' }}>/</span>
+            <span style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onBack}>Platform</span>
+            <span style={{ margin: '0 8px', color: 'var(--gray-300)' }}>/</span>
             <span>R&D Data Entry</span>
           </div>
         </div>
@@ -166,8 +166,8 @@ export default function RndPage({ onBack, onDashboard }) {
 
           <form onSubmit={handleSubmit}>
             {/* --- TOP SECTION: Batch Level Info --- */}
-            <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px', marginBottom: '32px', border: '1px solid #e2e8f0' }}>
-              <h3 style={{ marginTop: 0, marginBottom: 20, color: '#334155', fontSize: '1.1rem' }}>Batch Information</h3>
+            <div style={{ background: 'var(--card-bg)', padding: '24px', borderRadius: '12px', marginBottom: '32px', border: '1px solid var(--card-border)' }}>
+              <h3 style={{ marginTop: 0, marginBottom: 20, color: 'var(--text-primary)', fontSize: '1.1rem' }}>Batch Information</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: 20 }}>
                 <div>
                   <label style={labelStyle}>Pick Number <span style={{ color: '#ef4444' }}>*</span></label>
@@ -211,7 +211,7 @@ export default function RndPage({ onBack, onDashboard }) {
             {/* --- BOTTOM SECTION: Products List --- */}
             <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h3 style={{ margin: 0, color: '#334155', fontSize: '1.1rem' }}>Products</h3>
+                <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.1rem' }}>Products</h3>
                 <button 
                   type="button" 
                   className="btn btn-secondary btn-sm" 
@@ -225,7 +225,7 @@ export default function RndPage({ onBack, onDashboard }) {
               {products.map((prod, index) => (
                 <div key={prod.id} style={{ 
                   display: 'grid', gridTemplateColumns: '1.5fr 2fr 1.5fr 1fr 40px', gap: 16, alignItems: 'flex-start',
-                  padding: '16px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '8px', marginBottom: '16px',
+                  padding: '16px', background: 'var(--surface)', border: '1px solid var(--card-border)', borderRadius: '8px', marginBottom: '16px',
                   boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
                 }}>
                   {/* Product Code */}

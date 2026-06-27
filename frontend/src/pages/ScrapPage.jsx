@@ -280,8 +280,8 @@ export default function ScrapPage({ onBack }) {
         </div>
       </nav>
 
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '28px 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 340px) 1fr', gap: 24, alignItems: 'start' }}>
+      <div style={{ width: '100%', maxWidth: '100%', margin: '0 auto', padding: '28px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 400px) 1fr', gap: 24, alignItems: 'start' }}>
 
           {/* LEFT — MO List Panel */}
           <div>

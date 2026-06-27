@@ -107,7 +107,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+    <div style={{ minHeight: '100vh', background: 'transparent' }}>
       {/* Navbar */}
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -116,8 +116,8 @@ export default function RndDashboard({ onBack, onNewEntry }) {
             UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
-            <span style={{ cursor: 'pointer', color: '#6b7280' }} onClick={onBack}>Platform</span>
-            <span style={{ margin: '0 8px', color: '#d1d5db' }}>/</span>
+            <span style={{ cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onBack}>Platform</span>
+            <span style={{ margin: '0 8px', color: 'var(--gray-300)' }}>/</span>
             <span>R&D Dashboard</span>
           </div>
         </div>
@@ -158,8 +158,8 @@ export default function RndDashboard({ onBack, onNewEntry }) {
                 <GlassIcon name="database" size={22} color="#2563eb" />
               </div>
             </div>
-            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#2563eb', lineHeight: 1 }}>{totalEntries}</div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, fontWeight: 500 }}>Total Entries</div>
+            <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)', lineHeight: 1 }}>{totalEntries}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, fontWeight: 500 }}>Total Entries</div>
           </div>
           
           <div className="card" style={{ padding: '18px 20px', textAlign: 'center' }}>
@@ -169,7 +169,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               </div>
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#7c3aed', lineHeight: 1 }}>{myEntries}</div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, fontWeight: 500 }}>My Entries</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, fontWeight: 500 }}>My Entries</div>
           </div>
 
           <div 
@@ -186,7 +186,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               </div>
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#14b8a6', lineHeight: 1 }}>Catalog</div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, fontWeight: 500 }}>View Product Codes</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, fontWeight: 500 }}>View Product Codes</div>
           </div>
 
           <div className="card" style={{ padding: '18px 20px', textAlign: 'center' }}>
@@ -196,7 +196,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               </div>
             </div>
             <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#16a34a', lineHeight: 1 }}>{accepted}</div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6, fontWeight: 500 }}>Accepted</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 6, fontWeight: 500 }}>Accepted</div>
           </div>
         </div>
 
@@ -272,7 +272,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
                 <GlassIcon name="folder" size={52} color="#d1d5db" />
               </div>
-              <p style={{ color: '#9ca3af', marginBottom: 16 }}>
+              <p style={{ color: 'var(--text-muted)', marginBottom: 16 }}>
                 {search || filterStart ? 'No entries match your filters.' : 'No R&D entries logged yet.'}
               </p>
               {!search && !filterStart && (
@@ -302,36 +302,36 @@ export default function RndDashboard({ onBack, onNewEntry }) {
                 <tbody>
                   {filtered.map((e, idx) => (
                     <tr key={e.id} style={{ background: e.submittedBy === user?.fullName ? '#f0f9ff' : '' }}>
-                      <td style={{ color: '#9ca3af', fontSize: 12 }}>{idx + 1}</td>
+                      <td style={{ color: 'var(--text-muted)', fontSize: 12 }}>{idx + 1}</td>
                       <td>
                         <span style={{
-                          background: '#eff6ff', color: '#2563eb',
+                          background: 'var(--primary-light)', color: 'var(--primary)',
                           padding: '3px 10px', borderRadius: 20,
                           fontSize: 13, fontWeight: 700, letterSpacing: 0.5,
                         }}>{e.code}</span>
                       </td>
-                      <td style={{ fontSize: 13, color: '#374151', maxWidth: 200 }}>{e.description}</td>
+                      <td style={{ fontSize: 13, color: 'var(--text-primary)', maxWidth: 200 }}>{e.description}</td>
                       <td>
                         <span style={{
-                          background: '#f3f4f6', color: '#6b7280',
+                          background: 'var(--surface-border)', color: 'var(--text-muted)',
                           padding: '2px 8px', borderRadius: 6,
                           fontSize: 12, fontWeight: 500,
                         }}>{e.category}</span>
                       </td>
-                      <td style={{ fontSize: 13, color: '#374151', fontWeight: 500 }}>
-                        {e.pickNumber || <span style={{ color: '#d1d5db' }}>—</span>}
+                      <td style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500 }}>
+                        {e.pickNumber || <span style={{ color: 'var(--gray-300)' }}>—</span>}
                       </td>
                       <td><StatusBadge value={e.acceptReject} /></td>
-                      <td style={{ textAlign: 'center', fontWeight: 700, color: '#374151' }}>
+                      <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--text-primary)' }}>
                         {e.receivedCount ?? 0}
                       </td>
-                      <td style={{ fontSize: 12, color: '#6b7280', maxWidth: 180 }}>
-                        {e.remark || <span style={{ color: '#d1d5db' }}>—</span>}
+                      <td style={{ fontSize: 12, color: 'var(--text-muted)', maxWidth: 180 }}>
+                        {e.remark || <span style={{ color: 'var(--gray-300)' }}>—</span>}
                       </td>
                       <td style={{ fontSize: 13, fontWeight: 500, color: e.submittedBy === user?.fullName ? '#2563eb' : '#374151' }}>
                         {e.submittedBy === user?.fullName ? '👤 You' : e.submittedBy}
                       </td>
-                      <td style={{ fontSize: 12, color: '#6b7280', whiteSpace: 'nowrap' }}>
+                      <td style={{ fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                         {e.submittedAt ? new Date(e.submittedAt).toLocaleString() : '—'}
                       </td>
                       <td>
@@ -364,7 +364,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               <h3 style={{ margin: 0 }}>R&D Product Catalog</h3>
               <button
                 onClick={() => setShowCatalog(false)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9ca3af' }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: 'var(--text-muted)' }}
               >
                 ✕
               </button>
@@ -374,7 +374,7 @@ export default function RndDashboard({ onBack, onNewEntry }) {
               {loadingCatalog ? (
                 <div style={{ textAlign: 'center', padding: 40 }}><span className="spinner"></span></div>
               ) : catalog.length === 0 ? (
-                <p style={{ textAlign: 'center', color: '#9ca3af', padding: 20 }}>No products defined yet.</p>
+                <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 20 }}>No products defined yet.</p>
               ) : (
                 <table className="table" style={{ width: '100%' }}>
                   <thead>
@@ -387,9 +387,9 @@ export default function RndDashboard({ onBack, onNewEntry }) {
                   <tbody>
                     {catalog.map(p => (
                       <tr key={p.id} style={{ opacity: p.status === 'Inactive' ? 0.6 : 1, borderBottom: '1px solid #f3f4f6' }}>
-                        <td style={{ padding: '10px 12px', fontWeight: 600, color: '#2563eb' }}>{p.code}</td>
-                        <td style={{ padding: '10px 12px', color: '#374151' }}>{p.description}</td>
-                        <td style={{ padding: '10px 12px', color: '#6b7280' }}>{p.category}</td>
+                        <td style={{ padding: '10px 12px', fontWeight: 600, color: 'var(--primary)' }}>{p.code}</td>
+                        <td style={{ padding: '10px 12px', color: 'var(--text-primary)' }}>{p.description}</td>
+                        <td style={{ padding: '10px 12px', color: 'var(--text-muted)' }}>{p.category}</td>
                       </tr>
                     ))}
                   </tbody>

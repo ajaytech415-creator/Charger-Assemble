@@ -37,6 +37,12 @@ export default function AdminLayout({ onBack }) {
   const { user, logout } = useAuth();
   const [active, setActive] = useState('dashboard');
 
+  const handleLogout = () => {
+    if (user) logout();
+    sessionStorage.removeItem('mfg_admin_override');
+    onBack();
+  };
+
   const renderPage = () => {
     switch (active) {
       case 'dashboard':  return <AdminDashboard onNavigate={setActive} />;
@@ -78,7 +84,7 @@ export default function AdminLayout({ onBack }) {
               <div className="role">Admin</div>
             </div>
           </div>
-          <button className="btn btn-secondary btn-sm" onClick={() => { if (user) logout(); onBack(); }} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-secondary btn-sm" onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <GlassIcon name="arrow-left" size={14} color="#6b7280" /> Logout
           </button>
         </div>
@@ -100,7 +106,7 @@ export default function AdminLayout({ onBack }) {
             ))}
           </div>
           <div className="sidebar-footer">
-            <button className="sidebar-logout" onClick={() => { if (user) logout(); onBack(); }}>
+            <button className="sidebar-logout" onClick={handleLogout}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><GlassIcon name="arrow-left" size={14} color="#6b7280" /> Logout</span>
             </button>
           </div>

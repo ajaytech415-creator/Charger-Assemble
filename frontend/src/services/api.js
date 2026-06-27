@@ -3,6 +3,9 @@ const API = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000') + '/api';
 // Helper to read stored session (works for both remember-me and session-only logins)
 const getStoredUser = () => {
   try {
+    if (sessionStorage.getItem('mfg_admin_override') === 'true') {
+      return { role: 'admin', fullName: 'System Admin', id: 'admin-override' };
+    }
     return JSON.parse(localStorage.getItem('mfg_auth_session')) || JSON.parse(sessionStorage.getItem('mfg_auth_session')) || null;
   } catch { return null; }
 };
