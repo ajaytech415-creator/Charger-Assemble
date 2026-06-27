@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import GlassIcon from '../components/GlassIcon';
 import ModalPortal from '../components/ModalPortal';
+import ThemeToggle from '../components/ThemeToggle';
+import logo from '../assets/logo.jpg';
 
 export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRework, onSelectRnd, onAdmin, onDashboard }) {
   const { user } = useAuth();
@@ -21,7 +23,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
       <nav className="navbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div className="navbar-brand">
-            <div className="navbar-logo">◇</div>
+            <div className="navbar-logo"><img src={logo} alt="Logo" /></div>
             UltraHuman Charger Assembly
           </div>
           <div className="navbar-breadcrumb">
@@ -29,6 +31,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
           </div>
         </div>
         <div className="navbar-right">
+          <ThemeToggle />
           <button className="btn-icon" title="Help" onClick={() => setShowHelpDocs(true)}>?</button>
           <div className="user-chip">
             <div style={{ position: 'relative' }}>
@@ -68,12 +71,10 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
                 padding: '32px 24px',
                 textAlign: 'center',
                 cursor: mod.active ? 'pointer' : 'default',
-                transition: 'all 0.25s ease',
                 position: 'relative',
-                border: mod.active ? '2px solid #2563eb' : '1px solid #e5e7eb',
-                opacity: 1,
+                border: mod.active ? '1px solid var(--primary)' : '',
               }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37,99,235,0.15)'; }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
               onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.boxShadow = ''; }}
             >
               {mod.badge && (
@@ -106,7 +107,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
       </div>
 
       {/* Footer */}
-      <div style={{ textAlign: 'center', padding: '20px', borderTop: '1px solid #e5e7eb', background: 'white', marginTop: 'auto' }}>
+      <div style={{ textAlign: 'center', padding: '20px', borderTop: '1px solid var(--navbar-border)', background: 'var(--navbar-bg)', backdropFilter: 'blur(20px)', marginTop: 'auto', position: 'relative', zIndex: 10 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: 900, margin: '0 auto' }}>
           <span className="text-sm text-muted">© 2026 UltraHuman Charger Assembly Inc. All rights reserved.</span>
           <div style={{ display: 'flex', gap: 20 }}>

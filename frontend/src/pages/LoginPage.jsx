@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import GlassIcon from '../components/GlassIcon';
+import ThemeToggle from '../components/ThemeToggle';
+import logo from '../assets/logo.jpg';
 
 export default function LoginPage({ onLogin }) {
   const { login } = useAuth();
@@ -17,7 +19,6 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
     try {
       const data = await api.login(form);
-      // Role check
       if (tab === 'admin' && data.user.role !== 'admin') {
         setError('Access denied. This account does not have admin privileges.');
         setLoading(false);
@@ -33,70 +34,75 @@ export default function LoginPage({ onLogin }) {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#050505', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'transparent' }}>
       {/* Top bar */}
-      <div style={{ padding: '20px 40px', display: 'flex', alignItems: 'center', gap: 10, position: 'relative', zIndex: 10 }}>
-        <div className="navbar-logo" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>◇</div>
-        <span style={{ fontFamily: 'Outfit, sans-serif', fontWeight: 700, fontSize: '1.1rem', color: '#ffffff' }}>UltraHuman Charger Assembly</span>
+      <div style={{ padding: '20px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="navbar-logo">
+            <img src={logo} alt="Logo" />
+          </div>
+          <span style={{ fontFamily: 'Outfit, sans-serif', fontWeight: 700, fontSize: '1.2rem', color: 'var(--text-primary)' }}>
+            UltraHuman Charger Assembly
+          </span>
+        </div>
+        <ThemeToggle />
       </div>
 
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', position: 'relative', zIndex: 10 }}>
-        <div style={{ width: '100%', maxWidth: 440 }}>
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px', zIndex: 10 }}>
+        <div style={{ width: '100%', maxWidth: 460 }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <h1 style={{ fontSize: '1.8rem', marginBottom: 8, color: '#ffffff' }}>Welcome back</h1>
-            <p style={{ fontSize: 14, color: '#9ca3af' }}>Please enter your details to access your dashboard</p>
+            <h1 style={{ fontSize: '2rem', marginBottom: 8, color: 'var(--text-primary)' }}>Welcome back</h1>
+            <p style={{ fontSize: 14.5, color: 'var(--text-secondary)' }}>Please enter your details to access your dashboard</p>
           </div>
 
           {/* Card */}
-          <div style={{ padding: 32, background: 'rgba(255, 255, 255, 0.03)', backdropFilter: 'blur(16px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: 16, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+          <div className="card" style={{ padding: 36, boxShadow: 'var(--shadow-lg)' }}>
             {/* Tab toggle */}
-            <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: 8, padding: 4, marginBottom: 28, border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', background: 'var(--navbar-bg)', borderRadius: 8, padding: 4, marginBottom: 28, border: '1px solid var(--surface-border)' }}>
               {['user', 'admin'].map(t => (
                 <button
                   key={t}
                   onClick={() => { setTab(t); setError(''); }}
                   style={{
                     flex: 1, padding: '9px 0', border: 'none', borderRadius: 6,
-                    background: tab === t ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    color: tab === t ? '#ffffff' : '#9ca3af',
+                    background: tab === t ? 'var(--primary)' : 'transparent',
+                    color: tab === t ? '#fff' : 'var(--text-muted)',
                     fontWeight: tab === t ? 600 : 500,
                     fontSize: 13.5,
-                    boxShadow: tab === t ? '0 1px 3px rgba(0,0,0,0.2)' : 'none',
-                    cursor: 'pointer', transition: 'all 0.2s',
+                    boxShadow: tab === t ? '0 2px 8px rgba(37,99,235,0.3)' : 'none',
+                    cursor: 'pointer', transition: 'all 0.25s ease',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
                   }}
                 >
-                  <GlassIcon name={t === 'user' ? 'users' : 'security'} size={16} color={tab === t ? '#60a5fa' : '#6b7280'} />
+                  <GlassIcon name={t === 'user' ? 'users' : 'security'} size={16} color={tab === t ? '#fff' : 'var(--text-muted)'} />
                   {t === 'user' ? 'User Login' : 'Admin Login'}
                 </button>
               ))}
             </div>
 
-            {/* Title */}
-            <h3 style={{ marginBottom: 4, color: '#ffffff' }}>{tab === 'admin' ? 'Administrator Authentication' : 'Staff Authentication'}</h3>
-            <p style={{ marginBottom: 24, fontSize: 13, color: '#9ca3af' }}>
+            <h3 style={{ marginBottom: 4 }}>{tab === 'admin' ? 'Administrator Authentication' : 'Staff Authentication'}</h3>
+            <p style={{ marginBottom: 24, fontSize: 13, color: 'var(--text-muted)' }}>
               {tab === 'admin' ? 'Sign in with admin credentials to manage the system.' : 'Sign in to manage production plans and technical SKUs.'}
             </p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-group" style={{ marginBottom: 16 }}>
-                <label style={{ color: '#d1d5db', fontSize: 13, marginBottom: 6, display: 'block', fontWeight: 500 }}>Employee ID</label>
+                <label>Employee ID</label>
                 <input
                   id="employeeId"
                   type="text"
                   placeholder="EMP-00000"
                   value={form.employeeId}
                   onChange={e => setForm({ ...form, employeeId: e.target.value })}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
                   required
                 />
               </div>
 
               <div className="form-group" style={{ marginBottom: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <label style={{ margin: 0, color: '#d1d5db', fontSize: 13, fontWeight: 500 }}>Password</label>
-                  <span style={{ color: '#60a5fa', fontSize: 13, cursor: 'pointer' }}>Forgot password?</span>
+                  <label style={{ margin: 0 }}>Password</label>
+                  <span style={{ color: 'var(--primary)', fontSize: 13, cursor: 'pointer', fontWeight: 500 }}>Forgot password?</span>
                 </div>
                 <input
                   id="password"
@@ -104,7 +110,6 @@ export default function LoginPage({ onLogin }) {
                   placeholder="••••••••"
                   value={form.password}
                   onChange={e => setForm({ ...form, password: e.target.value })}
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.2)', color: 'white', outline: 'none' }}
                   required
                 />
               </div>
@@ -113,41 +118,45 @@ export default function LoginPage({ onLogin }) {
                 <input
                   type="checkbox" id="remember" checked={remember}
                   onChange={e => setRemember(e.target.checked)}
-                  style={{ width: 'auto', cursor: 'pointer', accentColor: '#60a5fa' }}
+                  style={{ width: 'auto', cursor: 'pointer', accentColor: 'var(--primary)' }}
                 />
-                <label htmlFor="remember" style={{ margin: 0, fontSize: 13.5, cursor: 'pointer', color: '#9ca3af' }}>
+                <label htmlFor="remember" style={{ margin: 0, fontSize: 13.5, cursor: 'pointer', color: 'var(--text-secondary)', fontWeight: 500 }}>
                   Remember me for 30 days
                 </label>
               </div>
 
               {error && (
-                <div style={{ padding: '10px 12px', background: 'rgba(220, 38, 38, 0.1)', borderLeft: '3px solid #dc2626', color: '#fca5a5', fontSize: 13, borderRadius: 4, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <GlassIcon name="alert" size={16} /> {error}
+                <div className="alert alert-danger" style={{ marginBottom: 16 }}>
+                  <GlassIcon name="alert" size={16} /> <span style={{ flex: 1 }}>{error}</span>
                 </div>
               )}
 
-              <button type="submit" style={{ width: '100%', padding: '12px', background: '#2563eb', color: 'white', border: 'none', borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'background 0.2s', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8 }} disabled={loading}>
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: 14.5 }} disabled={loading}>
                 {loading ? <><span className="spinner" style={{ width: 16, height: 16 }} /> Signing in...</> : 'Sign In →'}
               </button>
             </form>
 
-            {/* Footer info */}
-            <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#9ca3af' }}><GlassIcon name="alert" size={14} color="#9ca3af" /> Need assistance? <span style={{ color: '#60a5fa', cursor: 'pointer' }}>Contact IT Support</span></span>
-              <span style={{ padding: '2px 8px', borderRadius: 999, fontSize: 11, fontWeight: 600, background: 'rgba(255,255,255,0.1)', color: '#d1d5db' }}>v1.0.0-LOCAL</span>
+            {/* Footer info inside card */}
+            <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
+                <GlassIcon name="alert" size={14} color="var(--text-muted)" /> Need assistance? <span style={{ color: 'var(--primary)', cursor: 'pointer' }}>Contact IT</span>
+              </span>
+              <span style={{ padding: '2px 8px', borderRadius: 999, fontSize: 11, fontWeight: 600, background: 'var(--gray-100)', color: 'var(--text-secondary)' }}>
+                v1.0.0-LOCAL
+              </span>
             </div>
           </div>
 
           {/* Bottom badges */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 20 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#6b7280', letterSpacing: '0.05em' }}><GlassIcon name="shield" size={14} color="#6b7280" /> 256-BIT ENCRYPTION</span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#6b7280', letterSpacing: '0.05em' }}><GlassIcon name="success" size={14} color="#16a34a" /> ISO 27001 CERTIFIED</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.05em' }}><GlassIcon name="shield" size={14} color="var(--text-muted)" /> 256-BIT ENCRYPTION</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--text-muted)', letterSpacing: '0.05em' }}><GlassIcon name="success" size={14} color="var(--success)" /> ISO 27001 CERTIFIED</span>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div style={{ padding: '16px 40px', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', background: 'white' }}>
+      <div style={{ padding: '16px 40px', borderTop: '1px solid var(--navbar-border)', display: 'flex', justifyContent: 'space-between', background: 'var(--navbar-bg)', backdropFilter: 'blur(20px)', zIndex: 10 }}>
         <span className="text-sm text-muted">© 2026 UltraHuman Charger Assembly Inc. All rights reserved.</span>
         <div style={{ display: 'flex', gap: 20 }}>
           {['Privacy Policy', 'Terms of Service', 'Support'].map(l => (
