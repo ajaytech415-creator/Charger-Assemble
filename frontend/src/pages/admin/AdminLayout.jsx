@@ -78,7 +78,7 @@ export default function AdminLayout({ onBack }) {
               <div className="role">Admin</div>
             </div>
           </div>
-          <button className="btn btn-secondary btn-sm" onClick={() => logout()} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <button className="btn btn-secondary btn-sm" onClick={() => { if (user) logout(); onBack(); }} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <GlassIcon name="arrow-left" size={14} color="#6b7280" /> Logout
           </button>
         </div>
@@ -100,7 +100,7 @@ export default function AdminLayout({ onBack }) {
             ))}
           </div>
           <div className="sidebar-footer">
-            <button className="sidebar-logout" onClick={() => { logout(); }}>
+            <button className="sidebar-logout" onClick={() => { if (user) logout(); onBack(); }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><GlassIcon name="arrow-left" size={14} color="#6b7280" /> Logout</span>
             </button>
           </div>
