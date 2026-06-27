@@ -51,14 +51,12 @@ export default function AdminCodePage({ onSuccess }) {
           {/* Icon */}
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
             <div style={{
-              width: 72, height: 72, borderRadius: '50%', margin: '0 auto 16px',
-              background: 'linear-gradient(135deg, #1e40af, #2563eb)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 8px 32px rgba(37,99,235,0.35)',
+              width: 88, height: 88, borderRadius: '50%', margin: '0 auto 16px',
+              overflow: 'hidden',
+              boxShadow: '0 8px 32px rgba(37,99,235,0.25)',
+              border: '3px solid var(--primary)',
             }}>
-              <svg width="32" height="32" fill="none" viewBox="0 0 24 24">
-                <path d="M12 1a5 5 0 0 1 5 5v2h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3zm0 9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" fill="#fff"/>
-              </svg>
+              <img src={logo} alt="Brand Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <h1 style={{ fontSize: '1.85rem', marginBottom: 6, color: 'var(--text-primary)' }}>Admin Access</h1>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Enter your secure code to continue</p>
