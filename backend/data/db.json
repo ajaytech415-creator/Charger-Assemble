@@ -26041,7 +26041,7 @@
     {
       "id": "1",
       "employeeId": "UltraCharger",
-      "password": "Password",
+      "password": "password",
       "role": "admin",
       "fullName": "System Admin",
       "status": "Active",

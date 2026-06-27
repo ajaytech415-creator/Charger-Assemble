@@ -1603,6 +1603,9 @@ if (!db.data.components || Object.keys(db.data.components).length === 0) {
 
 for (const key of Object.keys(defaultData)) {
   if (db.data[key] === undefined) {
+    // For 'users', only seed if there are truly no users at all
+    // Never overwrite existing users — this protects admin-panel password changes
+    if (key === 'users' && Array.isArray(db.data.users) && db.data.users.length > 0) continue;
     db.data[key] = defaultData[key];
     needsWrite = true;
   }
