@@ -7,7 +7,6 @@ import logo from '../assets/logo.jpg';
 
 export default function LoginPage({ onLogin }) {
   const { login } = useAuth();
-  const [tab, setTab] = useState('user');
   const [form, setForm] = useState({ employeeId: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,11 +18,6 @@ export default function LoginPage({ onLogin }) {
     setLoading(true);
     try {
       const data = await api.login(form);
-      if (tab === 'admin' && data.user.role !== 'admin') {
-        setError('Access denied. This account does not have admin privileges.');
-        setLoading(false);
-        return;
-      }
       login(data.user, remember);
       onLogin();
     } catch (err) {
@@ -58,32 +52,10 @@ export default function LoginPage({ onLogin }) {
 
           {/* Card */}
           <div className="card" style={{ padding: 36, boxShadow: 'var(--shadow-lg)' }}>
-            {/* Tab toggle */}
-            <div style={{ display: 'flex', background: 'var(--navbar-bg)', borderRadius: 8, padding: 4, marginBottom: 28, border: '1px solid var(--surface-border)' }}>
-              {['user', 'admin'].map(t => (
-                <button
-                  key={t}
-                  onClick={() => { setTab(t); setError(''); }}
-                  style={{
-                    flex: 1, padding: '9px 0', border: 'none', borderRadius: 6,
-                    background: tab === t ? 'var(--primary)' : 'transparent',
-                    color: tab === t ? '#fff' : 'var(--text-muted)',
-                    fontWeight: tab === t ? 600 : 500,
-                    fontSize: 13.5,
-                    boxShadow: tab === t ? '0 2px 8px rgba(37,99,235,0.3)' : 'none',
-                    cursor: 'pointer', transition: 'all 0.25s ease',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
-                  }}
-                >
-                  <GlassIcon name={t === 'user' ? 'users' : 'security'} size={16} color={tab === t ? '#fff' : 'var(--text-muted)'} />
-                  {t === 'user' ? 'User Login' : 'Admin Login'}
-                </button>
-              ))}
-            </div>
 
-            <h3 style={{ marginBottom: 4 }}>{tab === 'admin' ? 'Administrator Authentication' : 'Staff Authentication'}</h3>
+            <h3 style={{ marginBottom: 4 }}>Staff Authentication</h3>
             <p style={{ marginBottom: 24, fontSize: 13, color: 'var(--text-muted)' }}>
-              {tab === 'admin' ? 'Sign in with admin credentials to manage the system.' : 'Sign in to manage production plans and technical SKUs.'}
+              Sign in to manage production plans and technical SKUs.
             </p>
 
             <form onSubmit={handleSubmit}>

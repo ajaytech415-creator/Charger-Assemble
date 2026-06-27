@@ -24,7 +24,19 @@ const AppContent = () => {
   const [pendingReworkRows, setPendingReworkRows] = useState([]);
   const [batchId, setBatchId] = useState('');
 
+  // Secret /admin URL — open admin panel directly, no login needed
+  const isAdminPath = window.location.pathname === '/admin';
+  if (isAdminPath) {
+    return (
+      <AdminLayout onBack={() => {
+        window.history.pushState({}, '', '/');
+        setView('login');
+      }} />
+    );
+  }
+
   if (!user) return <LoginPage onLogin={() => setView('platform')} />;
+
 
   if (view === 'admin') return <AdminLayout onBack={() => setView('platform')} />;
   if (view === 'platform') return (
