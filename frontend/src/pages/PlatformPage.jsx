@@ -5,8 +5,11 @@ import ModalPortal from '../components/ModalPortal';
 import ThemeToggle from '../components/ThemeToggle';
 import logo from '../assets/logo.jpg';
 
-export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRework, onSelectRnd, onAdmin, onDashboard }) {
+export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRework, onSelectRnd, onAdmin, onDashboard, isAdminSession }) {
   const { user } = useAuth();
+  const isAdmin = isAdminSession || user?.role === 'admin';
+  const displayName = user?.fullName || 'Admin';
+  const displayRole = isAdminSession && !user ? 'Administrator' : (user?.role === 'admin' ? 'Administrator' : 'Data Entry');
 
   const modules = [
     { id: 'plan',   icon: 'plan',    label: 'Plan',   desc: 'Manage production schedules, input MO data, and review SKU component breakdowns.', active: true, badge: 'Active Shift' },
@@ -35,18 +38,18 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
           <button className="btn-icon" title="Help" onClick={() => setShowHelpDocs(true)}>?</button>
           <div className="user-chip">
             <div style={{ position: 'relative' }}>
-              <div className="user-avatar">{user?.fullName?.[0] || 'U'}</div>
+              <div className="user-avatar">{displayName?.[0] || 'A'}</div>
               <div className="online-dot" />
             </div>
             <div className="user-info-text">
-              <div className="name">{user?.fullName}</div>
-              <div className="role">{user?.role === 'admin' ? 'Administrator' : 'Data Entry'}</div>
+              <div className="name">{displayName}</div>
+              <div className="role">{displayRole}</div>
             </div>
           </div>
           <button className="btn btn-secondary btn-sm" onClick={onDashboard} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <GlassIcon name="dashboard" size={14} color="#374151" /> User Dashboard
           </button>
-          {user?.role === 'admin' && (
+          {isAdmin && (
             <button className="btn btn-primary btn-sm" onClick={onAdmin} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <GlassIcon name="settings" size={14} color="#ffffff" /> Admin Panel
             </button>
@@ -57,7 +60,7 @@ export default function PlatformPage({ onSelectPlan, onSelectScrap, onSelectRewo
       {/* Content */}
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '60px 24px 40px' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
-          <h1 style={{ fontSize: '2.2rem', marginBottom: 10 }}>Welcome back, {user?.fullName?.split(' ')[0]}.</h1>
+          <h1 style={{ fontSize: '2.2rem', marginBottom: 10 }}>Welcome back, {displayName?.split(' ')[0]}.</h1>
           <p className="text-muted">Select an operational module below to begin your manufacturing data entry or management tasks.</p>
         </div>
 

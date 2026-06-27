@@ -24,7 +24,8 @@ const AppContent = () => {
     () => window.location.pathname === '/admin'
   );
   const [view, setView] = useState(() => {
-    if (window.location.pathname === '/admin') return 'admin';
+    // /admin URL lands on platform page (with admin privileges shown)
+    if (window.location.pathname === '/admin') return 'platform';
     return user ? 'platform' : 'login';
   });
 
@@ -33,13 +34,10 @@ const AppContent = () => {
   const [pendingReworkRows, setPendingReworkRows] = useState([]);
   const [batchId, setBatchId] = useState('');
 
-  // Secret /admin URL — open admin panel directly, no login needed
+  // Admin panel view (reached via the Admin Panel button on platform)
   if (view === 'admin') {
-    window.history.replaceState({}, '', '/admin');
     return (
       <AdminLayout onBack={() => {
-        window.history.pushState({}, '', '/');
-        setAdminSession(true);
         setView('platform');
       }} />
     );
@@ -55,6 +53,7 @@ const AppContent = () => {
       onSelectRnd={() => setView('rnd')}
       onAdmin={() => setView('admin')}
       onDashboard={() => setView('dashboard')}
+      isAdminSession={adminSession}
     />
   );
   if (view === 'plan') return (
