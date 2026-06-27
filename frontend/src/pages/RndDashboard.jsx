@@ -1,3 +1,4 @@
+import logo from '../assets/logo.jpg';
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import GlassIcon from '../components/GlassIcon';

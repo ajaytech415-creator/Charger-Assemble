@@ -1,3 +1,4 @@
+import logo from '../../assets/logo.jpg';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import AdminDashboard from './AdminDashboard';
