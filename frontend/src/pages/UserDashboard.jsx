@@ -5,6 +5,7 @@ import { api } from '../services/api';
 import GlassIcon from '../components/GlassIcon';
 import ModalPortal from '../components/ModalPortal';
 import MaterialBreakdown from '../components/MaterialBreakdown';
+import ThemeToggle from '../components/ThemeToggle';
 
 export default function UserDashboard({ onBack, onNavigateScrap, onNavigateReworkList }) {
   const { user, logout } = useAuth();
@@ -292,6 +293,7 @@ export default function UserDashboard({ onBack, onNavigateScrap, onNavigateRewor
           </div>
         </div>
         <div className="navbar-right">
+          <ThemeToggle />
           <div className="user-chip">
             <div style={{ position: 'relative' }}>
               <div className="user-avatar">{user?.fullName?.[0]}</div>
