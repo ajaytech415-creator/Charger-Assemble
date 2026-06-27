@@ -17,28 +17,36 @@ import './App.css';
 
 const AppContent = () => {
   const { user } = useAuth();
-  const [view, setView] = useState(user ? 'platform' : 'login');
-  
+
+  // adminSession = true when site was entered via /admin URL.
+  // Allows full platform access without a user login.
+  const [adminSession, setAdminSession] = useState(
+    () => window.location.pathname === '/admin'
+  );
+  const [view, setView] = useState(() => {
+    if (window.location.pathname === '/admin') return 'admin';
+    return user ? 'platform' : 'login';
+  });
+
   // Persist working rows so data is never "automatically removed" if users tab away
   const [pendingRows, setPendingRows] = useState([]);
   const [pendingReworkRows, setPendingReworkRows] = useState([]);
   const [batchId, setBatchId] = useState('');
 
   // Secret /admin URL — open admin panel directly, no login needed
-  const isAdminPath = window.location.pathname === '/admin';
-  if (isAdminPath) {
+  if (view === 'admin') {
+    window.history.replaceState({}, '', '/admin');
     return (
       <AdminLayout onBack={() => {
         window.history.pushState({}, '', '/');
-        setView('login');
+        setAdminSession(true);
+        setView('platform');
       }} />
     );
   }
 
-  if (!user) return <LoginPage onLogin={() => setView('platform')} />;
-
-
-  if (view === 'admin') return <AdminLayout onBack={() => setView('platform')} />;
+  // Allow platform access if logged in OR coming from /admin
+  if (!user && !adminSession) return <LoginPage onLogin={() => setView('platform')} />;
   if (view === 'platform') return (
     <PlatformPage
       onSelectPlan={() => setView('plan')}
