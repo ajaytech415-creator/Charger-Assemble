@@ -635,18 +635,26 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
 
                       // Calculate OVERALL MO completed qty:
                       // For each component: how many MO units can be made from collectedQty?
-                      // = floor(collectedQty / expectedQtyPerUnit)
-                      const overallQty = newComps.length === 0
+                      let overallQty = newComps.length === 0
                         ? (parseInt(closingMO.qty) || 0)
                         : Math.min(...newComps.map(c => {
                             const collected = parseInt(c.collectedQty || 0);
+                            const tQty = parseInt(c.targetQty || 0);
+                            const eQty = parseInt(c.expectedQty || 0);
+                            
+                            // If this component isn't expected in this MO, it shouldn't bound the overall MO quantity to 0
+                            if (tQty === 0 && eQty === 0) return Infinity;
+
                             // expectedQty per unit: prefer c.expectedQty, else derive from targetQty/moQty
-                            const expPerUnit =
-                              parseInt(c.expectedQty) > 0
-                                ? parseInt(c.expectedQty)
-                                : Math.max(1, Math.round(parseInt(c.targetQty || 0) / Math.max(1, parseInt(closingMO.qty || 1))));
+                            const expPerUnit = eQty > 0
+                                ? eQty
+                                : Math.max(1, Math.round(tQty / Math.max(1, parseInt(closingMO.qty || 1))));
                             return Math.floor(collected / expPerUnit);
                           }));
+                      
+                      // Fallback if all components had 0 targets (so Math.min returned Infinity)
+                      if (overallQty === Infinity) overallQty = parseInt(closingMO.qty) || 0;
+                      
                       setCloseQty(String(overallQty));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
@@ -668,10 +676,15 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                           const parsed = parseInt(val) || 0;
                           // Immutable update: recalculate each component's completedQty
                           setMoComponents(prev => prev.map(c => {
-                            const expPerUnit =
-                              parseInt(c.expectedQty) > 0
-                                ? parseInt(c.expectedQty)
-                                : Math.max(1, Math.round(parseInt(c.targetQty || 0) / Math.max(1, parseInt(closingMO.qty || 1))));
+                            const tQty = parseInt(c.targetQty || 0);
+                            const eQty = parseInt(c.expectedQty || 0);
+                            // Only scale if the component is actually required (target > 0)
+                            if (tQty === 0 && eQty === 0) {
+                              return { ...c, completedQty: String(Math.min(parsed, parseInt(c.collectedQty || 0))) };
+                            }
+                            const expPerUnit = eQty > 0
+                                ? eQty
+                                : Math.max(1, Math.round(tQty / Math.max(1, parseInt(closingMO.qty || 1))));
                             const newCompleted = Math.min(parsed * expPerUnit, parseInt(c.collectedQty || 0));
                             return { ...c, completedQty: String(newCompleted) };
                           }));
