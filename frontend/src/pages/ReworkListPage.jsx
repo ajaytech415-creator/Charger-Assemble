@@ -226,18 +226,20 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
   };
 
   const handleMOClose = async (mo) => {
-    const isMatching = mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0));
-    if (!isMatching) {
-      alert('Cannot close this MO. The Collected Quantity and Completed Quantity must be exactly the same for all components.');
+    // For rework MOs, allow closing as long as at least one component has collected qty > 0
+    // (No strict collectedQty === completedQty requirement for rework)
+    const hasAnyCollected = mo.components?.some(c => parseInt(c.collectedQty || 0) > 0);
+    if (mo.components?.length > 0 && !hasAnyCollected) {
+      alert('Cannot close this MO. Please update the Collected Quantity first (use Qty Update button).');
       return;
     }
 
-    if (window.confirm(`Are you sure you want to completely close MO ${mo.moNumber || mo.sku}?`)) {
+    if (window.confirm(`Are you sure you want to completely close MO ${mo.moNumber || mo.sku}? This action cannot be undone.`)) {
       setUpdatingId(mo.id);
       try {
         await api.updateMO(mo.id, { status: 'Completed' });
         load(false);
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error(e); alert('Failed to close MO. Please try again.'); }
       finally { setUpdatingId(null); }
     }
   };
@@ -516,10 +518,10 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                               <button
                                 className="btn btn-sm btn-success"
                                 onClick={() => handleMOClose(mo)}
-                                disabled={updatingId === mo.id || !mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0))}
-                                title={!mo.components?.every(c => parseInt(c.collectedQty || 0) === parseInt(c.completedQty || 0)) ? 'Collected Qty must equal Completed Qty to close' : ''}
+                                disabled={updatingId === mo.id}
+                                title="Close this Rework MO (mark as Completed)"
                               >
-                                MO Close
+                                {updatingId === mo.id ? 'Closing...' : 'MO Close'}
                               </button>
                             </div>
                           )}
