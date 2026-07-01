@@ -1561,7 +1561,19 @@ if (process.env.MONGODB_URI) {
   let doc = await DataModel.findOne({ _id: 'master_database' }).lean();
   
   if (!doc) {
-    db.data = defaultData;
+    console.log("No data found in MongoDB! Attempting to migrate from local db.json...");
+    try {
+      const localDb = await JSONFilePreset(DB_PATH, defaultData);
+      if (localDb.data && Object.keys(localDb.data).length > 2) {
+        console.log("✅ Found existing local data! Migrating to MongoDB automatically...");
+        db.data = localDb.data;
+      } else {
+        db.data = defaultData;
+      }
+    } catch (e) {
+      console.error("Local data read failed, using default data.", e);
+      db.data = defaultData;
+    }
     await db.write();
   } else {
     delete doc._id;
