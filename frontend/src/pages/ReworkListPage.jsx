@@ -210,19 +210,29 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
     if (!closingMO) return;
     setUpdatingId(closingMO.id);
     try {
-      const newCompleted = parseInt(closeQty || 0);
+      const newCompleted = parseInt(closeQty) || 0;
+      // Always send parsed integers — never raw strings from inputs
+      const compsToSave = moComponents.map(c => ({
+        ...c,
+        collectedQty: parseInt(c.collectedQty) || 0,
+        completedQty: parseInt(c.completedQty) || 0,
+      }));
       await api.updateMO(closingMO.id, {
         completedQty: newCompleted,
-        components: moComponents,
+        components: compsToSave,
         planDate: editPlanDate,
       });
-      setClosingMO(null); 
+      setClosingMO(null);
       setCloseQty('');
       setMoComponents([]);
       setEditPlanDate('');
       load(false);
-    } catch (e) { console.error(e); }
-    finally { setUpdatingId(null); }
+    } catch (e) {
+      console.error(e);
+      alert('Failed to save quantities. Please try again.');
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const handleMOClose = async (mo) => {
@@ -594,11 +604,12 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                         type="number" min="0"
                         value={c.collectedQty}
                         onChange={e => {
-                          const newComps = [...moComponents];
-                          newComps[i].collectedQty = e.target.value;
-                          setMoComponents(newComps);
+                          const val = e.target.value;
+                          setMoComponents(prev => prev.map((comp, idx) =>
+                            idx === i ? { ...comp, collectedQty: val } : comp
+                          ));
                         }}
-                        style={{ borderColor: parseInt(c.collectedQty||0) === 0 ? '#fca5a5' : '' }}
+                        style={{ borderColor: parseInt(c.collectedQty || 0) === 0 ? '#fca5a5' : '' }}
                       />
                       <p className="text-xs text-muted" style={{ marginTop: 3 }}>Target: {c.targetQty}</p>
                     </div>
@@ -615,15 +626,28 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                   <button 
                     className="btn btn-sm" 
                     onClick={() => {
-                      const newComps = [...moComponents];
-                      newComps.forEach(c => c.completedQty = c.collectedQty);
-                      setMoComponents(newComps);
-                      
-                      const maxVal = newComps.length === 0 ? 0 : Math.min(...newComps.map(c => {
-                        const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
-                        return Math.floor(parseInt(c.collectedQty || 0) / expected);
+                      // Immutable update: set completedQty = collectedQty for every component
+                      const newComps = moComponents.map(c => ({
+                        ...c,
+                        completedQty: String(parseInt(c.collectedQty || 0)),
                       }));
-                      setCloseQty(String(maxVal));
+                      setMoComponents(newComps);
+
+                      // Calculate OVERALL MO completed qty:
+                      // For each component: how many MO units can be made from collectedQty?
+                      // = floor(collectedQty / expectedQtyPerUnit)
+                      const overallQty = newComps.length === 0
+                        ? (parseInt(closingMO.qty) || 0)
+                        : Math.min(...newComps.map(c => {
+                            const collected = parseInt(c.collectedQty || 0);
+                            // expectedQty per unit: prefer c.expectedQty, else derive from targetQty/moQty
+                            const expPerUnit =
+                              parseInt(c.expectedQty) > 0
+                                ? parseInt(c.expectedQty)
+                                : Math.max(1, Math.round(parseInt(c.targetQty || 0) / Math.max(1, parseInt(closingMO.qty || 1))));
+                            return Math.floor(collected / expPerUnit);
+                          }));
+                      setCloseQty(String(overallQty));
                     }}
                     style={{ background: '#16a34a', color: '#fff', border: 'none', fontSize: 12, padding: '4px 10px', borderRadius: 6, fontWeight: 600, cursor: 'pointer' }}
                   >
@@ -638,20 +662,19 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                       min="0" 
                       value={closeQty} 
                       onChange={e => {
-                        let val = e.target.value;
-                        const maxCollected = moComponents.length === 0 ? 0 : Math.min(...moComponents.map(c => {
-                          const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
-                          return Math.floor(parseInt(c.collectedQty || 0) / expected);
-                        }));
-                        if (val !== '' && parseInt(val) > maxCollected) val = String(maxCollected);
+                        const val = e.target.value;
                         setCloseQty(val);
                         if (val !== '') {
-                          const newComps = [...moComponents];
-                          newComps.forEach(c => {
-                            const expected = c.expectedQty || Math.max(1, Math.floor(parseInt(c.targetQty || 0) / parseInt(closingMO.qty || 1)));
-                            c.completedQty = String(parseInt(val) * expected);
-                          });
-                          setMoComponents(newComps);
+                          const parsed = parseInt(val) || 0;
+                          // Immutable update: recalculate each component's completedQty
+                          setMoComponents(prev => prev.map(c => {
+                            const expPerUnit =
+                              parseInt(c.expectedQty) > 0
+                                ? parseInt(c.expectedQty)
+                                : Math.max(1, Math.round(parseInt(c.targetQty || 0) / Math.max(1, parseInt(closingMO.qty || 1))));
+                            const newCompleted = Math.min(parsed * expPerUnit, parseInt(c.collectedQty || 0));
+                            return { ...c, completedQty: String(newCompleted) };
+                          }));
                         }
                       }} 
                     />
@@ -669,9 +692,10 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
                           let val = e.target.value;
                           const maxVal = parseInt(c.collectedQty || 0);
                           if (val !== '' && parseInt(val) > maxVal) val = String(maxVal);
-                          const newComps = [...moComponents];
-                          newComps[i].completedQty = val;
-                          setMoComponents(newComps);
+                          // Immutable update — never mutate state objects directly
+                          setMoComponents(prev => prev.map((comp, idx) =>
+                            idx === i ? { ...comp, completedQty: val } : comp
+                          ));
                         }} 
                       />
                       <p className="text-xs text-muted" style={{ marginTop: 3 }}>Collected: {c.collectedQty}</p>
