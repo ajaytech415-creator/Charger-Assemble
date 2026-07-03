@@ -5161,6 +5161,294 @@
           "qty": 1
         }
       ]
+    },
+    {
+      "id": "bom-pro-pg",
+      "name": "PALE GOLD- BOM LIST",
+      "types": [
+        "PG"
+      ],
+      "sizes": [
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "components": [
+        {
+          "category": "proParts",
+          "name": "DC Charger Top Champagne Gold",
+          "qty": 1,
+          "useSize": true
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Bottom Champagne Gold",
+          "qty": 1,
+          "useSize": true
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Button Champagne Gold",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "HINGE",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "CHARGER MID PLASTIC",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET TOP",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET BOTTOM",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "GRUB SCRWS 2*2",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Self tapping screws (M1.7X10)",
+          "qty": 4
+        },
+        {
+          "category": "proParts",
+          "name": "Magnet Cover Pad with Adhesive backing",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Wafer Head Screw M2*2",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Silicone Pad (Button backing)",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Bracket tape",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "3D printed parts Pogo stopper",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Speaker Enclosure SPK HSG 2",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Male Pogo Pin",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Battery_400mAh",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Silicon Bottom Pad",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger PCBA V3.1",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Cover",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Hinge Screws - M1.8*8",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Battery EVA tape",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Light Guide",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Bottom Plastic Pale Gold",
+          "qty": 1,
+          "useSize": true
+        }
+      ]
+    },
+    {
+      "id": "bom-pro-gm",
+      "name": "GUN METAL BOM LIST",
+      "types": [
+        "GM"
+      ],
+      "sizes": [
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12",
+        "S13",
+        "S14"
+      ],
+      "components": [
+        {
+          "category": "proParts",
+          "name": "DC Charger Top Gun Metal Black",
+          "qty": 1,
+          "useSize": true
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Bottom Gun Metal Black",
+          "qty": 1,
+          "useSize": true
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Button Gun Metal Black",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "HINGE",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "CHARGER MID PLASTIC",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET TOP",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET BOTTOM",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "GRUB SCRWS 2*2",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Self tapping screws (M1.7X10)",
+          "qty": 4
+        },
+        {
+          "category": "proParts",
+          "name": "Magnet Cover Pad with Adhesive backing",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Wafer Head Screw M2*2",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Silicone Pad (Button backing)",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Bracket tape",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "3D printed parts Pogo stopper",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Speaker Enclosure SPK HSG 2",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Male Pogo Pin",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Battery_400mAh",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Silicon Bottom Pad",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger PCBA V3.1",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Cover",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Hinge Screws - M1.8*8",
+          "qty": 2
+        },
+        {
+          "category": "proParts",
+          "name": "Battery EVA tape",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Light Guide",
+          "qty": 1
+        },
+        {
+          "category": "proParts",
+          "name": "Bottom Plastic Gunmetal Black",
+          "qty": 1,
+          "useSize": true
+        }
+      ]
     }
   ],
   "components": {
@@ -6510,6 +6798,418 @@
       {
         "id": "HS-9",
         "name": "HINGE",
+        "status": "Active"
+      }
+    ],
+    "proParts": [
+      {
+        "id": "PRO-1",
+        "name": "DC Charger Top Champagne Gold SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-2",
+        "name": "DC Charger Top Champagne Gold SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-3",
+        "name": "DC Charger Top Champagne Gold SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-4",
+        "name": "DC Charger Top Champagne Gold SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-5",
+        "name": "DC Charger Top Champagne Gold SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-6",
+        "name": "DC Charger Top Champagne Gold SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-7",
+        "name": "DC Charger Top Champagne Gold SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-8",
+        "name": "DC Charger Top Champagne Gold SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-9",
+        "name": "DC Charger Top Champagne Gold SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-10",
+        "name": "DC Charger Top Champagne Gold SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-11",
+        "name": "DC Charger Bottom Champagne Gold SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-12",
+        "name": "DC Charger Bottom Champagne Gold SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-13",
+        "name": "DC Charger Bottom Champagne Gold SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-14",
+        "name": "DC Charger Bottom Champagne Gold SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-15",
+        "name": "DC Charger Bottom Champagne Gold SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-16",
+        "name": "DC Charger Bottom Champagne Gold SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-17",
+        "name": "DC Charger Bottom Champagne Gold SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-18",
+        "name": "DC Charger Bottom Champagne Gold SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-19",
+        "name": "DC Charger Bottom Champagne Gold SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-20",
+        "name": "DC Charger Bottom Champagne Gold SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-21",
+        "name": "Bottom Plastic Pale Gold SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-22",
+        "name": "Bottom Plastic Pale Gold SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-23",
+        "name": "Bottom Plastic Pale Gold SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-24",
+        "name": "Bottom Plastic Pale Gold SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-25",
+        "name": "Bottom Plastic Pale Gold SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-26",
+        "name": "Bottom Plastic Pale Gold SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-27",
+        "name": "Bottom Plastic Pale Gold SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-28",
+        "name": "Bottom Plastic Pale Gold SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-29",
+        "name": "Bottom Plastic Pale Gold SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-30",
+        "name": "Bottom Plastic Pale Gold SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-31",
+        "name": "DC Charger Top Gun Metal Black SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-32",
+        "name": "DC Charger Top Gun Metal Black SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-33",
+        "name": "DC Charger Top Gun Metal Black SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-34",
+        "name": "DC Charger Top Gun Metal Black SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-35",
+        "name": "DC Charger Top Gun Metal Black SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-36",
+        "name": "DC Charger Top Gun Metal Black SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-37",
+        "name": "DC Charger Top Gun Metal Black SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-38",
+        "name": "DC Charger Top Gun Metal Black SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-39",
+        "name": "DC Charger Top Gun Metal Black SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-40",
+        "name": "DC Charger Top Gun Metal Black SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-41",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-42",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-43",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-44",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-45",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-46",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-47",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-48",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-49",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-50",
+        "name": "DC Charger Bottom Gun Metal Black SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-51",
+        "name": "Bottom Plastic Gunmetal Black SIZE-05",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-52",
+        "name": "Bottom Plastic Gunmetal Black SIZE-06",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-53",
+        "name": "Bottom Plastic Gunmetal Black SIZE-07",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-54",
+        "name": "Bottom Plastic Gunmetal Black SIZE-08",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-55",
+        "name": "Bottom Plastic Gunmetal Black SIZE-09",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-56",
+        "name": "Bottom Plastic Gunmetal Black SIZE-10",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-57",
+        "name": "Bottom Plastic Gunmetal Black SIZE-11",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-58",
+        "name": "Bottom Plastic Gunmetal Black SIZE-12",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-59",
+        "name": "Bottom Plastic Gunmetal Black SIZE-13",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-60",
+        "name": "Bottom Plastic Gunmetal Black SIZE-14",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-61",
+        "name": "DC Charger Button Champagne Gold",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-62",
+        "name": "HINGE",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-63",
+        "name": "CHARGER MID PLASTIC",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-64",
+        "name": "MAGNET TOP",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-65",
+        "name": "MAGNET BOTTOM",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-66",
+        "name": "GRUB SCRWS 2*2",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-67",
+        "name": "Self tapping screws (M1.7X10)",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-68",
+        "name": "Magnet Cover Pad with Adhesive backing",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-69",
+        "name": "Wafer Head Screw M2*2",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-70",
+        "name": "Silicone Pad (Button backing)",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-71",
+        "name": "Haptic Bracket tape",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-72",
+        "name": "3D printed parts Pogo stopper",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-73",
+        "name": "Speaker Enclosure SPK HSG 2",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-74",
+        "name": "Male Pogo Pin",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-75",
+        "name": "Battery_400mAh",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-76",
+        "name": "Silicon Bottom Pad",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-77",
+        "name": "DC Charger PCBA V3.1",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-78",
+        "name": "Haptic Cover",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-79",
+        "name": "Hinge Screws - M1.8*8",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-80",
+        "name": "Battery EVA tape",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-81",
+        "name": "Light Guide",
+        "status": "Active"
+      },
+      {
+        "id": "PRO-82",
+        "name": "DC Charger Button Gun Metal Black",
         "status": "Active"
       }
     ]
