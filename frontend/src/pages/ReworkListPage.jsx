@@ -15,6 +15,12 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
   const [filterStatus, setFilterStatus] = useState('');
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
+
+  // Breakdown-specific date filter (independent of MO list filters)
+  const [breakdownStart, setBreakdownStart] = useState('');
+  const [breakdownEnd, setBreakdownEnd] = useState('');
+  const [breakdownStats, setBreakdownStats] = useState(null);
+  const [breakdownLoading, setBreakdownLoading] = useState(false);
   
   const [closingMO, setClosingMO] = useState(null);
   const [closeQty, setCloseQty] = useState('');
@@ -96,6 +102,19 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
     finally { if (showLoading) setLoading(false); }
   }, [filterStart, filterEnd, filterStatus, filterPlanDate]);
 
+  // Independent breakdown stats loader
+  const loadBreakdown = useCallback(async () => {
+    setBreakdownLoading(true);
+    try {
+      const bParams = { isRework: true };
+      if (breakdownStart) bParams.startDate = breakdownStart;
+      if (breakdownEnd) bParams.endDate = breakdownEnd;
+      const data = await api.getStats(bParams);
+      setBreakdownStats(data);
+    } catch (e) { console.error(e); }
+    finally { setBreakdownLoading(false); }
+  }, [breakdownStart, breakdownEnd]);
+
   useEffect(() => {
     // Initial load
     const t = setTimeout(() => load(), 0);
@@ -110,6 +129,11 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
       document.removeEventListener('visibilitychange', onVisible);
     };
   }, [load]);
+
+  // Load breakdown whenever its date filters change
+  useEffect(() => {
+    loadBreakdown();
+  }, [loadBreakdown]);
 
   // Load pending MOs for return modal
   const openReturnModal = async () => {
@@ -548,18 +572,69 @@ export default function ReworkListPage({ onBack, onNewPlan, onDashboard }) {
         </div>
 
         {/* Rework Material Breakdown by Type */}
-        {stats?.breakdown && (
-          <div className="card" style={{ marginTop: 24, marginBottom: 24 }}>
-            <div className="card-header" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div className="card" style={{ marginTop: 24, marginBottom: 24 }}>
+          {/* Card Header */}
+          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, borderBottom: '1px solid #f3f4f6', paddingBottom: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <GlassIcon name="database" size={18} color="#7c3aed" />
               <h3 style={{ margin: 0 }}>Rework Material Breakdown by Type</h3>
               <span style={{ fontSize: 12, color: '#6b7280', marginLeft: 4 }}>Electronic · Housing · Screws · Tapes · Mechanical</span>
             </div>
-            <div className="card-body">
-              <MaterialBreakdown breakdown={stats.breakdown} />
+            {/* Date filter row */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: 8, padding: '5px 10px' }}>
+                <GlassIcon name="history" size={14} color="#7c3aed" />
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#7c3aed', whiteSpace: 'nowrap' }}>From:</span>
+                <input
+                  type="date"
+                  value={breakdownStart}
+                  onChange={e => setBreakdownStart(e.target.value)}
+                  style={{ border: 'none', background: 'transparent', fontSize: 13, color: '#5b21b6', outline: 'none', cursor: 'pointer', width: 130 }}
+                  title="Breakdown start date"
+                />
+              </div>
+              <span style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>to</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#f5f3ff', border: '1.5px solid #ddd6fe', borderRadius: 8, padding: '5px 10px' }}>
+                <GlassIcon name="history" size={14} color="#7c3aed" />
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#7c3aed', whiteSpace: 'nowrap' }}>To:</span>
+                <input
+                  type="date"
+                  value={breakdownEnd}
+                  onChange={e => setBreakdownEnd(e.target.value)}
+                  style={{ border: 'none', background: 'transparent', fontSize: 13, color: '#5b21b6', outline: 'none', cursor: 'pointer', width: 130 }}
+                  title="Breakdown end date"
+                />
+              </div>
+              {(breakdownStart || breakdownEnd) && (
+                <button
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => { setBreakdownStart(''); setBreakdownEnd(''); }}
+                  style={{ fontSize: 12, padding: '5px 12px', whiteSpace: 'nowrap' }}
+                >
+                  Clear Filter
+                </button>
+              )}
+              {(breakdownStart || breakdownEnd) && (
+                <span style={{ fontSize: 11, color: '#7c3aed', background: '#ede9fe', padding: '3px 8px', borderRadius: 6, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  {breakdownStart || '—'} → {breakdownEnd || '—'}
+                </span>
+              )}
             </div>
           </div>
-        )}
+          {/* Card Body */}
+          <div className="card-body">
+            {breakdownLoading ? (
+              <div style={{ textAlign: 'center', padding: 32 }}>
+                <span className="spinner" style={{ display: 'inline-block' }} />
+                <p style={{ color: '#9ca3af', fontSize: 13, marginTop: 8 }}>Loading breakdown…</p>
+              </div>
+            ) : (breakdownStats?.breakdown || stats?.breakdown) ? (
+              <MaterialBreakdown breakdown={breakdownStats?.breakdown || stats?.breakdown} />
+            ) : (
+              <div style={{ textAlign: 'center', padding: 32, color: '#9ca3af', fontSize: 13 }}>No breakdown data available for the selected period.</div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Close MO Modal */}
