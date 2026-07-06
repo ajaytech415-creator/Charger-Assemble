@@ -109,3 +109,4 @@ console.log(`    MOs updated  : ${updated}`);
 console.log(`    MOs skipped  : ${skipped}`);
 console.log(`    Lenses in DB : ${db.data.components.lenses.length}`);
 console.log('\nYou can now restart the server. This script is safe to re-run.');
+
