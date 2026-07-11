@@ -1,6 +1,72 @@
 {
   "auditLogs": [
     {
+      "id": "0bef162b-5b13-47f5-902a-05704019ec49",
+      "action": "Bulk created 2 MOs",
+      "user": "Unknown",
+      "time": "2026-07-11T12:56:39.046Z"
+    },
+    {
+      "id": "51b36906-4cc5-4c3a-894e-8eace71cf09f",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-07-11T07:46:31.666Z"
+    },
+    {
+      "id": "19f9f85b-8436-407b-ad62-965e5df61fd9",
+      "action": "Scrap update: MO UH/MO/26-27/06855 — C3 FTX COIL (+Recv: 2, +Rej: 2)",
+      "user": "Sairam",
+      "time": "2026-07-11T07:06:28.076Z"
+    },
+    {
+      "id": "c5b0affa-5a62-4221-9d3f-83fd2a5a80a8",
+      "action": "Scrap update: MO UH/MO/26-27/06855 — C2.5 C2 CHARGER BASE SIZE-08 (+Recv: 19, +Rej: 19)",
+      "user": "Sairam",
+      "time": "2026-07-11T07:06:16.824Z"
+    },
+    {
+      "id": "4b562993-3113-4177-b85d-761e168b5516",
+      "action": "Scrap update: MO UH/MO/26-27/06855 — C2.5 CHARGER TOP SIZE-08 (+Recv: 4, +Rej: 4)",
+      "user": "Sairam",
+      "time": "2026-07-11T07:06:05.195Z"
+    },
+    {
+      "id": "8512bac1-8414-4874-ab6a-5a410141365f",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-07-11T06:47:51.115Z"
+    },
+    {
+      "id": "f9b0afe3-d296-49ef-810a-393fc42acf2f",
+      "action": "Scrap update: MO UH/MO/26-27/06899 — C2.5 C2 CHARGER BASE SIZE-07 (+Recv: 1, +Rej: 1)",
+      "user": "Sairam",
+      "time": "2026-07-11T04:23:39.813Z"
+    },
+    {
+      "id": "4786eec8-fd90-4c51-8252-0bf0a7f03bb7",
+      "action": "Scrap update: MO UH/MO/26-27/06853 — C2.5 C2 CHARGER BASE SIZE-07 (+Recv: 2, +Rej: 2)",
+      "user": "Sairam",
+      "time": "2026-07-11T04:18:32.395Z"
+    },
+    {
+      "id": "040893d3-196c-43e7-aeee-51104d037281",
+      "action": "Scrap update: MO UH/MO/26-27/06853 — C2.5 CHARGER TOP SIZE-07 (+Recv: 1, +Rej: 1)",
+      "user": "Sairam",
+      "time": "2026-07-11T04:18:21.785Z"
+    },
+    {
+      "id": "d2213640-1171-46c9-93bb-aa442284f2c0",
+      "action": "Bulk created 3 MOs",
+      "user": "Sairam",
+      "time": "2026-07-11T03:55:15.966Z"
+    },
+    {
+      "id": "9d5a2655-4a00-4fba-b681-b9cc57576c45",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-07-11T03:43:11.483Z"
+    },
+    {
       "id": "9e1304df-99b5-40e2-a524-6c0ecbc35f4e",
       "action": "Sairam logged in",
       "user": "Sairam",
@@ -7234,6 +7300,148 @@
       {
         "id": "HS-9",
         "name": "HINGE",
+        "status": "Active"
+      }
+    ],
+    "proParts": [
+      {
+        "id": "2dd6c9e1",
+        "name": "PG DC Charger Top Champagne Gold SIZE-",
+        "status": "Active"
+      },
+      {
+        "id": "5b59af2f",
+        "name": "PG DC Charger Bottom Champagne Gold SIZE-",
+        "status": "Active"
+      },
+      {
+        "id": "f854fdef",
+        "name": "DC Charger Button Champagne Gold",
+        "status": "Active"
+      },
+      {
+        "id": "2718ed42",
+        "name": "HINGE",
+        "status": "Active"
+      },
+      {
+        "id": "f48ae0a9",
+        "name": "CHARGER MID PLASTIC",
+        "status": "Active"
+      },
+      {
+        "id": "073744f8",
+        "name": "MAGNET TOP",
+        "status": "Active"
+      },
+      {
+        "id": "a13d6ab3",
+        "name": "MAGNET BOTTOM",
+        "status": "Active"
+      },
+      {
+        "id": "2faac52c",
+        "name": "GRUB SCRWS 2*2",
+        "status": "Active"
+      },
+      {
+        "id": "97184959",
+        "name": "Self tapping screws (M1.7X10)",
+        "status": "Active"
+      },
+      {
+        "id": "9ae4549c",
+        "name": "Magnet Cover Pad with Adhesive backing",
+        "status": "Active"
+      },
+      {
+        "id": "20f65bb7",
+        "name": "Wafer Head Screw M2*2",
+        "status": "Active"
+      },
+      {
+        "id": "99d13efb",
+        "name": "Silicone Pad (Button backing)",
+        "status": "Active"
+      },
+      {
+        "id": "3d638b53",
+        "name": "Haptic Bracket tape",
+        "status": "Active"
+      },
+      {
+        "id": "a7fc5a9f",
+        "name": "3D printed parts Pogo stopper",
+        "status": "Active"
+      },
+      {
+        "id": "215ff6f9",
+        "name": "Speaker Enclosure SPK HSG 2",
+        "status": "Active"
+      },
+      {
+        "id": "c2d0c51c",
+        "name": "Male Pogo Pin",
+        "status": "Active"
+      },
+      {
+        "id": "eef74a4f",
+        "name": "Battery_400mAh",
+        "status": "Active"
+      },
+      {
+        "id": "c1e83053",
+        "name": "Silicon Bottom Pad",
+        "status": "Active"
+      },
+      {
+        "id": "f0087d06",
+        "name": "DC Charger PCBA V3.1",
+        "status": "Active"
+      },
+      {
+        "id": "dd9ea556",
+        "name": "Haptic Cover",
+        "status": "Active"
+      },
+      {
+        "id": "457e1ac8",
+        "name": "Hinge Screws - M1.8*8",
+        "status": "Active"
+      },
+      {
+        "id": "f8d8ff6e",
+        "name": "Battery EVA tape",
+        "status": "Active"
+      },
+      {
+        "id": "cfacaa23",
+        "name": "Light Guide",
+        "status": "Active"
+      },
+      {
+        "id": "1c6d859d",
+        "name": "PG Bottom Plastic Pale Gold SIZE-",
+        "status": "Active"
+      },
+      {
+        "id": "c73fe4e5",
+        "name": "GM DC Charger Top Gun Metal Black SIZE-",
+        "status": "Active"
+      },
+      {
+        "id": "5eed9021",
+        "name": "GM DC Charger Bottom Gun Metal Black SIZE-",
+        "status": "Active"
+      },
+      {
+        "id": "6e217285",
+        "name": "DC Charger Button Gun Metal Black",
+        "status": "Active"
+      },
+      {
+        "id": "e24fa4cf",
+        "name": "GM Bottom Plastic Gunmetal Black SIZE-",
         "status": "Active"
       }
     ]
@@ -27645,12 +27853,686 @@
       ],
       "overrides": {},
       "isRework": false,
-      "status": "Pending",
+      "status": "Completed",
       "batchId": "BATCH-1783409787767",
       "submittedBy": "Sairam",
       "createdAt": "2026-07-07T07:36:31.861Z",
-      "completedAt": null,
+      "completedAt": "2026-07-11T03:43:40.441Z",
       "completedQty": 200
+    },
+    {
+      "id": "348c20c1-4207-4c1f-8f5c-9f5b4a9be465",
+      "moNumber": "UH/MO/26-27/06853",
+      "planDate": "2026-07-11",
+      "type": "C2.5",
+      "size": "S07",
+      "refer": "UHCH2FINISHS07",
+      "od": "C2.5",
+      "qty": 50,
+      "components": [
+        {
+          "category": "electronic",
+          "name": "C3 FTX COIL",
+          "expectedQty": 1,
+          "targetQty": 50,
+          "collectedQty": 50,
+          "completedQty": 50
+        },
+        {
+          "category": "tapes",
+          "name": "FERRITE TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "tapes",
+          "name": "D.C TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "electronic",
+          "name": "C2 CHARGER PCBA",
+          "expectedQty": 1,
+          "targetQty": 50,
+          "collectedQty": 50,
+          "completedQty": 50
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-07",
+          "expectedQty": 1,
+          "targetQty": 50,
+          "collectedQty": 50,
+          "completedQty": 50
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-07",
+          "expectedQty": 1,
+          "targetQty": 50,
+          "collectedQty": 50,
+          "completedQty": 50
+        },
+        {
+          "category": "screws",
+          "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+          "expectedQty": 4,
+          "targetQty": 200,
+          "collectedQty": 200,
+          "completedQty": 200
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
+          "expectedQty": 1,
+          "targetQty": 50,
+          "collectedQty": 50,
+          "completedQty": 50
+        }
+      ],
+      "overrides": {},
+      "isRework": false,
+      "status": "Completed",
+      "batchId": "BATCH-1783742112448",
+      "submittedBy": "Sairam",
+      "createdAt": "2026-07-11T03:55:15.965Z",
+      "completedAt": "2026-07-11T04:24:38.182Z",
+      "completedQty": 50
+    },
+    {
+      "id": "d4cbf88a-c257-4ac3-bc73-f324f87f4ef6",
+      "moNumber": "UH/MO/26-27/06855",
+      "planDate": "2026-07-11",
+      "type": "C2.5",
+      "size": "S08",
+      "refer": "UHCH2FINISHS08",
+      "od": "C2.5",
+      "qty": 150,
+      "components": [
+        {
+          "category": "electronic",
+          "name": "C3 FTX COIL",
+          "expectedQty": 1,
+          "targetQty": 150,
+          "collectedQty": 150,
+          "completedQty": 150
+        },
+        {
+          "category": "tapes",
+          "name": "FERRITE TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 300,
+          "collectedQty": 300,
+          "completedQty": 300
+        },
+        {
+          "category": "tapes",
+          "name": "D.C TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 300,
+          "collectedQty": 300,
+          "completedQty": 300
+        },
+        {
+          "category": "electronic",
+          "name": "C2 CHARGER PCBA",
+          "expectedQty": 1,
+          "targetQty": 150,
+          "collectedQty": 150,
+          "completedQty": 150
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-08",
+          "expectedQty": 1,
+          "targetQty": 150,
+          "collectedQty": 150,
+          "completedQty": 150
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-08",
+          "expectedQty": 1,
+          "targetQty": 150,
+          "collectedQty": 150,
+          "completedQty": 150
+        },
+        {
+          "category": "screws",
+          "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+          "expectedQty": 4,
+          "targetQty": 600,
+          "collectedQty": 600,
+          "completedQty": 600
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
+          "expectedQty": 1,
+          "targetQty": 150,
+          "collectedQty": 150,
+          "completedQty": 150
+        }
+      ],
+      "overrides": {},
+      "isRework": false,
+      "status": "Completed",
+      "batchId": "BATCH-1783742112448",
+      "submittedBy": "Sairam",
+      "createdAt": "2026-07-11T03:55:15.966Z",
+      "completedAt": "2026-07-11T08:04:59.141Z",
+      "completedQty": 150
+    },
+    {
+      "id": "ce521f1a-f1cb-4a0a-b3be-ddc00e3ba47d",
+      "moNumber": "UH/MO/26-27/06899",
+      "planDate": "2026-07-11",
+      "type": "C2.5",
+      "size": "S07",
+      "refer": "UHCH2FINISHS07",
+      "od": "C2.5",
+      "qty": 100,
+      "components": [
+        {
+          "category": "electronic",
+          "name": "C3 FTX COIL",
+          "expectedQty": 1,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "tapes",
+          "name": "FERRITE TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 200,
+          "collectedQty": 200,
+          "completedQty": 200
+        },
+        {
+          "category": "tapes",
+          "name": "D.C TAPE 10x8",
+          "expectedQty": 2,
+          "targetQty": 200,
+          "collectedQty": 200,
+          "completedQty": 200
+        },
+        {
+          "category": "electronic",
+          "name": "C2 CHARGER PCBA",
+          "expectedQty": 1,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "c25Parts",
+          "name": "C2.5 CHARGER TOP SIZE-07",
+          "expectedQty": 1,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2.5 C2 CHARGER BASE SIZE-07",
+          "expectedQty": 1,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        },
+        {
+          "category": "screws",
+          "name": "CHARGER SCREWS (M1.8x6, Head 3.3 mm)",
+          "expectedQty": 4,
+          "targetQty": 400,
+          "collectedQty": 400,
+          "completedQty": 400
+        },
+        {
+          "category": "c2Mech",
+          "name": "C2 BOTTOM PADS",
+          "expectedQty": 1,
+          "targetQty": 100,
+          "collectedQty": 100,
+          "completedQty": 100
+        }
+      ],
+      "overrides": {},
+      "isRework": false,
+      "status": "Completed",
+      "batchId": "BATCH-1783742112448",
+      "submittedBy": "Sairam",
+      "createdAt": "2026-07-11T03:55:15.966Z",
+      "completedAt": "2026-07-11T04:24:41.352Z",
+      "completedQty": 100
+    },
+    {
+      "id": "5b2d19d6-792d-47b7-bd35-9d16708b8898",
+      "moNumber": "UH/MO/26-27/06973",
+      "planDate": "2026-07-11",
+      "type": "PG",
+      "size": "PG",
+      "refer": "UHASYCHGRPG",
+      "od": "PG",
+      "qty": 100,
+      "components": [
+        {
+          "category": "proParts",
+          "name": "PG DC Charger Top Champagne Gold SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "PG DC Charger Bottom Champagne Gold SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Button Champagne Gold",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "HINGE",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "CHARGER MID PLASTIC",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET TOP",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET BOTTOM",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "GRUB SCRWS 2*2",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Self tapping screws (M1.7X10)",
+          "expectedQty": 4,
+          "collectedQty": 400,
+          "targetQty": 400,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Magnet Cover Pad with Adhesive backing",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Wafer Head Screw M2*2",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Silicone Pad (Button backing)",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Bracket tape",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "3D printed parts Pogo stopper",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Speaker Enclosure SPK HSG 2",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Male Pogo Pin",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Battery_400mAh",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Silicon Bottom Pad",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger PCBA V3.1",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Cover",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Hinge Screws - M1.8*8",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Battery EVA tape",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Light Guide",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "PG Bottom Plastic Pale Gold SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        }
+      ],
+      "overrides": {},
+      "isRework": false,
+      "status": "Pending",
+      "batchId": "BATCH-1783774594507",
+      "submittedBy": "Unknown",
+      "createdAt": "2026-07-11T12:56:39.046Z",
+      "completedAt": null
+    },
+    {
+      "id": "969f9797-d5d5-4ed0-829f-7e115047f69d",
+      "moNumber": "UH/MO/26-27/06974",
+      "planDate": "2026-07-11",
+      "type": "GM",
+      "size": "GM",
+      "refer": "UHASYCHGRGM",
+      "od": "GM",
+      "qty": 100,
+      "components": [
+        {
+          "category": "proParts",
+          "name": "GM DC Charger Top Gun Metal Black SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "GM DC Charger Bottom Gun Metal Black SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger Button Gun Metal Black",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "HINGE",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "CHARGER MID PLASTIC",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET TOP",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "MAGNET BOTTOM",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "GRUB SCRWS 2*2",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Self tapping screws (M1.7X10)",
+          "expectedQty": 4,
+          "collectedQty": 400,
+          "targetQty": 400,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Magnet Cover Pad with Adhesive backing",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Wafer Head Screw M2*2",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Silicone Pad (Button backing)",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Bracket tape",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "3D printed parts Pogo stopper",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Speaker Enclosure SPK HSG 2",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Male Pogo Pin",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Battery_400mAh",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Silicon Bottom Pad",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "DC Charger PCBA V3.1",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Haptic Cover",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Hinge Screws - M1.8*8",
+          "expectedQty": 2,
+          "collectedQty": 200,
+          "targetQty": 200,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Battery EVA tape",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "Light Guide",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        },
+        {
+          "category": "proParts",
+          "name": "GM Bottom Plastic Gunmetal Black SIZE-",
+          "expectedQty": 1,
+          "collectedQty": 100,
+          "targetQty": 100,
+          "completedQty": 0
+        }
+      ],
+      "overrides": {},
+      "isRework": false,
+      "status": "Pending",
+      "batchId": "BATCH-1783774594507",
+      "submittedBy": "Unknown",
+      "createdAt": "2026-07-11T12:56:39.046Z",
+      "completedAt": null
     }
   ],
   "returnEntries": [],
@@ -35006,6 +35888,90 @@
       "receivedAt": "2026-07-08T06:03:02.877Z",
       "rejectedAt": "2026-07-08T06:03:02.877Z",
       "submittedBy": "Sairam"
+    },
+    {
+      "id": "49a34aef-2974-48c9-9473-6f4c8377e32d",
+      "moId": "348c20c1-4207-4c1f-8f5c-9f5b4a9be465",
+      "moNumber": "UH/MO/26-27/06853",
+      "sku": "S07",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-07",
+      "receive": 1,
+      "reject": 1,
+      "submittedAt": "2026-07-11T04:18:21.785Z",
+      "receivedAt": "2026-07-11T04:18:21.785Z",
+      "rejectedAt": "2026-07-11T04:18:21.785Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "5e0f915a-d4b9-403d-914b-c58e4c93f423",
+      "moId": "348c20c1-4207-4c1f-8f5c-9f5b4a9be465",
+      "moNumber": "UH/MO/26-27/06853",
+      "sku": "S07",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-07",
+      "receive": 2,
+      "reject": 2,
+      "submittedAt": "2026-07-11T04:18:32.395Z",
+      "receivedAt": "2026-07-11T04:18:32.395Z",
+      "rejectedAt": "2026-07-11T04:18:32.395Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "590df61e-2268-4feb-bbfa-7103549b6a3e",
+      "moId": "ce521f1a-f1cb-4a0a-b3be-ddc00e3ba47d",
+      "moNumber": "UH/MO/26-27/06899",
+      "sku": "S07",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-07",
+      "receive": 1,
+      "reject": 1,
+      "submittedAt": "2026-07-11T04:23:39.813Z",
+      "receivedAt": "2026-07-11T04:23:39.813Z",
+      "rejectedAt": "2026-07-11T04:23:39.813Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "fa7a1bc5-809d-4879-9610-4fdf2eb1eb14",
+      "moId": "d4cbf88a-c257-4ac3-bc73-f324f87f4ef6",
+      "moNumber": "UH/MO/26-27/06855",
+      "sku": "S08",
+      "component": "c25Parts",
+      "componentName": "C2.5 CHARGER TOP SIZE-08",
+      "receive": 4,
+      "reject": 4,
+      "submittedAt": "2026-07-11T07:06:05.195Z",
+      "receivedAt": "2026-07-11T07:06:05.195Z",
+      "rejectedAt": "2026-07-11T07:06:05.195Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "16be6392-0a63-442f-bec3-f2ab134bc2bb",
+      "moId": "d4cbf88a-c257-4ac3-bc73-f324f87f4ef6",
+      "moNumber": "UH/MO/26-27/06855",
+      "sku": "S08",
+      "component": "c2Mech",
+      "componentName": "C2.5 C2 CHARGER BASE SIZE-08",
+      "receive": 19,
+      "reject": 19,
+      "submittedAt": "2026-07-11T07:06:16.824Z",
+      "receivedAt": "2026-07-11T07:06:16.824Z",
+      "rejectedAt": "2026-07-11T07:06:16.824Z",
+      "submittedBy": "Sairam"
+    },
+    {
+      "id": "9ffaacaa-1623-477c-9b30-25b9945eaa2c",
+      "moId": "d4cbf88a-c257-4ac3-bc73-f324f87f4ef6",
+      "moNumber": "UH/MO/26-27/06855",
+      "sku": "S08",
+      "component": "electronic",
+      "componentName": "C3 FTX COIL",
+      "receive": 2,
+      "reject": 2,
+      "submittedAt": "2026-07-11T07:06:28.076Z",
+      "receivedAt": "2026-07-11T07:06:28.076Z",
+      "rejectedAt": "2026-07-11T07:06:28.076Z",
+      "submittedBy": "Sairam"
     }
   ],
   "trashEntries": [
@@ -35907,7 +36873,7 @@
       "fullName": "Sairam",
       "status": "Active",
       "createdAt": "2026-05-27T06:21:56.710Z",
-      "lastLogin": "2026-07-08T07:31:22.037Z"
+      "lastLogin": "2026-07-11T07:46:27.126Z"
     },
     {
       "id": "d01ae174-7363-47a0-be89-83b44d9a5207",
