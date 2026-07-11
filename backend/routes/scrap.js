@@ -4,7 +4,7 @@ import { isSameLocalDay, inLocalPeriod } from '../utils/dates.js';
 
 // GET /api/scrap
 export const getScrapEntries = (req, res) => {
-  const { moNumber, date, startDate, endDate, component } = req.query;
+  const { moNumber, date, startDate, endDate, component, moType } = req.query;
   let entries = [...(db.data.scrapEntries || [])];
 
   if (moNumber) {
@@ -15,6 +15,12 @@ export const getScrapEntries = (req, res) => {
   if (date) entries = entries.filter(e => isSameLocalDay(e.submittedAt, date));
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));
+  }
+  if (moType === 'mo_plan' || moType === 'rework_plan') {
+    const moEntries = db.data.moEntries || [];
+    const isRework = moType === 'rework_plan';
+    const matchingMoIds = new Set(moEntries.filter(m => !!m.isRework === isRework).map(m => m.id));
+    entries = entries.filter(e => matchingMoIds.has(e.moId));
   }
 
   entries.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
@@ -152,9 +158,9 @@ export const deleteScrapEntry = async (req, res) => {
   res.json({ success: true });
 };
 
-// GET /api/scrap/export?moNumber=&startDate=&endDate=&component=
+// GET /api/scrap/export?moNumber=&startDate=&endDate=&component=&moType=mo_plan|rework_plan
 export const exportScrapExcel = (req, res) => {
-  const { moNumber, date, startDate, endDate, component } = req.query;
+  const { moNumber, date, startDate, endDate, component, moType } = req.query;
   let entries = [...(db.data.scrapEntries || [])];
 
   if (moNumber) {
@@ -166,10 +172,22 @@ export const exportScrapExcel = (req, res) => {
   if (startDate && endDate) {
     entries = entries.filter(e => inLocalPeriod(e.submittedAt, startDate, endDate));
   }
+  if (moType === 'mo_plan' || moType === 'rework_plan') {
+    const moEntries = db.data.moEntries || [];
+    const isRework = moType === 'rework_plan';
+    const matchingMoIds = new Set(moEntries.filter(m => !!m.isRework === isRework).map(m => m.id));
+    entries = entries.filter(e => matchingMoIds.has(e.moId));
+  }
 
   entries.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
 
+  // Determine label for report type
+  const reportLabel = moType === 'mo_plan' ? 'MO Plan Scrap' : moType === 'rework_plan' ? 'Rework Plan Scrap' : 'All Scrap';
+  const dateLabel = startDate && endDate ? `${startDate}_to_${endDate}` : date || 'all_dates';
+  const fileName = `scrap_report_${moType || 'all'}_${dateLabel}.xlsx`.replace(/\s/g, '_');
+
   const rows = entries.map(e => ({
+    'Report Type': reportLabel,
     'MO Number': e.moNumber,
     'SKU': e.sku,
     'Component Category': e.component,
@@ -185,10 +203,10 @@ export const exportScrapExcel = (req, res) => {
 
   const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Scrap Records');
+  XLSX.utils.book_append_sheet(wb, ws, reportLabel);
 
   const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-  res.setHeader('Content-Disposition', 'attachment; filename="scrap_report.xlsx"');
+  res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
   res.send(buf);
 };

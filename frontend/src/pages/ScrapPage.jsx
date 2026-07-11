@@ -45,6 +45,12 @@ export default function ScrapPage({ onBack }) {
   // Alert modal
   const [alertModal, setAlertModal] = useState(false);
 
+  // Export modal
+  const [exportModal, setExportModal] = useState(false);
+  const [exportMoType, setExportMoType] = useState('mo_plan');
+  const [exportStartDate, setExportStartDate] = useState('');
+  const [exportEndDate, setExportEndDate] = useState('');
+
   const handleBulkDeleteScrap = async () => {
     if (selectedScrapIds.length === 0) return;
     if (!window.confirm(`Are you sure you want to delete ${selectedScrapIds.length} scrap record(s)?`)) return;
@@ -182,6 +188,17 @@ export default function ScrapPage({ onBack }) {
     window.open(api.exportScrapUrl(params), '_blank');
   };
 
+  const handleExportWithFilter = () => {
+    const params = {};
+    if (exportMoType) params.moType = exportMoType;
+    if (exportStartDate && exportEndDate) {
+      params.startDate = exportStartDate;
+      params.endDate = exportEndDate;
+    }
+    window.open(api.exportScrapUrl(params), '_blank');
+    setExportModal(false);
+  };
+
   // Derive all components available in scrap entries
   const allSummaryComps = Array.from(new Set(scrapEntries.map(e => e.componentName).filter(Boolean)));
   
@@ -257,7 +274,20 @@ export default function ScrapPage({ onBack }) {
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
             <button className="btn btn-secondary btn-sm" onClick={handleExport} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <GlassIcon name="export" size={14} color="#374151" /> Excel Export
+              <GlassIcon name="export" size={14} color="#374151" /> All Export
+            </button>
+            <button
+              className="btn btn-sm"
+              onClick={() => setExportModal(true)}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                color: '#fff', border: 'none', fontWeight: 700,
+                boxShadow: '0 2px 8px rgba(220,38,38,0.3)', padding: '6px 12px',
+                borderRadius: 8, cursor: 'pointer', fontSize: 13
+              }}
+            >
+              <GlassIcon name="export" size={14} color="#fff" /> Filtered Export
             </button>
             <button 
               className="btn btn-secondary btn-sm" 
@@ -652,6 +682,138 @@ export default function ScrapPage({ onBack }) {
               </div>
               <div className="modal-footer">
                 <button className="btn btn-secondary" onClick={() => setAlertModal(false)}>Close</button>
+              </div>
+            </div>
+          </div>
+        </ModalPortal>
+      )}
+
+      {exportModal && (
+        <ModalPortal>
+          <div className="modal-overlay" onClick={() => setExportModal(false)}>
+            <div className="modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 500 }}>
+              <div className="modal-header" style={{ borderBottom: '2px solid #fee2e2' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <GlassIcon name="export" size={20} color="#dc2626" />
+                  <h3 style={{ margin: 0, color: '#dc2626' }}>Export Scrap Report</h3>
+                </div>
+                <button className="btn-icon" onClick={() => setExportModal(false)}>✕</button>
+              </div>
+              <div style={{ padding: '24px' }}>
+
+                {/* Step 1: Select MO Type */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ background: '#dc2626', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>1</span>
+                    Select Data Type
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <label
+                      onClick={() => setExportMoType('mo_plan')}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        padding: '18px 12px', borderRadius: 12, cursor: 'pointer',
+                        border: exportMoType === 'mo_plan' ? '2.5px solid #dc2626' : '2px solid #e5e7eb',
+                        background: exportMoType === 'mo_plan' ? '#fff1f2' : '#f9fafb',
+                        transition: 'all 0.15s', textAlign: 'center',
+                        boxShadow: exportMoType === 'mo_plan' ? '0 0 0 3px rgba(220,38,38,0.1)' : 'none'
+                      }}
+                    >
+                      <input type="radio" name="exportMoType" value="mo_plan" checked={exportMoType === 'mo_plan'} onChange={() => setExportMoType('mo_plan')} style={{ display: 'none' }} />
+                      <div style={{ fontSize: 24, marginBottom: 6 }}>📋</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: exportMoType === 'mo_plan' ? '#dc2626' : '#374151' }}>MO Plan</div>
+                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>Regular MO scrap data</div>
+                    </label>
+                    <label
+                      onClick={() => setExportMoType('rework_plan')}
+                      style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        padding: '18px 12px', borderRadius: 12, cursor: 'pointer',
+                        border: exportMoType === 'rework_plan' ? '2.5px solid #7c3aed' : '2px solid #e5e7eb',
+                        background: exportMoType === 'rework_plan' ? '#f5f3ff' : '#f9fafb',
+                        transition: 'all 0.15s', textAlign: 'center',
+                        boxShadow: exportMoType === 'rework_plan' ? '0 0 0 3px rgba(124,58,237,0.1)' : 'none'
+                      }}
+                    >
+                      <input type="radio" name="exportMoType" value="rework_plan" checked={exportMoType === 'rework_plan'} onChange={() => setExportMoType('rework_plan')} style={{ display: 'none' }} />
+                      <div style={{ fontSize: 24, marginBottom: 6 }}>🔄</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: exportMoType === 'rework_plan' ? '#7c3aed' : '#374151' }}>Rework Plan</div>
+                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 3 }}>Rework MO scrap data</div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Step 2: Date Range */}
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ background: '#dc2626', color: '#fff', borderRadius: '50%', width: 20, height: 20, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 800 }}>2</span>
+                    Select Date Range
+                    <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 400 }}>(optional)</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: '#4b5563', marginBottom: 6, display: 'block' }}>Start Date</label>
+                      <input
+                        type="date"
+                        value={exportStartDate}
+                        onChange={e => setExportStartDate(e.target.value)}
+                        style={{ width: '100%', fontSize: 13 }}
+                      />
+                    </div>
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: 12, fontWeight: 600, color: '#4b5563', marginBottom: 6, display: 'block' }}>End Date</label>
+                      <input
+                        type="date"
+                        value={exportEndDate}
+                        onChange={e => setExportEndDate(e.target.value)}
+                        style={{ width: '100%', fontSize: 13 }}
+                      />
+                    </div>
+                  </div>
+                  {exportStartDate && exportEndDate && new Date(exportStartDate) > new Date(exportEndDate) && (
+                    <div style={{ marginTop: 8, fontSize: 12, color: '#dc2626', fontWeight: 600 }}>
+                      ⚠️ Start date cannot be after end date.
+                    </div>
+                  )}
+                  {(exportStartDate || exportEndDate) && (
+                    <button
+                      onClick={() => { setExportStartDate(''); setExportEndDate(''); }}
+                      style={{ marginTop: 8, fontSize: 12, color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                    >
+                      Clear dates
+                    </button>
+                  )}
+                </div>
+
+                {/* Summary */}
+                <div style={{ background: exportMoType === 'rework_plan' ? '#f5f3ff' : '#fff1f2', border: `1px solid ${exportMoType === 'rework_plan' ? '#ddd6fe' : '#fecaca'}`, borderRadius: 10, padding: '12px 16px', marginBottom: 4 }}>
+                  <div style={{ fontSize: 12, color: '#4b5563', fontWeight: 600 }}>
+                    📥 Will download: <strong style={{ color: exportMoType === 'rework_plan' ? '#7c3aed' : '#dc2626' }}>
+                      {exportMoType === 'mo_plan' ? 'MO Plan Scrap' : 'Rework Plan Scrap'}
+                    </strong>
+                    {exportStartDate && exportEndDate && (
+                      <span style={{ color: '#374151' }}> &nbsp;·&nbsp; {exportStartDate} → {exportEndDate}</span>
+                    )}
+                    {!exportStartDate && !exportEndDate && (
+                      <span style={{ color: '#9ca3af', fontWeight: 400 }}> &nbsp;·&nbsp; All dates</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button className="btn btn-secondary" onClick={() => setExportModal(false)}>Cancel</button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleExportWithFilter}
+                  disabled={exportStartDate && exportEndDate && new Date(exportStartDate) > new Date(exportEndDate)}
+                  style={{
+                    background: exportMoType === 'rework_plan' ? 'linear-gradient(135deg, #7c3aed, #6d28d9)' : 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                    border: 'none', display: 'flex', alignItems: 'center', gap: 6
+                  }}
+                >
+                  <GlassIcon name="export" size={14} color="#fff" /> Download Excel
+                </button>
               </div>
             </div>
           </div>
