@@ -1,6 +1,12 @@
 {
   "auditLogs": [
     {
+      "id": "2f424c27-a071-4f67-a314-9ddcd3fad9cb",
+      "action": "Sairam logged in",
+      "user": "Sairam",
+      "time": "2026-07-26T09:32:20.846Z"
+    },
+    {
       "id": "f79c7e46-06df-4101-a2c4-cd7ad550e1cc",
       "action": "Bulk created 3 MOs",
       "user": "Sairam",
@@ -40584,7 +40590,7 @@
       "fullName": "Sairam",
       "status": "Active",
       "createdAt": "2026-05-27T06:21:56.710Z",
-      "lastLogin": "2026-07-24T10:30:06.586Z"
+      "lastLogin": "2026-07-26T09:32:16.606Z"
     },
     {
       "id": "d01ae174-7363-47a0-be89-83b44d9a5207",
